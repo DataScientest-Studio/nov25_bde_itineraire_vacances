@@ -1,10 +1,10 @@
 # Objectif du projet
 Ce projet vise à concevoir une couche de données géographiques structurée et exploitable permettant d’alimenter des services d’aide à la décision pour l’organisation de séjours touristiques (choix d’hébergement, sites touristiques, restauration, mobilité).
 
-L’approche adoptée est orientée Data Engineering, avec un focus sur :
-- l’ingestion de sources hétérogènes,
-- la normalisation et l’enrichissement des données géographiques,
-- la mise à disposition d’une couche de consommation (analytics / visualisation).
+L’approche adoptée orientée Data Engineering, avec un focus sur :
+- Batch pipeline : ingestion → normalisation → features → artefacts
+- Serving : app Streamlit consomme les features / modèle
+- Reproductibilité : Parquet + scripts src/ + requirements
 
 # Architecture logique du pipeline
 Sources de données :
