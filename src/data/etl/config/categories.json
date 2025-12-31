@@ -1,0 +1,460 @@
+{
+    "Patrimoine & Monuments": {
+        "Religieux": [
+            "Abbaye",
+            "Basilique",
+            "Evéché",
+            "Cathédrale",
+            "Chapelle",
+            "Temple bouddhique",
+            "Monastère, prieuré",
+            "Calvaire et enclos paroissiaux",
+            "Commanderie",
+            "Couvent",
+            "Temple",
+            "Mosquée",
+            "Eglise",
+            "Cloître",
+            "Collégiale",
+            "Synagogue"
+        ],
+        "Châteaux & Fortifications": [
+            "Château",
+            "Donjon",
+            "Fort",
+            "Château fort",
+            "Ensemble fortifié",
+            "Citadelle",
+            "Chartreuse"
+        ],
+        "Antiquité & Vestiges": [
+            "Mégalithes, menhirs et dolmens",
+            "Voie romaine",
+            "Ruines et vestiges",
+            "Arène",
+            "Aqueduc",
+            "Arc de triomphe"
+        ],
+        "Patrimoine civil": [
+            "Bastide",
+            "Maison remarquable",
+            "Quartier",
+            "Tour",
+            "Phare",
+            "Jetée",
+            "Pigeonnier",
+            "Haras"
+        ],
+        "Ouvrages d'art": [
+            "Pont",
+            "Ecluse",
+            "Barrage, digue",
+            "Fontaine"
+        ],
+        "Patrimoine rural & agricole": [
+            "Moulin",
+            "Mine",
+            "Forge",
+            "Ferme",
+            "Verger conservatoire",
+            "Lavoir",
+            "Site industriel"
+        ],
+        "Cimetières & mémoriaux": [
+            "Cimetière militaire et mémorial",
+            "Cimetière civil"
+        ]
+    },
+    "Nature & Paysages": {
+        "Montagne & Relief": [
+            "Montagne",
+            "Sommet",
+            "Pic",
+            "Col",
+            "Crête",
+            "Plateau",
+            "Cône"
+        ],
+        "Eau & Milieux humides": [
+            "Rivière ou fleuve",
+            "Ruisseau",
+            "Lac",
+            "Etang",
+            "Source",
+            "Marais",
+            "Tourbière"
+        ],
+        "Forêts & milieux naturels": [
+            "Forêt",
+            "Bocage",
+            "Landes",
+            "Pelouse calcaire",
+            "Zone halophile",
+            "Chaumes"
+        ],
+        "Côtes & littoral": [
+            "Plage",
+            "Dune",
+            "Côte, littoral",
+            "Ile - presqu'île"
+        ],
+        "Géologie & curiosités": [
+            "Grotte, gouffre, aven, caverne, carrière",
+            "Canyon",
+            "Gorge",
+            "Falaise",
+            "Pierre, rocher",
+            "Curiosité naturelle"
+        ],
+        "Paysages remarquables": [
+            "Point de vue",
+            "Vallée",
+            "Prairie",
+            "Plaine",
+            "Parc naturel"
+        ],
+        "Glace & haute montagne": [
+            "Glacier de montagne",
+            "Cascade de glace"
+        ],
+        "Eau vive & cascades": [
+            "Cascade"
+        ]
+    },
+    "Culture & Musées": {
+        "Musées & expositions": [
+            "Musée",
+            "Galerie d'art, galerie d'exposition",
+            "Exposition"
+        ],
+        "Bibliothèques & médiation": [
+            "Bibliothèque - Médiathèque",
+            "Lecture"
+        ],
+        "Spectacle vivant": [
+            "Spectacle",
+            "Pièce de théâtre",
+            "Opéra",
+            "Spectacle de danse",
+            "Spectacle de cirque"
+        ],
+        "Cinéma & audiovisuel": [
+            "Projection, cinéma",
+            "Cinéma",
+            "Cinémathèque"
+        ],
+        "Concerts & musique": [
+            "Concert",
+            "Récital"
+        ],
+        "Festivals & grands événements": [
+            "Festival",
+            "Son et lumière, feu d'artifice",
+            "Commémoration"
+        ],
+        "Rencontres & conférences": [
+            "Conférence",
+            "Dédicace et rencontre d'artiste"
+        ],
+        "Jeune public": [
+            "Evènement jeune public"
+        ]
+    },
+    "Sports & Loisirs": {
+        "Sports d'hiver": [
+            "Domaine de ski alpin",
+            "Piste de ski alpin",
+            "Domaine de ski nordique",
+            "Piste de ski de fond",
+            "Snowpark",
+            "Piste de luge / bobsleigh",
+            "Piste de luge d'été"
+        ],
+        "Sports outdoor": [
+            "Randonnée, balade",
+            "Sentier de découverte et d'interprétation",
+            "Via ferrata",
+            "Site et mur d'escalade",
+            "Vélorail"
+        ],
+        "Sports mécaniques": [
+            "Circuit automobile ou moto",
+            "Rallye"
+        ],
+        "Sports nautiques": [
+            "Base nautique / centre nautique",
+            "Bateau promenade",
+            "Port de plaisance",
+            "Zone ou port de mouillage",
+            "Yacht Club"
+        ],
+        "Sports équestres": [
+            "Centre équestre",
+            "Hippodrome"
+        ],
+        "Sports de balle & raquette": [
+            "Complèxe ou terrain de tennis",
+            "Salle de squash",
+            "Fronton, mur de frappe"
+        ],
+        "Sports collectifs & stades": [
+            "Stade",
+            "Salle ou terrain de sport, gymnase",
+            "Club de sport",
+            "Palais des sports"
+        ],
+        "Loisirs indoor": [
+            "Bowling",
+            "Boulodrome",
+            "Salle de billard",
+            "Patinoire",
+            "Piscine"
+        ],
+        "Aventure & accrobranche": [
+            "Parc aventure - accrobranche"
+        ],
+        "Golf & mini-golf": [
+            "Terrain de golf",
+            "Mini golf"
+        ]
+    },
+    "Gastronomie & Restauration": {
+        "Restaurants": [
+            "Hôtel-restaurant",
+            "Restaurant gastronomique",
+            "Restaurant d'altitude / Restaurant d'alpage",
+            "Cafétéria - Self",
+            "Bateau-restaurant"
+        ],
+        "Bars & cafés": [
+            "Bar, bar à thème",
+            "Bistrot - Bar à vin",
+            "Café ou salon de thé"
+        ],
+        "Restauration rapide": [
+            "Restauration Rapide",
+            "Restauration ambulante, Food truck",
+            "Glacier"
+        ],
+        "Produits locaux": [
+            "Ferme et auberge de campagne",
+            "Maison de pays, produits du terroir"
+        ],
+        "Vins & spiritueux": [
+            "Cave ou caveau",
+            "Cave de dégustation",
+            "Dégustation",
+            "Brasseur"
+        ],
+        "Producteurs": [
+            "Éleveur",
+            "Producteur",
+            "Groupement de producteurs",
+            "Négociant",
+            "Coopérative"
+        ]
+    },
+    "Shopping & Artisanat": {
+        "Artisanat": [
+            "Artisan d'art"
+        ],
+        "Antiquités & brocante": [
+            "Antiquaire et brocanteur",
+            "Brocante",
+            "Vide-grenier"
+        ],
+        "Commerces": [
+            "Boutique, commerce de proximité",
+            "Centre et galerie commerciale"
+        ],
+        "Marchés": [
+            "Marché",
+            "Halle, marché couvert"
+        ],
+        "Foires & salons": [
+            "Foire ou salon",
+            "Portes ouvertes"
+        ]
+    },
+    "Bien-être & Santé": {
+        "Thermalisme": [
+            "Station thermale",
+            "Etablissement thermal"
+        ],
+        "Thalasso & balnéo": [
+            "Centre de thalassothérapie",
+            "Centre de balnéothérapie"
+        ],
+        "Soins & bien-être": [
+            "Lieu de soins",
+            "Hammam",
+            "Centre de remise en forme - fitness",
+            "Parcours de Santé"
+        ]
+    },
+    "Famille & Enfants": {
+        "Aires & jeux": [
+            "Aire de jeux",
+            "Club enfants"
+        ],
+        "Éducation & apprentissage": [
+            "Ecole et centre d'apprentissage",
+            "Ferme pédagogique"
+        ],
+        "Parcs & loisirs": [
+            "Parc de loisirs, parc à thème",
+            "Complexe de loisirs (loisirs regroupés)"
+        ],
+        "Zoo & animaux": [
+            "Zoo - parc animalier",
+            "Vivarium - Aquarium"
+        ]
+    },
+    "Transports touristiques": {
+        "Téléphériques & remontées": [
+            "Téléphérique touristique",
+            "Tremplin"
+        ],
+        "Trains & bus touristiques": [
+            "Train touristique",
+            "Bus touristique"
+        ],
+        "Embarcadères": [
+            "Embarcadère"
+        ]
+    },
+    "Événements & Traditions": {
+        "Fêtes & traditions": [
+            "Fête traditionnelle",
+            "Carnaval",
+            "Animation locale"
+        ],
+        "Religieux": [
+            "Évènement religieux",
+            "Pèlerinage et procession"
+        ],
+        "Défilés & parades": [
+            "Défilé Cortège Parade"
+        ],
+        "Jeux & concours": [
+            "Jeu, concours"
+        ],
+        "Vendanges & récoltes": [
+            "Vendange, récolte"
+        ],
+        "Aire de pique-nique": [
+            "Aire de pique-nique"
+        ]
+    },
+    "Camping & Plein Air": {
+        "unknown": [
+            "Aire de camping-car",
+            "Aire naturelle de camping",
+            "Bulle",
+            "Bungatoile",
+            "Bungalow, Mobil Home",
+            "Cabane dans les arbres",
+            "Camping",
+            "Camping car",
+            "Camping à la ferme",
+            "Caravane",
+            "Emplacement de camping",
+            "Parc résidentiel de loisirs",
+            "Tente",
+            "Tipi",
+            "Yourte"
+        ]
+    },
+    "Commerce & Shopping": {
+        "unknown": [
+            "Grand magasin",
+            "Grande et moyenne surface",
+            "Organisme réceptif"
+        ]
+    },
+    "Commodités": {
+        "unknown": [
+            "Consigne à bagages",
+            "Cybercafé",
+            "Hotspot Wifi",
+            "Loueur de matériel",
+            "Point d'eau",
+            "Réparateur de matériel",
+            "Toilettes publiques"
+        ]
+    },
+    "Hébergement": {
+        "unknown": [
+            "Appartement",
+            "Auberge collective",
+            "Bâteau habitable",
+            "Cabane",
+            "Chalet",
+            "Chalet résidentiel de loisirs",
+            "Chambre",
+            "Chambre d'hôtes",
+            "Château et demeure de prestige",
+            "Hôtel",
+            "Lit",
+            "Maison",
+            "Refuge et gîte d'étape",
+            "Suite"
+        ]
+    },
+    "Information Touristique": {
+        "unknown": [
+            "Agence de guides",
+            "Guide professionnel",
+            "Hôte bénévole, greeter",
+            "Maison du tourisme",
+            "Office de tourisme"
+        ]
+    },
+    "Loisirs & Clubs": {
+        "unknown": [
+            "Auberge de jeunesse et centre international de séjour",
+            "Centre de vacances et de loisirs",
+            "Club et village vacances",
+            "Gîte d'enfants",
+            "Gîte de groupe",
+            "Meublés de tourisme",
+            "Résidence de tourisme"
+        ]
+    },
+    "Santé & Urgences": {
+        "unknown": [
+            "Pharmacie",
+            "Professionnel de santé"
+        ]
+    },
+    "Services & Mobilité": {
+        "unknown": [
+            "Aire de covoiturage",
+            "Borne de charge véhicule électrique",
+            "Borne de charge électrique pour vélo, vtt",
+            "Borne de service camping car",
+            "Borne ou station de réparation - gonflage",
+            "Distributeur automatique de billets, DAB",
+            "Location de matériel",
+            "Parking",
+            "Station de lavage",
+            "Station ou dépôt de vélo",
+            "Ecluse"
+        ]
+    },
+    "Transports": {
+        "unknown": [
+            "Aire, station de taxis",
+            "Arrêt, station de transport en commun",
+            "Aérodrôme",
+            "Aéroport",
+            "Compagnie de taxis",
+            "Gare ferroviaire",
+            "Gare routière",
+            "Halte et port fluvial",
+            "Port maritime",
+            "Transporteur",
+            "Téléphérique"
+        ]
+    }
+}
