@@ -5,7 +5,27 @@ import json
 
 ROOT = Path(__file__).parent # parent directory of the script
 INPUT_DIR = ROOT / "config"
-input_path = INPUT_DIR / "categories.json"
+input_categories_path = INPUT_DIR / "categories.json"
+input_uri_mapping_path = INPUT_DIR / "classes_fr.csv"
+TYPES_A_IGNORER = [
+    "PlaceOfInterest",
+    "PointOfInterest",
+    "LocalBusiness",
+    "Organization",
+    "Agent",
+    "Product",
+    "Thing",
+    "Place",
+    "OrderedList",
+    "CyclingTour",
+    "CycleRouteTheme",
+    "FluvialTour",
+    "HorseTour",
+    "RoadTour",
+    "UnderwaterRoute",
+    "WalkingTour"
+]
+
 
 # ---------------------------------------------------------
 # 1) Normalisation des noms de colonnes
@@ -76,95 +96,139 @@ def split_code_postal_commune(df: pl.LazyFrame) -> pl.LazyFrame:
 
 # ---------------------------------------------------------
 # 5) Extraction / nettoyage de "categories_poi"
-# (placeholder : tu fourniras les règles)
 # ---------------------------------------------------------
-def clean_categories_poi(df: pl.LazyFrame) -> pl.LazyFrame:
-    """
-    Opérations en plusieurs étapes pour nettoyer la colonne catégories 
-    """
-    generic_types = [
-        "PlaceOfInterest",
-        "PointOfInterest",
-        "LocalBusiness",
-        "Organization",
-        "Agent",
-        "Product",
-        "Thing",
-        "Place",
-        "OrderedList",
-    ]
+# charger le mapping csv (uri -> label)
+def load_uri_mapping(path: str = input_uri_mapping_path) -> pl.DataFrame:
+    rows = []
 
-    df = (
-        df
-        # Split sur "|"
-        .with_columns(
-            pl.col("categories_de_poi").str.split("|").alias("types_raw")
-        )
-        # Extraire la partie après "#"
-        .with_columns(
-            pl.col("types_raw")
-            .list.eval(
-                pl.element()
-                .str.replace("http://schema.org/", "")   # supprime le prefix schema.org
-                .str.split("#").list.last()              # extrait la partie après #
+    with open(path, "r", encoding="utf-8") as f:
+        next(f)  # skip header
+
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+
+            # Split uniquement sur la première virgule
+            uri, label = line.split(",", 1)
+
+            # Nettoyage de l’URI
+            uri_clean = uri.replace("<", "").replace(">", "")
+            type_clean = uri_clean.split("#")[-1]
+
+            # Nettoyage du label
+            label_clean = (
+                label
+                .strip()
+                .strip('"')
+                .replace("<", "")
+                .replace(">", "")
             )
-            .alias("types_clean")
-        )
-        # Filtrer les types génériques
-        .with_columns(
-            pl.col("types_clean")
-            .list.eval(pl.element().filter(~pl.element().is_in(generic_types)))
-            .alias("types_filtered")
-        )
-        # Sélectionner le type le plus spécifique
-        .with_columns(
-            pl.col("types_filtered").list.last().alias("type_principal")
-        )
-    )
-    
-    return df
 
-# ============================================================
-# 6) Chargement du mapping inverse
-# ============================================================
-def load_mapping(path: str = input_path) -> pl.LazyFrame:
+            # Supprimer tout ce qui ressemble à un URI dans le label
+            if "http" in label_clean:
+                label_clean = label_clean.split("http")[0].rstrip(", ")
+
+            rows.append({
+                "type_clean": type_clean,
+                "Label": label_clean
+            })
+
+    return pl.DataFrame(rows)
+
+
+# charger categories.json (label -> main/sub/type)
+def load_category_hierarchy(path: str = input_categories_path) -> pl.DataFrame:
     """
-    mapping.json doit contenir une liste d'objets du type :
-    [
-        {"type": "restaurant", "categorie": "food"},
-        {"type": "hotel", "categorie": "lodging"}
-    ]
+    Transforme le JSON hiérarchique en DataFrame plat :
+    type_principal → main_category, sub_category
     """
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
-    
+
     rows = []
     for main_cat, subcats in data.items():
-        for sub_cat, types in subcats.items():
-            for t in types:
-                rows.append((t, main_cat, sub_cat))
+        for sub_cat, labels in subcats.items():
+            for label in labels:
+                rows.append({
+                    "type_principal": label,
+                    "main_category": main_cat,
+                    "sub_category": sub_cat
+                })
 
-    return pl.DataFrame(rows, schema=["type", "main_category", "sub_category"])
+    return pl.DataFrame(rows)
 
 
-# ============================================================
-# 7) Application du mapping inverse (JOIN LAZY)
-# ============================================================
-def apply_mapping(df: pl.LazyFrame, mapping_df: pl.DataFrame) -> pl.LazyFrame:
-    return df.join(
+#  Extraction des types depuis categories_de_poi
+def extract_types(df: pl.LazyFrame) -> pl.LazyFrame:
+    return df.with_columns([
+        pl.col("categories_de_poi")
+        .str.extract_all(r"#([A-Za-z0-9]+)")   # extrait après #
+        .list.eval(
+            pl.element()
+            .str.replace_all(r"[^A-Za-z0-9]", "")  # supprime #, <, >, ', ", espaces
+        )
+        .list.eval(
+            pl.element().filter(~pl.element().is_in(TYPES_A_IGNORER))
+        )
+        .alias("types_list")
+    ])
+
+
+# extraction du type principal
+def extract_type_principal(df: pl.LazyFrame, mapping_df: pl.DataFrame) -> pl.LazyFrame:
+    exploded = df.explode("types_list")
+
+    joined = exploded.join(
         mapping_df,
-        left_on="type_principal",
-        right_on="type",
+        left_on="types_list",
+        right_on="type_clean",
         how="left"
     )
+
+    aggregated = joined.group_by(df.columns).agg([
+        pl.col("Label").drop_nulls().first().alias("type_principal")
+    ])
+
+    return aggregated
+
+# enrichissement avec main_category / sub_category
+def enrich_with_categories(df: pl.LazyFrame, cat_df: pl.DataFrame) -> pl.LazyFrame:
+    return df.join(
+        cat_df,
+        on="type_principal",
+        how="left"
+    )
+
+
+# pipeline complet pour le mapping
+def apply_full_mapping(df: pl.LazyFrame) -> pl.LazyFrame:
+    mapping_df = load_uri_mapping()
+    cat_df = load_category_hierarchy()
+
+    df = extract_types(df)
+    df = extract_type_principal(df, mapping_df)
+    df = enrich_with_categories(df, cat_df)
+    
+    # Rajout colonne itinéraire Tue /False
+    df = df.with_columns([
+        (pl.col("sub_category") != "unknown").alias("itineraire")
+    ])
+
+    return df
+
+
 
 # ============================================================
 # 8) Nettoyage final
 # ============================================================
+def drop_null_categories(df: pl.LazyFrame) -> pl.LazyFrame:
+    return df.filter(
+        ~(pl.col("main_category").is_null() & pl.col("sub_category").is_null())
+    )
+
 def final_cleanup(df: pl.LazyFrame) -> pl.LazyFrame:
-    cols_to_drop = [
-        "types_raw", "types_clean", "types_filtered", "type",
-        "categories_de_poi", "code_postal_et_commune",
+    cols_to_drop = ["types_list","categories_de_poi", "code_postal_et_commune",
         "covid19_mesures_specifiques", "createur_de_la_donnee", "sit_diffuseur"
     ]
 
@@ -177,6 +241,14 @@ def final_cleanup(df: pl.LazyFrame) -> pl.LazyFrame:
         df = df.drop(cols_existing)
 
     return df
+
+def safe_rename(df: pl.DataFrame) -> pl.DataFrame:
+    rename_map = {
+        "adresse_postale": "adresse",
+    }
+
+    existing = {old: new for old, new in rename_map.items() if old in df.columns}
+    return df.rename(existing)
 
 
 # ---------------------------------------------------------
@@ -194,15 +266,12 @@ def transform(df: pl.LazyFrame) -> pl.LazyFrame:
     if "code_postal_et_commune" in df.columns:
         df = split_code_postal_commune(df)
 
-    # Nettoyage categories_poi (placeholder)
-    if "categories_de_poi" in df.columns:
-        df = clean_categories_poi(df)
-
     # MAPPING
-    mapping_df = load_mapping()
-    df = apply_mapping(df, mapping_df)
+    df = apply_full_mapping(df)
 
     # NETTOYAGE FINAL
-    #df = final_cleanup(df)
+    df = drop_null_categories(df)
+    df = final_cleanup(df)
+    df = safe_rename(df)
 
     return df

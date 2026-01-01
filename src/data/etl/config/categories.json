@@ -33,7 +33,8 @@
             "Ruines et vestiges",
             "Arène",
             "Aqueduc",
-            "Arc de triomphe"
+            "Arc de triomphe",
+            "Site archéologique"
         ],
         "Patrimoine civil": [
             "Bastide",
@@ -58,7 +59,8 @@
             "Ferme",
             "Verger conservatoire",
             "Lavoir",
-            "Site industriel"
+            "Site industriel",
+            "Lieu de mémoire"
         ],
         "Cimetières & mémoriaux": [
             "Cimetière militaire et mémorial",
@@ -224,7 +226,9 @@
             "Restaurant gastronomique",
             "Restaurant d'altitude / Restaurant d'alpage",
             "Cafétéria - Self",
-            "Bateau-restaurant"
+            "Bateau-restaurant",
+            "Restauration",
+            "Restaurant"
         ],
         "Bars & cafés": [
             "Bar, bar à thème",
@@ -234,7 +238,8 @@
         "Restauration rapide": [
             "Restauration Rapide",
             "Restauration ambulante, Food truck",
-            "Glacier"
+            "Glacier",
+            "Boulangerie"
         ],
         "Produits locaux": [
             "Ferme et auberge de campagne",
@@ -265,7 +270,8 @@
         ],
         "Commerces": [
             "Boutique, commerce de proximité",
-            "Centre et galerie commerciale"
+            "Centre et galerie commerciale",
+            "Commerce de détail"
         ],
         "Marchés": [
             "Marché",
@@ -331,7 +337,8 @@
         ],
         "Religieux": [
             "Évènement religieux",
-            "Pèlerinage et procession"
+            "Pèlerinage et procession",
+            "Site religieux"
         ],
         "Défilés & parades": [
             "Défilé Cortège Parade"
@@ -398,7 +405,9 @@
             "Lit",
             "Maison",
             "Refuge et gîte d'étape",
-            "Suite"
+            "Suite",
+            "Hôtellerie",
+            "Table d'hôtes"
         ]
     },
     "Information Touristique": {

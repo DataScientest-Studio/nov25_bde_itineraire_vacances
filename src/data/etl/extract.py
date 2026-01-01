@@ -1,9 +1,11 @@
 
+from pathlib import Path
 import json
 import polars as pl
-from pathlib import Path
-from .utils import download_with_retry
 import requests
+
+from etl.utils.utils import download_with_retry
+
 
 ROOT = Path(__file__).parent # parent directory of the script
 INPUT_DIR = ROOT / "config"
