@@ -14,6 +14,11 @@ Ce dossier contient les notebooks utilisés pour l'extraction et le calcul des m
    - Calcule les métriques (pourcentage de données manquantes, histogrammes, etc.).  
    - Produit des visualisations interactives avec Plotly.
 
+`3.0-gep-data-exploration_datatourisme.ipynb`  
+   - Lit le fichier parquet généré par `src\data\main.py`.
+   - Calcule les métriques (pourcentage de données manquantes, histogrammes, etc.).  
+   - Produit des visualisations interactives avec Plotly.   
+
 ### Données
 - Les fichiers volumineux sont stockés dans `data/raw/` (non versionnés, voir `.gitignore`).  
 ```json
