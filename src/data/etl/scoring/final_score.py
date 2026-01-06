@@ -1,24 +1,25 @@
 import polars as pl
 
-
-# Poids configurables (tu peux les modifier à volonté)
+# Poids configurables (normalisés)
 WEIGHTS = {
-    "density_h3_r8": 0.30,        # densité locale (commune)
-    "diversity_h3_r8": 0.20,      # diversité locale
-    "popularity_score": 0.25,     # avis / reviews
-    "proximity_commune": -0.10,   # plus proche = meilleur
-    "category_weight": 0.15,      # importance de la catégorie
+    "density_commune_norm": 0.20,
+    "diversity_commune_norm": 0.25,
+    "popularity_norm": 0.30,
+    "proximity_commune_norm": 0.10,
+    "category_weight_norm": 0.15,
+    # Optionnel :
+    # "opening_score_norm": 0.10,
 }
 
 def add_final_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     """
-    Combine toutes les métriques disponibles dans le LazyFrame
-    en un score final pondéré.
+    Combine toutes les métriques normalisées en un score final pondéré.
     Seules les colonnes présentes sont utilisées.
     """
 
     score_expr = None
 
+    # Construction du score brut
     for col, weight in WEIGHTS.items():
         if col in lf.columns:
             expr = weight * pl.col(col)
@@ -31,11 +32,11 @@ def add_final_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     # Ajout du score brut
     lf = lf.with_columns(score_expr.alias("final_score_raw"))
 
-    # Normalisation simple (min-max) pour avoir un score lisible
+    # Normalisation min-max
     lf = lf.with_columns(
         (
-            (pl.col("final_score_raw") - pl.col("final_score_raw").min())
-            / (pl.col("final_score_raw").max() - pl.col("final_score_raw").min() + 1e-9)
+            (pl.col("final_score_raw") - pl.col("final_score_raw").min()) /
+            (pl.col("final_score_raw").max() - pl.col("final_score_raw").min() + 1e-9)
         ).alias("final_score")
     )
 

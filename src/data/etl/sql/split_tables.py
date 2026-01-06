@@ -68,17 +68,22 @@ def build_poi_table(df: pl.DataFrame):
         "nom_du_poi",
         "latitude",
         "longitude",
+        "description",
         "main_category_id",
         "sub_category_id",
         "adresse_id",        # <-- la clé étrangère vers adresses
-        "final_score",
-        "density_commune",
-        "diversity_commune",
-        "proximity_commune",
-        "proximity_region",
-        "category_weight",
+        'contacts_du_poi',
+        'itineraire', 
+        'h3_r6', 'h3_r7',
+        'h3_r8', 'h3_r9', 
+        'density_commune_norm',
+        'diversity_commune_norm',
+        'popularity_norm', 
+        'proximity_commune_norm',
+        'category_weight_norm',
+        'opening_score_norm',
         # "embedding",
-    ]
+        'final_score']
 
     existing_cols = [c for c in desired_cols if c in df.columns]
 
@@ -91,7 +96,6 @@ def split_into_tables(df: pl.DataFrame):
     """
     Orchestration complète.
     """
-
     # 1) Catégories
     df_main_category, df_sub_category, df = build_category_tables(df)
 

@@ -37,7 +37,7 @@ def main():
         .pipe(add_density, level="commune")
         .pipe(add_diversity, level="commune")
         .pipe(add_popularity)
-        .pipe(add_proximity, resolver=resolver, level="commune")
+        .pipe(add_proximity, resolver, level="commune")
         .pipe(add_category_weight)
         .pipe(add_opening_hours_score)
         .pipe(add_final_score)

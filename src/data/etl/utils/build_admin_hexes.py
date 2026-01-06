@@ -2,7 +2,6 @@
 import json
 from pathlib import Path
 
-import geopandas as gpd
 from bounding_box import BoundingBoxResolver
 from h3_utils import polygon_to_cells
 
