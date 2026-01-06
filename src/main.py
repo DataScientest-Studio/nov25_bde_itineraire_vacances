@@ -13,7 +13,7 @@ import pydeck as pdk
 
 DATA_DIR = Path("../data")
 print(DATA_DIR)
-POIS_PATH = DATA_DIR / "processed" / "merged_20260101_234939.parquet"
+POIS_PATH = DATA_DIR / "processed" / "merged_20260106_135958.parquet"
 
 def main():
     start_total = time.perf_counter()
@@ -32,7 +32,7 @@ def main():
         .set_categories(
             main_categories=["Culture & Musées", "Patrimoine & Monuments", "Gastronomie & Restauration", "Bien-être & Santé"]
         )
-        .set_min_score(0.9)
+        .set_min_score(0.4)
         .apply()
     )
     print(len(filtered_pois.collect()))
@@ -78,7 +78,6 @@ def main():
     )
 
     deck = pdk.Deck(layers=[layer], initial_view_state=view)
-    deck.to_html("map.html", open_browser=True)
 
     # print(clustered.filter(pl.col("day") == 0).collect())  # jour 1
     # print(clustered.filter(pl.col("day") == 1).collect())  # jour 2

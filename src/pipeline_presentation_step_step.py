@@ -4,6 +4,7 @@ import pydeck as pdk
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
 from pathlib import Path
 import altair as alt
 
@@ -105,7 +106,7 @@ st.sidebar.header("Paramètres de la démo")
 
 commune = st.sidebar.text_input("Commune", "Paris")
 nb_days = st.sidebar.slider("Nombre de jours", 1, 7, 3)
-min_score = st.sidebar.slider("Score minimum", 0.9, 0.92, 0.9995)
+min_score = st.sidebar.slider("Score minimum", 0.3, 1.0, 0.5)
 mode = st.sidebar.selectbox("Mode", ["walk", "drive"])
 anchor_lat = st.sidebar.number_input("Latitude ancrage", value=48.8566)
 anchor_lon = st.sidebar.number_input("Longitude ancrage", value=2.3522)
@@ -419,10 +420,10 @@ Ne garder que les POIs pertinents pour la commune et le score demandés.
         "final_score"
     ]
 
-    available_scores = [c for c in score_cols if c in df.columns]
+    available_scores = [c for c in score_cols if c in filtered.columns]
 
     for col in available_scores:
-        fig = px.histogram(df.to_pandas(), x=col, nbins=30, title=f"Distribution de {col}")
+        fig = px.histogram(filtered.to_pandas(), x=col, nbins=30, title=f"Distribution de {col}")
         st.plotly_chart(fig, use_container_width=True)
 
 

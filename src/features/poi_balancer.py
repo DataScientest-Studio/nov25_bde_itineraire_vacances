@@ -109,9 +109,14 @@ class POIBalancer:
         typed_dfs = []
         for df in dfs:
             if df.height == 0:
-                typed_dfs.append(pl.DataFrame(schema=schema))
+                empty_df = pl.DataFrame({
+                    col: pl.Series([], dtype=tp)
+                    for col, tp in schema.items()
+                })
+                typed_dfs.append(empty_df)
             else:
                 typed_dfs.append(df)
+
 
         # 4. Concat propre et garanti sans erreur
         return pl.concat(typed_dfs).lazy()
