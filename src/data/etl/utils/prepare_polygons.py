@@ -30,7 +30,6 @@ def process_layer(name, filename):
     print(f"✔️ Sauvegardé : {out_path}")
 
 def main():
-    raw_dir = Path("input/ign_polygons")
 
     layers = {
         "regions": RAW_DIR / "regions-100m.geojson",

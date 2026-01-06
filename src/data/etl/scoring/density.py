@@ -21,13 +21,23 @@ def add_density(lf: pl.LazyFrame, level: str = "commune") -> pl.LazyFrame:
 
     h3_col = RESOLUTION_MAP[level]
     density_col = f"density_{level}"
+    density_norm_col = f"{density_col}_norm"
 
-    # Calcul densité par hexagone
+    # 1) Densité brute par hexagone
     density = (
         lf.group_by(h3_col)
-          .len()
-          .rename({"len": density_col})
+        .agg(pl.col("main_category").count().alias(density_col))
     )
 
-    # Join sur le LazyFrame original
+    # 2) Normalisation Log
+    density = density.with_columns([
+        (pl.col(density_col).log1p()).alias("density_log")
+    ]).with_columns([
+        (
+            (pl.col("density_log") - pl.col("density_log").min()) /
+            (pl.col("density_log").max() - pl.col("density_log").min())
+        ).alias(f"{density_col}_norm")
+    ]).drop("density_log")
+
+    # 3) Join sur le LazyFrame original
     return lf.join(density, on=h3_col)

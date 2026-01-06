@@ -7,6 +7,7 @@ ROOT = Path(__file__).parent # parent directory of the script
 INPUT_DIR = ROOT / "config"
 input_categories_path = INPUT_DIR / "categories.json"
 input_uri_mapping_path = INPUT_DIR / "classes_fr.csv"
+
 TYPES_A_IGNORER = [
     "PlaceOfInterest",
     "PointOfInterest",
@@ -61,7 +62,6 @@ def strip_all_string_columns(df: pl.LazyFrame) -> pl.LazyFrame:
         pl.col(pl.Utf8).str.strip_chars()
 
     ])
-
 
 # ---------------------------------------------------------
 # 3) Suppression des doublons
@@ -228,17 +228,8 @@ def drop_null_categories(df: pl.LazyFrame) -> pl.LazyFrame:
     )
 
 def final_cleanup(df: pl.LazyFrame) -> pl.LazyFrame:
-    cols_to_drop = ["types_list","categories_de_poi", "code_postal_et_commune",
-        "covid19_mesures_specifiques", "createur_de_la_donnee", "sit_diffuseur"
-    ]
-
     # Supprimer les lignes où main_category est NULL
     df = df.filter(pl.col("main_category").is_not_null())
-
-    # Supprimer uniquement les colonnes existantes
-    cols_existing = [c for c in cols_to_drop if c in df.columns]
-    if cols_existing:
-        df = df.drop(cols_existing)
 
     return df
 
@@ -270,8 +261,11 @@ def transform(df: pl.LazyFrame) -> pl.LazyFrame:
     df = apply_full_mapping(df)
 
     # NETTOYAGE FINAL
+    print('avant drop main et sub', len(df))
     df = drop_null_categories(df)
+    print('apres drop main et sub', len(df))
     df = final_cleanup(df)
+    print('apres final cleanup', len(df))
     df = safe_rename(df)
 
     return df
