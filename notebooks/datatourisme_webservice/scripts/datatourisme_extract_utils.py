@@ -116,11 +116,7 @@ def poi_structure_extract(poi_df, data_struct):
 
     if len(simple_list_df) > 0 :
 
-<<<<<<< HEAD
         # répartition du dictionnaire 'hasTheme' sur plusieurs colonnes, une Colonne par clé :
-=======
-        # répartition du dictionnaire 'hasTheme' sur plusieurs colonnes, une colonne par clé :
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
         columns_df = pd.json_normalize(data = simple_list_df[data_struct])
 
         # ajout des identifiants des POI
