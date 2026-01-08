@@ -65,7 +65,7 @@ def get_day_color(day: int) -> list:
 # -------------------------------------------------------------------
 # CONSTANTES / CHEMINS
 # -------------------------------------------------------------------
-POIS_PATH = Path("data/processed/merged_20260106_135958.parquet")
+POIS_PATH = Path("data/processed/merged_20260108_174125.parquet")
 CACHE_DIR = Path("cache_osrm")
 CACHE_DIR.mkdir(exist_ok=True)
 
