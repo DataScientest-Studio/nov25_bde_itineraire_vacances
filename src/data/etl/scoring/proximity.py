@@ -23,11 +23,11 @@ def haversine(latitude1, longitude1, latitude2, longitude2):
         return None
 
     R = 6371
-    dlatitude = math.radians(latitude2 - latitude1)
+    dlat = math.radians(latitude2 - latitude1)
     dlongitude = math.radians(longitude2 - longitude1)
 
     a = (
-        math.sin(dlatitude / 2) ** 2
+        math.sin(dlat / 2) ** 2
         + math.cos(math.radians(latitude1))
         * math.cos(math.radians(latitude2))
         * math.sin(dlongitude / 2) ** 2
@@ -73,7 +73,7 @@ def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float
         if c is not None:
             centroids[v] = c
 
-    # 3) Aucun centroid → colongitudenes vides
+    # 3) Aucun centroid → colonnes vides
     if len(centroids) == 0:
         return lf.with_columns([
             pl.lit(None).alias(f"proximity_{level}"),
@@ -84,8 +84,8 @@ def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float
     df_centroids = (
         pl.DataFrame({
             key: list(centroids.keys()),
-            "centroid_latitude": [c[0] for c in centroids.values()],
-            "centroid_longitude": [c[1] for c in centroids.values()],
+            "centroid_lat": [c[0] for c in centroids.values()],
+            "centroid_lon": [c[1] for c in centroids.values()],
         })
         .with_columns(pl.col(key).cast(pl.Utf8))
     )
@@ -99,16 +99,16 @@ def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float
         pl.when(
             pl.col("latitude").is_not_null()
             & pl.col("longitude").is_not_null()
-            & pl.col("centroid_latitude").is_not_null()
-            & pl.col("centroid_longitude").is_not_null()
+            & pl.col("centroid_lat").is_not_null()
+            & pl.col("centroid_lon").is_not_null()
         )
         .then(
-            pl.struct(["latitude", "longitude", "centroid_latitude", "centroid_longitude"])
+            pl.struct(["latitude", "longitude", "centroid_lat", "centroid_lon"])
             .map_elements(lambda r: haversine(
                 r["latitude"],
                 r["longitude"],
-                r["centroid_latitude"],
-                r["centroid_longitude"]
+                r["centroid_lat"],
+                r["centroid_lon"]
             ))
         )
         .otherwise(None)

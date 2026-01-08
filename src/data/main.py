@@ -43,7 +43,7 @@ def main():
         .pipe(add_final_score)
     )
 
-    # Construire la colongitudene texte riche
+    # Construire la Colonne texte riche
     #df = build_text_embedding_column(df)
 
     # Ajouter les embeddings

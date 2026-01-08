@@ -12,7 +12,7 @@ class ItineraryOptimizer:
     """
     Optimise les itinéraires par jour à partir d'une matrice OSRM.
     - travaille par 'day'
-    - utilise osrm_index pour mapper les lignes/colongitudenes de la matrice aux POIs
+    - utilise osrm_index pour mapper les lignes/colonnes de la matrice aux POIs
     - heuristique : nearest neighbor + 2-opt
     """
     df_pois: pl.DataFrame                     # df_clustered

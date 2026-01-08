@@ -76,7 +76,7 @@ def simple_list_extract(x) :
     else :
         return x
 
-# definition fct pour plotter le % de valeurs manquantes par colongitudene pour df de  :
+# definition fct pour plotter le % de valeurs manquantes par Colonne pour df de  :
 def poi_na_plot(df) :
     data = df.isna().sum().map(lambda x : round(x/df.shape[0]*100)).sort_values()
     ax = sns.barplot(x = data.values, y = data.index)
@@ -116,7 +116,7 @@ def poi_structure_extract(poi_df, data_struct):
 
     if len(simple_list_df) > 0 :
 
-        # répartition du dictionnaire 'hasTheme' sur plusieurs colongitudenes, une colongitudene par clé :
+        # répartition du dictionnaire 'hasTheme' sur plusieurs colonnes, une Colonne par clé :
         columns_df = pd.json_normalize(data = simple_list_df[data_struct])
 
         # ajout des identifiants des POI
@@ -161,8 +161,8 @@ def poi_types_extract(poi_df) :
 def poi_themes_extract(poi_df):
     themes_df = poi_structure_extract(poi_df, 'hasTheme')
 
-    themes_df = themes_df[['dc:identifier', '@type', 'rdfs:label.fr']] # récupération de certaines colongitudenes
-    themes_df = themes_df.rename(columns = {'@type' : 'theme', 'rdfs:label.fr' : 'sub_theme'}) # renomage des colongitudenes
+    themes_df = themes_df[['dc:identifier', '@type', 'rdfs:label.fr']] # récupération de certaines colonnes
+    themes_df = themes_df.rename(columns = {'@type' : 'theme', 'rdfs:label.fr' : 'sub_theme'}) # renomage des colonnes
  
     return themes_df
 
@@ -212,13 +212,13 @@ def poi_opening_hours_extract(poi_df) :
     # application de la fonction explode() pour avoir un dictionnaire 'schema: openingHoursSpecification' par ligne.
     opening_hours_df = is_located_at_df[['dc:identifier','schema:openingHoursSpecification']].explode('schema:openingHoursSpecification')
 
-    # répartition des données du dictionnaire 'schema: openingHoursSpecification' sur plusieurs colongitudenes 
+    # répartition des données du dictionnaire 'schema: openingHoursSpecification' sur plusieurs colonnes 
     schema_opening_hours_df= pd.json_normalize(data = opening_hours_df['schema:openingHoursSpecification'])
 
-    # suppression des colongitudenes de traduction des infos supplémentaires :
-    schema_opening_hours_df = schema_opening_hours_df.drop(columns = ['@type', 'hasTranslatitudeedProperty', 'additionalInformation.de', 'additionalInformation.en',
+    # suppression des colonnes de traduction des infos supplémentaires :
+    schema_opening_hours_df = schema_opening_hours_df.drop(columns = ['@type', 'hasTranslatedProperty', 'additionalInformation.de', 'additionalInformation.en',
                                                     'additionalInformation.it', 'additionalInformation.nl',	'additionalInformation.es'])
-    # application de la fonction simple_list_extract pour transformer le contenu de la colongitudene additionalInformation.fr de list à string
+    # application de la fonction simple_list_extract pour transformer le contenu de la Colonne additionalInformation.fr de list à string
     schema_opening_hours_df = schema_opening_hours_df.map(simple_list_extract)
 
     # concaténation des deux df en s'assurant qu'elles sont le même POI :
@@ -235,7 +235,7 @@ def poi_review_extract(poi_df) :
     # sélection d'un partie des données :
     reviews_df = reviews_df[['dc:identifier', 'hasReviewValue.@type', 'hasReviewValue.rdfs:label.fr', 
                          'hasReviewValue.isCompliantWith', 'hasReviewValue.schema:ratingValue' ]]
-    # renommer les colongitudenes :
+    # renommer les colonnes :
     rename_col_dict = {'dc:identifier' : 'poi_id',  
                    'hasReviewValue.@type' : 'review_category', 
                    'hasReviewValue.rdfs:label.fr' : 'review_value', 
@@ -253,7 +253,7 @@ def poi_offers_extract(poi_df):
     offers_df_raw = pd.concat([poi_df[['dc:identifier']], offers], axis = 1)
     offers_df_raw = offers_df_raw[['dc:identifier', 'schema:priceSpecification']]
 
-    # extraction des données de la structure 'shema:priceSpecification' sur plusieurs colongitudenes :
+    # extraction des données de la structure 'shema:priceSpecification' sur plusieurs colonnes :
     df = poi_structure_extract(offers_df_raw, 'schema:priceSpecification')
 
     # séparation des données de la structure 'hasPricingOffer'
@@ -278,7 +278,7 @@ def poi_offers_extract(poi_df):
     modes = modes[['@id', 'rdfs:label.fr']].rename(columns = {'@id' : 'pricing_mode_id', 'rdfs:label.fr' : 'pricing_mode_label'})
     modes.index = df.index
 
-    # sélection des colongitudenes à garder  :
+    # sélection des colonnes à garder  :
     columns_to_keep = ['dc:identifier', 'schema:minPrice', 'schema:maxPrice', 'schema:priceCurrency', 'name.fr']
     columns_new_names = {'schema:minPrice': 'min_price', 
                         'schema:maxPrice' : 'max_price', 

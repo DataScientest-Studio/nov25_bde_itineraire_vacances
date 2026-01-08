@@ -12,15 +12,15 @@ def process_layer(name, filename):
     gdf = gpd.read_file(filename)
 
     # Calcul bounding box
-    gdf["longitude_min"] = gdf.geometry.bounds["minx"]
-    gdf["latitude_min"] = gdf.geometry.bounds["miny"]
-    gdf["longitude_max"] = gdf.geometry.bounds["maxx"]
-    gdf["latitude_max"] = gdf.geometry.bounds["maxy"]
+    gdf["lon_min"] = gdf.geometry.bounds["minx"]
+    gdf["lat_min"] = gdf.geometry.bounds["miny"]
+    gdf["lon_max"] = gdf.geometry.bounds["maxx"]
+    gdf["lat_max"] = gdf.geometry.bounds["maxy"]
 
     # Calcul centroid
     gdf["centroid"] = gdf.geometry.centroid
-    gdf["centroid_latitude"] = gdf["centroid"].y
-    gdf["centroid_longitude"] = gdf["centroid"].x
+    gdf["centroid_lat"] = gdf["centroid"].y
+    gdf["centroid_lon"] = gdf["centroid"].x
 
     # Sauvegarde Parquet
     out_path = OUTPUT_DIR / f"{name}.parquet"

@@ -52,13 +52,13 @@ def main():
     # Clustering des POIs
     ###############################
     user_nb_days = 3
-    anchor_latitude = 48.8566
-    anchor_longitude = 2.3522
+    anchor_lat = 48.8566
+    anchor_lon = 2.3522
 
     clustered = (
         SpatialClusterer(filtered_pois)  # LazyFrame avec score_final
         .set_nb_days(user_nb_days)
-        .set_anchor(anchor_latitude, anchor_longitude)
+        .set_anchor(anchor_lat, anchor_lon)
         .apply()
     )
 
@@ -122,7 +122,7 @@ def main():
     # Post clustering
     ###############################
 
-    # 2. Harmonisation des colongitudenes
+    # 2. Harmonisation des colonnes
     df_prepared = (
         df_clustered
         .rename({

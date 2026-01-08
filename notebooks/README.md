@@ -62,7 +62,7 @@ Ils se trouvent dans le sous dossier notebooks/api_test:
 
 
 ## Environnement
-### Installatitudeion avec pip
+### Installation avec pip
 
 1. Créez un environnement virtuel :
    ```bash

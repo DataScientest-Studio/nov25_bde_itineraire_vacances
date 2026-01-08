@@ -322,8 +322,8 @@ min_score = st.sidebar.slider("Score minimum", 0.0, 1.0, 0.3, 0.05)
 
 st.sidebar.markdown("### Journées & Ancre")
 nb_days = st.sidebar.slider("Nombre de jours", 1, 7, 3)
-anchor_latitude = st.sidebar.number_input("latitude ancre", value=48.8566, format="%.6f")
-anchor_longitude = st.sidebar.number_input("longitude ancre", value=2.3522, format="%.6f")
+anchor_lat = st.sidebar.number_input("latitude ancre", value=48.8566, format="%.6f")
+anchor_lon = st.sidebar.number_input("longitude ancre", value=2.3522, format="%.6f")
 
 st.sidebar.markdown("### OSRM / Debug / Profiling")
 osrm_mode = st.sidebar.selectbox("Mode de déplacement", ["walk", "car"], index=0)
@@ -388,8 +388,8 @@ def get_clustered(force_recompute=False):
     df = pipeline._cluster_pois(
         filtered_lf=filtered.lazy(),
         nb_days=nb_days,
-        anchor_latitude=anchor_latitude,
-        anchor_longitude=anchor_longitude,
+        anchor_lat=anchor_lat,
+        anchor_lon=anchor_lon,
     )
     df = df.collect()
     cache_set("clustered", df)

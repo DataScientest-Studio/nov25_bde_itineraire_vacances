@@ -9,7 +9,7 @@ def add_h3_columns(
     resolutions = (6, 7, 8, 9)
 ) -> pl.LazyFrame:
     """
-    Ajoute plusieurs colongitudenes H3 (string) à un LazyFrame Polars.
+    Ajoute plusieurs colonnes H3 (string) à un LazyFrame Polars.
     Exemple : h3_r6, h3_r7, h3_r8, h3_r9
 
     Compatible avec H3 v4 (latlng_to_cell).

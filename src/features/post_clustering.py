@@ -25,9 +25,9 @@ TARGET_RESTAURANTS_PER_CLUSTER = 2
 def haversine_single(latitude1: float, longitude1: float, latitude2: float, longitude2: float) -> float:
     R = 6371.0  # km
     latitude1, longitude1, latitude2, longitude2 = map(math.radians, [latitude1, longitude1, latitude2, longitude2])
-    dlatitude = latitude2 - latitude1
+    dlat = latitude2 - latitude1
     dlongitude = longitude2 - longitude1
-    a = math.sin(dlatitude / 2) ** 2 + math.cos(latitude1) * math.cos(latitude2) * math.sin(dlongitude / 2) ** 2
+    a = math.sin(dlat / 2) ** 2 + math.cos(latitude1) * math.cos(latitude2) * math.sin(dlongitude / 2) ** 2
     return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
   
 def haversine_expr(latitude1_col: str, longitude1_col: str, latitude2_col: str, longitude2_col: str) -> pl.Expr:
@@ -98,7 +98,7 @@ def filter_by_final_score(
     # Filtrer sur le rang
     df_filtered = df_ranked.filter(pl.col("rank_in_cluster") < max_pois_per_cluster)
 
-    # On peut drop la colongitudene de ranking si pas utile ensuite
+    # On peut drop la Colonne de ranking si pas utile ensuite
     return df_filtered.drop("rank_in_cluster")
 
 # ------------------------------------------
@@ -176,7 +176,7 @@ def enforce_restaurant_constraint(
         pl.col("rank_resto_candidate") < pl.col("missing_restos")
     )
 
-    # On n'a plus besoin des colongitudenes techniques
+    # On n'a plus besoin des colonnes techniques
     full_restos_candidates = full_restos_candidates.drop(
         ["n_restos_filtered", "missing_restos", "rank_resto_candidate"]
     )
@@ -184,7 +184,7 @@ def enforce_restaurant_constraint(
     # Union des POIs déjà filtrés + restos ajoutés
     df_with_restos = (
         pl.concat([df_filtered, full_restos_candidates])
-        .unique(subset=["poi_id"])  # sécurité contre doublongitudes
+        .unique(subset=["poi_id"])  # sécurité contre doublons
     )
 
     return df_with_restos
@@ -232,7 +232,7 @@ def filter_by_transport_mode(
         pl.col("dist_to_cluster_center_km") <= max_radius_km
     )
 
-    # Optionnel : tu peux drop les colongitudenes de centroid/distance si pas utiles après
+    # Optionnel : tu peux drop les colonnes de centroid/distance si pas utiles après
     return df_filtered.drop(["cluster_latitude", "cluster_longitude"])
 
 # ------------------------------------------
@@ -259,7 +259,7 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
                 "longitude",
                 "main_category",
                 "final_score",
-                # tu peux garder d'autres colongitudenes si utile
+                # tu peux garder d'autres colonnes si utile
             ]
         )
     )

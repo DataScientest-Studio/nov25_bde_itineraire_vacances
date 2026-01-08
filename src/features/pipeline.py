@@ -43,11 +43,11 @@ class ItineraryPipeline:
     # ---------------------------------------------------------
     # CLUSTERING SPATIAL
     # ---------------------------------------------------------
-    def _cluster_pois(self, filtered_lf, nb_days, anchor_latitude, anchor_longitude):
+    def _cluster_pois(self, filtered_lf, nb_days, anchor_lat, anchor_lon):
         return (
             SpatialClusterer(filtered_lf)
             .set_nb_days(nb_days)
-            .set_anchor(anchor_latitude, anchor_longitude)
+            .set_anchor(anchor_lat, anchor_lon)
             .apply()
         )
 
@@ -184,8 +184,8 @@ class ItineraryPipeline:
         main_categories,
         min_score,
         nb_days,
-        anchor_latitude,
-        anchor_longitude,
+        anchor_lat,
+        anchor_lon,
         osrm: OSRMClientAsync,
         osrm_mode: str = "walk",
         max_pois_per_cluster: int = 40,
@@ -206,7 +206,7 @@ class ItineraryPipeline:
         filtered_lf = self._filter_pois(commune, main_categories, min_score)
 
         # 2. Clustering : df_prepared (jour, etc.)
-        df_prepared = self._cluster_pois(filtered_lf, nb_days, anchor_latitude, anchor_longitude)
+        df_prepared = self._cluster_pois(filtered_lf, nb_days, anchor_lat, anchor_lon)
 
         # 3. Préparation OSRM (build_osrm_ready_pois)
         df_clustered = self._build_osrm_ready_pois(

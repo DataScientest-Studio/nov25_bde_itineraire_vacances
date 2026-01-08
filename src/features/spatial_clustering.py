@@ -22,8 +22,8 @@ class SpatialClusterer:
     def __init__(self, pois_lf: pl.LazyFrame):
         self.lf = pois_lf
         self.nb_days: int = 1
-        self.anchor_latitude: Optional[float] = None
-        self.anchor_longitude: Optional[float] = None
+        self.anchor_lat: Optional[float] = None
+        self.anchor_lon: Optional[float] = None
         self.h3_resolution: int = 8
         self.random_state: int = 42
 
@@ -40,8 +40,8 @@ class SpatialClusterer:
         Définit le point d'ancrage (hôtel, gare, etc.).
         Il sera intégré dans le clustering pour "attirer" les clusters.
         """
-        self.anchor_latitude = latitude
-        self.anchor_longitude = longitude
+        self.anchor_lat = latitude
+        self.anchor_lon = longitude
         return self
 
     def set_h3_resolution(self, resolution: int):
@@ -79,10 +79,10 @@ class SpatialClusterer:
         Ajoute le point d'ancrage comme cellule H3 virtuelle
         pour influencer le clustering.
         """
-        if self.anchor_latitude is None or self.anchor_longitude is None:
+        if self.anchor_lat is None or self.anchor_lon is None:
             return cells_df
 
-        anchor_h3 = h3.latlng_to_cell(self.anchor_latitude, self.anchor_longitude, self.h3_resolution)
+        anchor_h3 = h3.latlng_to_cell(self.anchor_lat, self.anchor_lon, self.h3_resolution)
 
         # Si l'ancrage est déjà dans une cellule existante, on ne duplique pas
         if anchor_h3 in cells_df["h3_r8"].to_list():
@@ -91,8 +91,8 @@ class SpatialClusterer:
         anchor_row = pl.DataFrame({
             "h3_r8": [anchor_h3],
             "n_pois": [0],  # pas de POI, juste un point d'attraction
-            "latitude_center": [self.anchor_latitude],
-            "longitude_center": [self.anchor_longitude],
+            "latitude_center": [self.anchor_lat],
+            "longitude_center": [self.anchor_lon],
         })
 
         # harmoniser les types
@@ -121,7 +121,7 @@ class SpatialClusterer:
 
     def apply(self) -> pl.LazyFrame:
         """
-        Retourne un LazyFrame avec une colongitudene supplémentaire 'day'
+        Retourne un LazyFrame avec une Colonne supplémentaire 'day'
         qui indique à quel jour appartient chaque POI (0..nb_days-1).
         """
 
