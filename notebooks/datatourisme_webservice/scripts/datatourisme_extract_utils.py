@@ -218,11 +218,7 @@ def poi_opening_hours_extract(poi_df) :
     # suppression des colonnes de traduction des infos supplémentaires :
     schema_opening_hours_df = schema_opening_hours_df.drop(columns = ['@type', 'hasTranslatedProperty', 'additionalInformation.de', 'additionalInformation.en',
                                                     'additionalInformation.it', 'additionalInformation.nl',	'additionalInformation.es'])
-<<<<<<< HEAD
-    # application de la fonction simple_list_extract pour transformer le contenu de la Colonne additionalInformation.fr de list à string
-=======
     # application de la fonction simple_list_extract pour transformer le contenu de la colonne additionalInformation.fr de list à string
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     schema_opening_hours_df = schema_opening_hours_df.map(simple_list_extract)
 
     # concaténation des deux df en s'assurant qu'elles sont le même POI :
