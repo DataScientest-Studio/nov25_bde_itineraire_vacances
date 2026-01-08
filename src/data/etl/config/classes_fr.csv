@@ -180,7 +180,7 @@
 <https://www.datatourisme.fr/ontology/core#CamperVanArea>,Aire de camping-car,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Hôtellerie de plein air
 <https://www.datatourisme.fr/ontology/core#Camping>,Camping,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Hôtellerie de plein air
 <https://www.datatourisme.fr/ontology/core#BusinessEvent>,Evènement professionnel d'entreprise,<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Fête et manifestation
-<https://www.datatourisme.fr/ontology/core#CafeOrTeahouse>,Café ou salon de thé,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Restauration
+<https://www.datatourisme.fr/ontology/core#CafeOrTeahouse>,Café ou salongitude de thé,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Restauration
 <https://www.datatourisme.fr/ontology/core#BusinessPlace>,Site d'affaires,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Lieu
 <https://www.datatourisme.fr/ontology/core#Cabaret>,Cabaret,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
 <https://www.datatourisme.fr/ontology/core#Bungalow>,"Bungalow, Mobil Home",<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Produit d'hébergement
@@ -241,7 +241,7 @@
 <https://www.datatourisme.fr/ontology/core#ExecutiveBoardMeeting>,Bureau éxécutif,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Evènement professionnel d'entreprise
 <https://www.datatourisme.fr/ontology/core#Exhibition>,Exposition,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Évènement culturel
 <https://www.datatourisme.fr/ontology/core#Festival>,Festival,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Évènement culturel
-<https://www.datatourisme.fr/ontology/core#FairOrShow>,Foire ou salon,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Evènement commercial
+<https://www.datatourisme.fr/ontology/core#FairOrShow>,Foire ou salongitude,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Evènement commercial
 <https://www.datatourisme.fr/ontology/core#EquipmentRentalShop>,Loueur de matériel,<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Prestataire de service
 <https://www.datatourisme.fr/ontology/core#EquipmentRepairShop>,Réparateur de matériel,<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Prestataire de service
 <https://www.datatourisme.fr/ontology/core#Library>,Bibliothèque - Médiathèque,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Site culturel
@@ -275,7 +275,7 @@
 <https://www.datatourisme.fr/ontology/core#Pharmacy>,Pharmacie,<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Lieu de santé
 <https://www.datatourisme.fr/ontology/core#Peak>,Pic,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Site naturel
 <https://www.datatourisme.fr/ontology/core#Plain>,Plaine,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Site naturel
-<https://www.datatourisme.fr/ontology/core#Plateau>,Plateau,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Site naturel
+<https://www.datatourisme.fr/ontology/core#Platitudeeau>,Platitudeeau,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Site naturel
 <https://www.datatourisme.fr/ontology/core#PointOfView>,Point de vue,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Site naturel
 <https://www.datatourisme.fr/ontology/core#Pier>,Jetée,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Patrimoine industriel, artisanal, rural, agricole et technique"
 <https://www.datatourisme.fr/ontology/core#PigeonLoft>,Pigeonnier,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Patrimoine industriel, artisanal, rural, agricole et technique"

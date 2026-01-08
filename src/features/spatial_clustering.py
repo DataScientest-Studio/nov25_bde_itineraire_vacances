@@ -13,7 +13,7 @@ class SpatialClusterer:
 
     Pipeline logique :
         - on travaille au niveau des cellules H3 (h3_8)
-        - on regroupe les POIs par cellule et calcule un centroïde (lat/lon moyen)
+        - on regroupe les POIs par cellule et calcule un centroïde (latitude/longitude moyen)
         - on ajoute le point d'ancrage comme "cellule virtuelle"
         - on applique KMeans pour répartir les cellules entre les jours
         - on propage l'étiquette de jour à tous les POIs
@@ -22,8 +22,8 @@ class SpatialClusterer:
     def __init__(self, pois_lf: pl.LazyFrame):
         self.lf = pois_lf
         self.nb_days: int = 1
-        self.anchor_lat: Optional[float] = None
-        self.anchor_lon: Optional[float] = None
+        self.anchor_latitude: Optional[float] = None
+        self.anchor_longitude: Optional[float] = None
         self.h3_resolution: int = 8
         self.random_state: int = 42
 
@@ -40,8 +40,8 @@ class SpatialClusterer:
         Définit le point d'ancrage (hôtel, gare, etc.).
         Il sera intégré dans le clustering pour "attirer" les clusters.
         """
-        self.anchor_lat = latitude
-        self.anchor_lon = longitude
+        self.anchor_latitude = latitude
+        self.anchor_longitude = longitude
         return self
 
     def set_h3_resolution(self, resolution: int):
@@ -59,7 +59,7 @@ class SpatialClusterer:
     def _build_cells_df(self) -> pl.DataFrame:
         """
         Regroupe les POIs par cellule H3 et calcule un centroïde
-        pour chaque cellule (lat/lon moyens).
+        pour chaque cellule (latitude/longitude moyens).
         On matérialise ici car KMeans travaille sur du numpy en mémoire.
         """
         cells_lf = (
@@ -67,8 +67,8 @@ class SpatialClusterer:
             .group_by("h3_r8")
             .agg([
                 pl.count().alias("n_pois"),
-                pl.mean("latitude").alias("lat_center"),
-                pl.mean("longitude").alias("lon_center"),
+                pl.mean("latitude").alias("latitude_center"),
+                pl.mean("longitude").alias("longitude_center"),
             ])
         )
         cells_df = cells_lf.collect()
@@ -79,10 +79,10 @@ class SpatialClusterer:
         Ajoute le point d'ancrage comme cellule H3 virtuelle
         pour influencer le clustering.
         """
-        if self.anchor_lat is None or self.anchor_lon is None:
+        if self.anchor_latitude is None or self.anchor_longitude is None:
             return cells_df
 
-        anchor_h3 = h3.latlng_to_cell(self.anchor_lat, self.anchor_lon, self.h3_resolution)
+        anchor_h3 = h3.latlng_to_cell(self.anchor_latitude, self.anchor_longitude, self.h3_resolution)
 
         # Si l'ancrage est déjà dans une cellule existante, on ne duplique pas
         if anchor_h3 in cells_df["h3_r8"].to_list():
@@ -91,8 +91,8 @@ class SpatialClusterer:
         anchor_row = pl.DataFrame({
             "h3_r8": [anchor_h3],
             "n_pois": [0],  # pas de POI, juste un point d'attraction
-            "lat_center": [self.anchor_lat],
-            "lon_center": [self.anchor_lon],
+            "latitude_center": [self.anchor_latitude],
+            "longitude_center": [self.anchor_longitude],
         })
 
         # harmoniser les types
@@ -102,7 +102,7 @@ class SpatialClusterer:
 
     def _assign_clusters_to_cells(self, cells_df: pl.DataFrame) -> pl.DataFrame:
         coords = np.vstack(
-            [cells_df["lat_center"].to_numpy(), cells_df["lon_center"].to_numpy()]
+            [cells_df["latitude_center"].to_numpy(), cells_df["longitude_center"].to_numpy()]
         ).T
 
         kmeans = KMeans(
@@ -121,7 +121,7 @@ class SpatialClusterer:
 
     def apply(self) -> pl.LazyFrame:
         """
-        Retourne un LazyFrame avec une colonne supplémentaire 'day'
+        Retourne un LazyFrame avec une colongitudene supplémentaire 'day'
         qui indique à quel jour appartient chaque POI (0..nb_days-1).
         """
 
@@ -149,6 +149,13 @@ class SpatialClusterer:
         )
         lf_with_day = lf_with_day.with_columns(
             pl.col("day").cast(pl.Int64)
+        )
+
+        # Ajout de poi_id (LazyFrame)
+        lf_with_day = (
+            lf_with_day
+            .with_row_index(name="poi_id")              # 0,1,2,3,...
+            .with_columns((pl.col("poi_id") + 1))       # 1,2,3,...
         )
 
         return lf_with_day

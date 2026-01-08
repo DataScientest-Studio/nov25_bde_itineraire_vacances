@@ -14,7 +14,7 @@ WEIGHTS = {
 def add_final_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     """
     Combine toutes les métriques normalisées en un score final pondéré.
-    Seules les colonnes présentes sont utilisées.
+    Seules les colongitudenes présentes sont utilisées.
     """
 
     score_expr = None

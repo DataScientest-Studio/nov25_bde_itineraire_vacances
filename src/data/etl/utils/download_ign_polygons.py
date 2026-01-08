@@ -2,7 +2,7 @@ import requests
 from pathlib import Path
 
 DATA_DIR = Path("data")
-BASE_URL = "https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latest/geojson"
+BASE_URL = "https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latitudeest/geojson"
 
 FILES = {
     "regions": "regions-100m.geojson",

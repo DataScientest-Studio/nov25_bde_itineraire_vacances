@@ -29,10 +29,10 @@ class BoundingBoxResolver:
             return None
         r = row.iloc[0]
         return {
-            "lat_min": r.lat_min,
-            "lat_max": r.lat_max,
-            "lon_min": r.lon_min,
-            "lon_max": r.lon_max
+            "latitude_min": r.latitude_min,
+            "latitude_max": r.latitude_max,
+            "longitude_min": r.longitude_min,
+            "longitude_max": r.longitude_max
         }
 
     def get_region_centroid(self, region_name):
@@ -40,14 +40,14 @@ class BoundingBoxResolver:
         if row.empty:
             return None
         r = row.iloc[0]
-        return (r.centroid_lat, r.centroid_lon)
+        return (r.centroid_latitude, r.centroid_longitude)
 
-    def poi_in_region(self, lat, lon, region_name):
+    def poi_in_region(self, latitude, longitude, region_name):
         row = self.regions[self.regions["nom"] == region_name]
         if row.empty:
             return False
         polygon = row.iloc[0].geometry
-        return polygon.contains(Point(lon, lat))
+        return polygon.contains(Point(longitude, latitude))
 
     # ---------------------------
     # CITY
@@ -59,10 +59,10 @@ class BoundingBoxResolver:
             return None
         r = row.iloc[0]
         return {
-            "lat_min": r.lat_min,
-            "lat_max": r.lat_max,
-            "lon_min": r.lon_min,
-            "lon_max": r.lon_max
+            "latitude_min": r.latitude_min,
+            "latitude_max": r.latitude_max,
+            "longitude_min": r.longitude_min,
+            "longitude_max": r.longitude_max
         }
 
     def get_city_centroid(self, city_name):
@@ -70,14 +70,14 @@ class BoundingBoxResolver:
         if row.empty:
             return None
         r = row.iloc[0]
-        return (r.centroid_lat, r.centroid_lon)
+        return (r.centroid_latitude, r.centroid_longitude)
 
-    def poi_in_city(self, lat, lon, city_name):
+    def poi_in_city(self, latitude, longitude, city_name):
         row = self.communes[self.communes["nom"] == city_name]
         if row.empty:
             return False
         polygon = row.iloc[0].geometry
-        return polygon.contains(Point(lon, lat))
+        return polygon.contains(Point(longitude, latitude))
     
 
 # test

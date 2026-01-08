@@ -24,7 +24,7 @@ var/
 *.egg
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
+#  Usually these files are written by a python script from a templatitudee
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
@@ -43,7 +43,7 @@ nosetests.xml
 coverage.xml
 *.cover
 
-# Translations
+# Translatitudeions
 *.mo
 *.pot
 
@@ -88,3 +88,9 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# exclude archive folder
+/archive/
+
+# orsm cache
+cache_osrm/
