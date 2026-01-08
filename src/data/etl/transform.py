@@ -218,7 +218,6 @@ def apply_full_mapping(df: pl.LazyFrame) -> pl.LazyFrame:
     return df
 
 
-
 # ============================================================
 # 8) Nettoyage final
 # ============================================================
@@ -226,6 +225,19 @@ def drop_null_categories(df: pl.LazyFrame) -> pl.LazyFrame:
     return df.filter(
         ~(pl.col("main_category").is_null() & pl.col("sub_category").is_null())
     )
+
+def clean_duplicated(df: pl.LazyFrame) -> pl.LazyFrame:
+    df_clean = (
+        df
+        .with_columns(
+            pl.col("latitude").round(5).alias("lat_r"),
+            pl.col("longitude").round(5).alias("lon_r"),
+        )
+        .unique(subset=["nom_du_poi", "lat_r", "lon_r"])
+            .drop(["lat_r", "lon_r"])
+    )
+
+    return df_clean
 
 def final_cleanup(df: pl.LazyFrame) -> pl.LazyFrame:
     # Supprimer les lignes où main_category est NULL
@@ -264,6 +276,8 @@ def transform(df: pl.LazyFrame) -> pl.LazyFrame:
     print('avant drop main et sub', len(df))
     df = drop_null_categories(df)
     print('apres drop main et sub', len(df))
+    df = clean_duplicated(df)
+    print('apres clean duplicated', len(df))
     df = final_cleanup(df)
     print('apres final cleanup', len(df))
     df = safe_rename(df)
