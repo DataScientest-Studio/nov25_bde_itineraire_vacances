@@ -27,7 +27,7 @@ def extract_parquet_from_url(url: str, retries: int = 3, timeout: int = 30) -> p
     return pl.read_parquet(raw_bytes)
 
 def extract_all() -> list[pl.DataFrame]:
-    """Extrait tous les Parquet listés dans l'index et ajoute la colongitudene région."""
+    """Extrait tous les Parquet listés dans l'index et ajoute la colonne région."""
     index = load_index()
 
     df_list = []
