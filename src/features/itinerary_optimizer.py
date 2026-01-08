@@ -185,15 +185,25 @@ class ItineraryOptimizer:
         return pl.concat(solved_list).sort(["cluster_id", "visit_order"])
 
     # ---------- - Calcule l’itinéraire optimisé pour ce jour ---
+
+    # def build_geojson_for_day(self, day, osrm: OSRMClientAsync):
+    #     df_day = self.solve_day(day)
+    #     return build_day_route_geojson(df_day, osrm)
     
     async def build_geojson_for_day_async(self, day, osrm: OSRMClientAsync):
         """
         Génère la route OSRM (GeoJSON) pour un jour donné, en mode async.
         """
         df_day = self.solve_day(day)
-        return await build_day_route_geojson_async(df_day, osrm)
+        return await self.build_day_route_geojson_async(df_day, osrm)
 
 
+    # def build_geojson_all_days(self, day,osrm: OSRMClientAsync):
+    #     days = self.df_pois.select(day).unique().to_series().to_list()
+    #     return {
+    #         day: self.build_geojson_for_day(day, osrm)
+    #         for day in days
+    #     }
 
     async def build_geojson_all_days_async(self, df_itinerary: pl.DataFrame, osrm: OSRMClientAsync):
         """

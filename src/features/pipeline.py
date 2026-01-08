@@ -1,12 +1,13 @@
 import time
 from pathlib import Path
 from typing import Dict
+import asyncio
 
 import polars as pl
 
 from src.features.poi_filter import POIFilter
 from src.features.spatial_clustering import SpatialClusterer
-from src.features.post_clustering import build_osrm_ready_pois
+from src.features.post_clustering import build_osrm_ready_pois, build_osrm_matrices_async
 from src.features.itinerary_optimizer import ItineraryOptimizer
 from src.features.osrm import OSRMClientAsync
 
