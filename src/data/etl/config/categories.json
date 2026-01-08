@@ -74,7 +74,7 @@
             "Pic",
             "Col",
             "Crête",
-            "Plateau",
+            "Platitudeeau",
             "Cône"
         ],
         "Eau & Milieux humides": [
@@ -233,7 +233,7 @@
         "Bars & cafés": [
             "Bar, bar à thème",
             "Bistrot - Bar à vin",
-            "Café ou salon de thé"
+            "Café ou salongitude de thé"
         ],
         "Restauration rapide": [
             "Restauration Rapide",
@@ -277,8 +277,8 @@
             "Marché",
             "Halle, marché couvert"
         ],
-        "Foires & salons": [
-            "Foire ou salon",
+        "Foires & salongitudes": [
+            "Foire ou salongitude",
             "Portes ouvertes"
         ]
     },

@@ -24,13 +24,13 @@ def build_communes_hex(resolver, res=8):
         if bbox is None:
             continue
 
-        # Convertir dict bbox → liste de tuples (lat, lon)
+        # Convertir dict bbox → liste de tuples (latitude, longitude)
         polygon = [
-            (bbox["lat_min"], bbox["lon_min"]),
-            (bbox["lat_min"], bbox["lon_max"]),
-            (bbox["lat_max"], bbox["lon_max"]),
-            (bbox["lat_max"], bbox["lon_min"]),
-            (bbox["lat_min"], bbox["lon_min"]),
+            (bbox["latitude_min"], bbox["longitude_min"]),
+            (bbox["latitude_min"], bbox["longitude_max"]),
+            (bbox["latitude_max"], bbox["longitude_max"]),
+            (bbox["latitude_max"], bbox["longitude_min"]),
+            (bbox["latitude_min"], bbox["longitude_min"]),
         ]
 
         # Convertir en H3
@@ -55,11 +55,11 @@ def build_regions_hex(resolver, res=6):
             continue
 
         polygon = [
-            (bbox["lat_min"], bbox["lon_min"]),
-            (bbox["lat_min"], bbox["lon_max"]),
-            (bbox["lat_max"], bbox["lon_max"]),
-            (bbox["lat_max"], bbox["lon_min"]),
-            (bbox["lat_min"], bbox["lon_min"]),
+            (bbox["latitude_min"], bbox["longitude_min"]),
+            (bbox["latitude_min"], bbox["longitude_max"]),
+            (bbox["latitude_max"], bbox["longitude_max"]),
+            (bbox["latitude_max"], bbox["longitude_min"]),
+            (bbox["latitude_min"], bbox["longitude_min"]),
         ]
 
         hexes = polygon_to_cells(polygon, res)

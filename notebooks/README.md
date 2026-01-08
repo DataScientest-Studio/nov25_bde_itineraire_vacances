@@ -27,8 +27,8 @@ Ce dossier contient les notebooks utilisés pour l'extraction et le calcul des m
     "osm_id":"60949374",
     "category":"monuments",
     "name":"Sans nom",
-    "lat":48.6383557,
-    "lon":2.2392297,
+    "latitude":48.6383557,
+    "longitude":2.2392297,
     "address":"",
     "city":"",
     "phone":"",
@@ -41,8 +41,8 @@ Ce dossier contient les notebooks utilisés pour l'extraction et le calcul des m
     "osm_id":"91533012",
     "category":"monuments",
     "name":"Ob\u00e9lisque de la Reine",
-    "lat":48.3613074,
-    "lon":2.8653626,
+    "latitude":48.3613074,
+    "longitude":2.8653626,
     "address":"",
     "city":"",
     "phone":"",
@@ -62,7 +62,7 @@ Ils se trouvent dans le sous dossier notebooks/api_test:
 
 
 ## Environnement
-### Installation avec pip
+### Installatitudeion avec pip
 
 1. Créez un environnement virtuel :
    ```bash

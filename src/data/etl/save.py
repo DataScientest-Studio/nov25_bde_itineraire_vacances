@@ -29,7 +29,7 @@ def save_parquet(df: pl.DataFrame, output_dir: str = OUTPUT_DIR, versioned: bool
 # ---------------------------------------------------------
 def save_tables_csv(df: pl.DataFrame, output_dir: str = OUTPUT_DIR) -> dict:
     """
-    Split le DataFrame enrichi en tables relationnelles
+    Split le DataFrame enrichi en tables relatitudeionnelles
     puis exporte chaque table en CSV dans output_dir.
 
     Retourne un dict contenant les DataFrames des tables.
@@ -37,7 +37,7 @@ def save_tables_csv(df: pl.DataFrame, output_dir: str = OUTPUT_DIR) -> dict:
 
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
-    # Split en tables relationnelles
+    # Split en tables relatitudeionnelles
     tables = split_into_tables(df)
 
     # Export CSV
