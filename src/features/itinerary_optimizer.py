@@ -6,6 +6,8 @@ import math
 import numpy as np
 import asyncio
 
+from src.features.osrm import OSRMClientAsync
+
 
 @dataclass
 class ItineraryOptimizer:
@@ -184,7 +186,7 @@ class ItineraryOptimizer:
 
     # ---------- - Calcule l’itinéraire optimisé pour ce jour ---
 
-    def build_geojson_for_day(self, day, osrm: OSRMClient):
+    def build_geojson_for_day(self, day, osrm: OSRMClientAsync):
         df_day = self.solve_day(day)
         return build_day_route_geojson(df_day, osrm)
     
@@ -196,7 +198,7 @@ class ItineraryOptimizer:
         return await build_day_route_geojson_async(df_day, osrm)
 
 
-    def build_geojson_all_days(self, day,osrm: OSRMClient):
+    def build_geojson_all_days(self, day,osrm: OSRMClientAsync):
         days = self.df_pois.select(day).unique().to_series().to_list()
         return {
             day: self.build_geojson_for_day(day, osrm)

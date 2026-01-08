@@ -76,11 +76,7 @@ def simple_list_extract(x) :
     else :
         return x
 
-<<<<<<< HEAD
 # definition fct pour plotter le % de valeurs manquantes par Colonne pour df de  :
-=======
-# definition fct pour plotter le % de valeurs manquantes par colonne pour df de  :
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
 def poi_na_plot(df) :
     data = df.isna().sum().map(lambda x : round(x/df.shape[0]*100)).sort_values()
     ax = sns.barplot(x = data.values, y = data.index)
