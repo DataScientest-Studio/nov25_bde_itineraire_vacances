@@ -42,12 +42,12 @@ class BoundingBoxResolver:
         r = row.iloc[0]
         return (r.centroid_lat, r.centroid_lon)
 
-    def poi_in_region(self, lat, lon, region_name):
+    def poi_in_region(self, latitude, longitude, region_name):
         row = self.regions[self.regions["nom"] == region_name]
         if row.empty:
             return False
         polygon = row.iloc[0].geometry
-        return polygon.contains(Point(lon, lat))
+        return polygon.contains(Point(longitude, latitude))
 
     # ---------------------------
     # CITY
@@ -72,12 +72,12 @@ class BoundingBoxResolver:
         r = row.iloc[0]
         return (r.centroid_lat, r.centroid_lon)
 
-    def poi_in_city(self, lat, lon, city_name):
+    def poi_in_city(self, latitude, longitude, city_name):
         row = self.communes[self.communes["nom"] == city_name]
         if row.empty:
             return False
         polygon = row.iloc[0].geometry
-        return polygon.contains(Point(lon, lat))
+        return polygon.contains(Point(longitude, latitude))
     
 
 # test

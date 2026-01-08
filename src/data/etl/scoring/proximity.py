@@ -7,30 +7,30 @@ resolver = BoundingBoxResolver()
 # ---------------------------------------------------------
 # Distance Haversine (km)
 # ---------------------------------------------------------
-def haversine(lat1, lon1, lat2, lon2):
+def haversine(latitude1, longitude1, latitude2, longitude2):
     if (
-        lat1 is None or lon1 is None or
-        lat2 is None or lon2 is None
+        latitude1 is None or longitude1 is None or
+        latitude2 is None or longitude2 is None
     ):
         return None
 
     try:
-        lat1 = float(lat1)
-        lon1 = float(lon1)
-        lat2 = float(lat2)
-        lon2 = float(lon2)
+        latitude1 = float(latitude1)
+        longitude1 = float(longitude1)
+        latitude2 = float(latitude2)
+        longitude2 = float(longitude2)
     except (TypeError, ValueError):
         return None
 
     R = 6371
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
+    dlat = math.radians(latitude2 - latitude1)
+    dlongitude = math.radians(longitude2 - longitude1)
 
     a = (
         math.sin(dlat / 2) ** 2
-        + math.cos(math.radians(lat1))
-        * math.cos(math.radians(lat2))
-        * math.sin(dlon / 2) ** 2
+        + math.cos(math.radians(latitude1))
+        * math.cos(math.radians(latitude2))
+        * math.sin(dlongitude / 2) ** 2
     )
 
     return 2 * R * math.asin(math.sqrt(a))

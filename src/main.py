@@ -1,19 +1,30 @@
 import time
 from pathlib import Path
 import polars as pl
+import asyncio
 
 from features.poi_filter import POIFilter
 from features.spatial_clustering import SpatialClusterer
-from features.poi_balancer import POIBalancer
-from features.osrm import OSRMClient
-from features.tsp_solver import TSPSolver
+from features.post_clustering import build_osrm_ready_pois, build_osrm_matrices_async
+from features.itinerary_optimizer import ItineraryOptimizer
+from features.osrm import OSRMClientAsync
+
 
 import pydeck as pdk
 
 
-DATA_DIR = Path("../data")
+DATA_DIR = Path("data")
 print(DATA_DIR)
 POIS_PATH = DATA_DIR / "processed" / "merged_20260106_135958.parquet"
+
+MAIN_CATEGORY = ["Culture & Musées","Patrimoine & Monuments",
+                "Gastronomie & Restauration","Bien-être & Santé", "Hébergement","Sports & Loisirs","Santé & Urgences",
+                "Famille & Enfants","Culture & Musées","Transports",
+                "Shopping & Artisanat","Nature & Paysages","Patrimoine & Monuments",
+                "Services & Mobilité","Commerce & Shopping","Camping & Plein Air","Commodités",
+                "Transports touristiques","Loisirs & Clubs","Événements & Traditions","Information Touristique"
+            ]
+
 
 def main():
     start_total = time.perf_counter()
@@ -30,9 +41,9 @@ def main():
         filter_pois
         .set_commune("Paris")
         .set_categories(
-            main_categories=["Culture & Musées", "Patrimoine & Monuments", "Gastronomie & Restauration", "Bien-être & Santé"]
+            main_categories=MAIN_CATEGORY
         )
-        .set_min_score(0.4)
+        .set_min_score(0.3)
         .apply()
     )
     print(len(filtered_pois.collect()))
@@ -51,20 +62,44 @@ def main():
         .apply()
     )
 
-    df = (
-    clustered
-    .select([
-        "longitude",
-        "latitude",
-        "final_score",        # optionnel
-        "h3_r8",      # optionnel
-    ])
+    # df_clustered = (
+    #     clustered
+    #     .with_row_index(name="poi_id")      # crée 0,1,2,3,...
+    #     .with_columns(
+    #         (pl.col("poi_id") + 1).alias("poi_id")   # décale pour commencer à 1
+    #     )
+    #     .select([
+    #         "poi_id",
+    #         "main_category",
+    #         "longitude",
+    #         "latitude",
+    #         "final_score",
+    #         "h3_r8",
+    #         "day",
+    #         "diversity_commune_norm",
+    #         "itineraire"
+    #     ])
+    #     .collect()
+    # )
+    df_clustered = (
+        clustered
+        .select([
+            "poi_id",
+            "main_category",
+            "longitude",
+            "latitude",
+            "final_score",
+            "h3_r8",
+            "day",
+            "diversity_commune_norm",
+            "itineraire"
+        ])
         .collect()
     )
 
     layer = pdk.Layer(
     "ScatterplotLayer",
-    df.to_dicts(),
+    df_clustered.to_dicts(),
     get_position=["longitude", "latitude"],
     get_fill_color=[255, 0, 0],
     get_radius=40,
@@ -72,8 +107,8 @@ def main():
     )
 
     view = pdk.ViewState(
-        longitude=df["longitude"].mean(),
-        latitude=df["latitude"].mean(),
+        longitude=df_clustered["longitude"].mean(),
+        latitude=df_clustered["latitude"].mean(),
         zoom=11,
     )
 
@@ -86,46 +121,43 @@ def main():
     ###############################
     # Post clustering
     ###############################
+
+    # 2. Harmonisation des colonnes
+    df_prepared = (
+        df_clustered
+        .rename({
+            "main_category": "main_category",
+            "day": "cluster_id",
+        })
+    )
+    # 3. Post-clustering simplifié
+    df_clustered = build_osrm_ready_pois(
+        df=df_prepared,
+        mode="walk",
+        max_pois_per_cluster=40,
+        min_score=0.2,
+        target_restaurants=2,
+        restaurant_category="Gastronomie & Restauration",
+    )
     
-    # post clustering pour équilibrer le nombre de POIs par jour
-    mode = "walk"
-    
-    balanced = POIBalancer(clustered) \
-                .set_mode(mode) \
-                .set_nb_days(user_nb_days) \
-                .apply()
+    # 4. construction des matrices
+    osrm = OSRMClientAsync()
+    df_clustered, df_osrm_dist, df_osrm_dur = asyncio.run(build_osrm_matrices_async(df_clustered, osrm))
 
-    #print(balanced.filter(pl.col("day") == 0).collect())  # jour 1
-    #print(balanced.filter(pl.col("day") == 1).collect())  # jour 2
-    #print(balanced.filter(pl.col("day") == 2).collect())  # jour 3
-    #print(balanced.filter(pl.col("day") == 3).collect())  # jour 4
 
-    ###############################
-    # OSRM pour chaque jour
-    ###############################
+    ################################
+    # ITINERARY OPTIMIZATION
+    ################################
 
-    client = OSRMClient()
+    optimizer = ItineraryOptimizer.from_list_matrix(
+            df_pois=df_clustered,
+            matrix=df_osrm_dur.to_numpy(),          # ou dist_matrix
+            metric="duration",          # indicatif, tu peux en faire qqch plus tard
+            )
 
-    for day in range(user_nb_days):
-        df_day = balanced.filter(pl.col("day") == day).collect()
-        # 5.1 Ajouter l’ancrage en tête
-        coords = [(anchor_lat, anchor_lon)] + list(zip(df_day["latitude"], df_day["longitude"]))
-        # 5.2 Matrice OSRM
-        matrix = client.table(coords, annotations="duration")["durations"]
+    df_itinerary = optimizer.solve_all_days()
 
-        ###############################
-        # TSP pour chaque jour
-        ###############################
-        
-        solver = TSPSolver(matrix)
-        order = solver.solve()
-
-        # enlever l’ancrage (index 0)
-        poi_order = [i - 1 for i in order if i != 0]
-
-        itinerary = df_day[poi_order]
-
-        print(f'itinerary - {day}', itinerary)
+    print(df_itinerary)
         
     end_total = time.perf_counter()
     print(f"\n=== Temps total du process : {end_total - start_total:.2f} sec ===")

@@ -13,7 +13,7 @@ def add_popularity(lf: pl.LazyFrame, k: int = 50) -> pl.LazyFrame:
     """
 
     # ---------------------------------------------------------
-    # 1. Colonnes par défaut si absentes
+    # 1. colonnes par défaut si absentes
     # ---------------------------------------------------------
     lf = lf.with_columns([
         (
