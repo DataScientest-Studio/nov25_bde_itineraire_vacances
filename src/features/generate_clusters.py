@@ -29,7 +29,6 @@ def save_clustered_by_day(clustered_lf: pl.LazyFrame, OUTPUT_DIR: str):
     # Vérification
     if "day" not in df.columns:
         raise ValueError("La Colonne 'day' est absente du DataFrame.")
-        raise ValueError("La colonne 'day' est absente du DataFrame.")
 
     # Sauvegarde jour par jour
     for day, subdf in df.group_by("day"):

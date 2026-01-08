@@ -1,10 +1,6 @@
 import polars as pl
 
-<<<<<<< HEAD
 # Mapping logique → Colonne H3
-=======
-# Mapping logique → colonne H3
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
 RESOLUTION_MAP = {
     "region": "h3_r6",
     "commune": "h3_r8",

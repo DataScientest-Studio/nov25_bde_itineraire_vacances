@@ -10,11 +10,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 # ---------------------------------------------------------
-<<<<<<< HEAD
 # 1) Construire une Colonne texte riche pour les embeddings
-=======
-# 1) Construire une colonne texte riche pour les embeddings
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
 # ---------------------------------------------------------
 def build_text_embedding_column(
     df: pl.DataFrame,
@@ -22,11 +18,7 @@ def build_text_embedding_column(
     separator: str = " | "
 ) -> pl.DataFrame:
     """
-<<<<<<< HEAD
     Construit une Colonne 'text_embedding' en concaténant plusieurs colonnes
-=======
-    Construit une colonne 'text_embedding' en concaténant plusieurs colonnes
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     (name, description, main_category, sub_category, etc.)
     en gérant automatiquement les valeurs None.
 
@@ -71,11 +63,7 @@ def add_embeddings(
     normalize: bool = True,
 ) -> pl.DataFrame:
     """
-<<<<<<< HEAD
     Ajoute une Colonne 'embedding' contenant un vecteur (list[float])
-=======
-    Ajoute une colonne 'embedding' contenant un vecteur (list[float])
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     pour chaque POI, basé sur SentenceTransformer.
 
     - Encodage batch pour performance
@@ -98,11 +86,7 @@ def add_embeddings(
     # 3) Convertir en listes Python
     embeddings_list = embeddings.tolist()
 
-<<<<<<< HEAD
     # 4) Ajouter la Colonne dans Polars
-=======
-    # 4) Ajouter la colonne dans Polars
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     return df.with_columns(
         pl.Series("embedding", embeddings_list)
     )

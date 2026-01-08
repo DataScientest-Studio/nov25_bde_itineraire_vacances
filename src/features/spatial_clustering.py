@@ -13,7 +13,7 @@ class SpatialClusterer:
 
     Pipeline logique :
         - on travaille au niveau des cellules H3 (h3_8)
-        - on regroupe les POIs par cellule et calcule un centroïde (lat/lon moyen)
+        - on regroupe les POIs par cellule et calcule un centroïde (latitude/longitude moyen)
         - on ajoute le point d'ancrage comme "cellule virtuelle"
         - on applique KMeans pour répartir les cellules entre les jours
         - on propage l'étiquette de jour à tous les POIs
@@ -59,7 +59,7 @@ class SpatialClusterer:
     def _build_cells_df(self) -> pl.DataFrame:
         """
         Regroupe les POIs par cellule H3 et calcule un centroïde
-        pour chaque cellule (lat/lon moyens).
+        pour chaque cellule (latitude/longitude moyens).
         On matérialise ici car KMeans travaille sur du numpy en mémoire.
         """
         cells_lf = (
@@ -67,8 +67,8 @@ class SpatialClusterer:
             .group_by("h3_r8")
             .agg([
                 pl.count().alias("n_pois"),
-                pl.mean("latitude").alias("lat_center"),
-                pl.mean("longitude").alias("lon_center"),
+                pl.mean("latitude").alias("latitude_center"),
+                pl.mean("longitude").alias("longitude_center"),
             ])
         )
         cells_df = cells_lf.collect()
@@ -91,13 +91,8 @@ class SpatialClusterer:
         anchor_row = pl.DataFrame({
             "h3_r8": [anchor_h3],
             "n_pois": [0],  # pas de POI, juste un point d'attraction
-<<<<<<< HEAD
             "latitude_center": [self.anchor_lat],
             "longitude_center": [self.anchor_lon],
-=======
-            "lat_center": [self.anchor_lat],
-            "lon_center": [self.anchor_lon],
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
         })
 
         # harmoniser les types
@@ -107,7 +102,7 @@ class SpatialClusterer:
 
     def _assign_clusters_to_cells(self, cells_df: pl.DataFrame) -> pl.DataFrame:
         coords = np.vstack(
-            [cells_df["lat_center"].to_numpy(), cells_df["lon_center"].to_numpy()]
+            [cells_df["latitude_center"].to_numpy(), cells_df["longitude_center"].to_numpy()]
         ).T
 
         kmeans = KMeans(
@@ -126,11 +121,7 @@ class SpatialClusterer:
 
     def apply(self) -> pl.LazyFrame:
         """
-<<<<<<< HEAD
         Retourne un LazyFrame avec une Colonne supplémentaire 'day'
-=======
-        Retourne un LazyFrame avec une colonne supplémentaire 'day'
->>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
         qui indique à quel jour appartient chaque POI (0..nb_days-1).
         """
 
@@ -158,6 +149,13 @@ class SpatialClusterer:
         )
         lf_with_day = lf_with_day.with_columns(
             pl.col("day").cast(pl.Int64)
+        )
+
+        # Ajout de poi_id (LazyFrame)
+        lf_with_day = (
+            lf_with_day
+            .with_row_index(name="poi_id")              # 0,1,2,3,...
+            .with_columns((pl.col("poi_id") + 1))       # 1,2,3,...
         )
 
         return lf_with_day
