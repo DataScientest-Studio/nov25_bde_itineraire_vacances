@@ -76,7 +76,11 @@ def simple_list_extract(x) :
     else :
         return x
 
+<<<<<<< HEAD
 # definition fct pour plotter le % de valeurs manquantes par Colonne pour df de  :
+=======
+# definition fct pour plotter le % de valeurs manquantes par colonne pour df de  :
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
 def poi_na_plot(df) :
     data = df.isna().sum().map(lambda x : round(x/df.shape[0]*100)).sort_values()
     ax = sns.barplot(x = data.values, y = data.index)
@@ -116,7 +120,11 @@ def poi_structure_extract(poi_df, data_struct):
 
     if len(simple_list_df) > 0 :
 
+<<<<<<< HEAD
         # répartition du dictionnaire 'hasTheme' sur plusieurs colonnes, une Colonne par clé :
+=======
+        # répartition du dictionnaire 'hasTheme' sur plusieurs colonnes, une colonne par clé :
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
         columns_df = pd.json_normalize(data = simple_list_df[data_struct])
 
         # ajout des identifiants des POI
@@ -218,7 +226,11 @@ def poi_opening_hours_extract(poi_df) :
     # suppression des colonnes de traduction des infos supplémentaires :
     schema_opening_hours_df = schema_opening_hours_df.drop(columns = ['@type', 'hasTranslatedProperty', 'additionalInformation.de', 'additionalInformation.en',
                                                     'additionalInformation.it', 'additionalInformation.nl',	'additionalInformation.es'])
+<<<<<<< HEAD
     # application de la fonction simple_list_extract pour transformer le contenu de la Colonne additionalInformation.fr de list à string
+=======
+    # application de la fonction simple_list_extract pour transformer le contenu de la colonne additionalInformation.fr de list à string
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     schema_opening_hours_df = schema_opening_hours_df.map(simple_list_extract)
 
     # concaténation des deux df en s'assurant qu'elles sont le même POI :

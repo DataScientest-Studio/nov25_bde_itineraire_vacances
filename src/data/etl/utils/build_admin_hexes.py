@@ -24,7 +24,7 @@ def build_communes_hex(resolver, res=8):
         if bbox is None:
             continue
 
-        # Convertir dict bbox → liste de tuples (latitude, longitude)
+        # Convertir dict bbox → liste de tuples (lat, lon)
         polygon = [
             (bbox["lat_min"], bbox["lon_min"]),
             (bbox["lat_min"], bbox["lon_max"]),

@@ -33,7 +33,11 @@ TYPES_A_IGNORER = [
 # ---------------------------------------------------------
 def normalize_column_name(col: str) -> str:
     """
+<<<<<<< HEAD
     Convertit un nom de Colonne :
+=======
+    Convertit un nom de colonne :
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     - en minuscule
     - strip début/fin
     - remplace espaces par '_'
@@ -75,7 +79,11 @@ def drop_duplicates(df: pl.LazyFrame) -> pl.LazyFrame:
 # ---------------------------------------------------------
 def split_code_postal_commune(df: pl.LazyFrame) -> pl.LazyFrame:
     """
+<<<<<<< HEAD
     Suppose une Colonne 'code_postal_et_commune' de type :
+=======
+    Suppose une colonne 'code_postal_et_commune' de type :
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     '75001 Paris'
     '13002 Marseille'
     etc.
@@ -210,7 +218,11 @@ def apply_full_mapping(df: pl.LazyFrame) -> pl.LazyFrame:
     df = extract_type_principal(df, mapping_df)
     df = enrich_with_categories(df, cat_df)
     
+<<<<<<< HEAD
     # Rajout Colonne itinéraire Tue /False
+=======
+    # Rajout colonne itinéraire Tue /False
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     df = df.with_columns([
         (pl.col("sub_category") != "unknown").alias("itineraire")
     ])

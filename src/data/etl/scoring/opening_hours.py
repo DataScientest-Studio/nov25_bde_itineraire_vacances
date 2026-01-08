@@ -6,7 +6,11 @@ def add_opening_hours_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     - opening_score : score brut (0–1)
     - opening_score_norm : score normalisé (0–1)
 
+<<<<<<< HEAD
     colonnes prises en compte si présentes :
+=======
+    Colonnes prises en compte si présentes :
+>>>>>>> 2c202210cd102230a91472e461a9227c9eeb0121
     - is_open_now (bool)
     - open_hours_count (float, heures/jour)
     - open_late (bool)
