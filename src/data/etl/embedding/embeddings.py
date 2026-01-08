@@ -10,7 +10,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 # ---------------------------------------------------------
-# 1) Construire une colongitudene texte riche pour les embeddings
+# 1) Construire une colonne texte riche pour les embeddings
 # ---------------------------------------------------------
 def build_text_embedding_column(
     df: pl.DataFrame,
@@ -18,11 +18,11 @@ def build_text_embedding_column(
     separator: str = " | "
 ) -> pl.DataFrame:
     """
-    Construit une colongitudene 'text_embedding' en concaténant plusieurs colongitudenes
+    Construit une colonne 'text_embedding' en concaténant plusieurs colonnes
     (name, description, main_category, sub_category, etc.)
     en gérant automatiquement les valeurs None.
 
-    columns : liste des colongitudenes à concaténer
+    columns : liste des colonnes à concaténer
               si None → utilise un set par défaut
     """
 
@@ -35,7 +35,7 @@ def build_text_embedding_column(
             "sub_category",
         ]
 
-    # Remplacer les colongitudenes manquantes par ""
+    # Remplacer les colonnes manquantes par ""
     exprs = []
     for col in columns:
         if col in df.columns:
@@ -63,7 +63,7 @@ def add_embeddings(
     normalize: bool = True,
 ) -> pl.DataFrame:
     """
-    Ajoute une colongitudene 'embedding' contenant un vecteur (list[float])
+    Ajoute une colonne 'embedding' contenant un vecteur (list[float])
     pour chaque POI, basé sur SentenceTransformer.
 
     - Encodage batch pour performance
@@ -86,7 +86,7 @@ def add_embeddings(
     # 3) Convertir en listes Python
     embeddings_list = embeddings.tolist()
 
-    # 4) Ajouter la colongitudene dans Polars
+    # 4) Ajouter la colonne dans Polars
     return df.with_columns(
         pl.Series("embedding", embeddings_list)
     )

@@ -6,15 +6,15 @@ def add_opening_hours_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     - opening_score : score brut (0–1)
     - opening_score_norm : score normalisé (0–1)
 
-    Colongitudenes prises en compte si présentes :
+    Colonnes prises en compte si présentes :
     - is_open_now (bool)
     - open_hours_count (float, heures/jour)
-    - open_latitudee (bool)
+    - open_late (bool)
     - open_weekend (bool)
     """
 
     # ---------------------------------------------------------
-    # 1. Normalisation des colongitudenes existantes ou valeurs par défaut
+    # 1. Normalisation des colonnes existantes ou valeurs par défaut
     # ---------------------------------------------------------
 
     lf = lf.with_columns([
@@ -34,9 +34,9 @@ def add_opening_hours_score(lf: pl.LazyFrame) -> pl.LazyFrame:
 
         # Ouvert tard (bool → 0/1)
         (
-            pl.col("open_latitudee").cast(pl.Float64).fill_null(0)
-            if "open_latitudee" in lf.columns else pl.lit(0.0)
-        ).alias("open_latitudee"),
+            pl.col("open_late").cast(pl.Float64).fill_null(0)
+            if "open_late" in lf.columns else pl.lit(0.0)
+        ).alias("open_late"),
 
         # Ouvert le weekend (bool → 0/1)
         (
@@ -52,7 +52,7 @@ def add_opening_hours_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     opening_score_expr = (
         0.4 * pl.col("is_open_now") +
         0.3 * pl.col("open_hours_norm") +
-        0.2 * pl.col("open_latitudee") +
+        0.2 * pl.col("open_late") +
         0.1 * pl.col("open_weekend")
     )
 

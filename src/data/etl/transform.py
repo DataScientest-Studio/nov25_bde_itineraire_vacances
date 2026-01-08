@@ -29,11 +29,11 @@ TYPES_A_IGNORER = [
 
 
 # ---------------------------------------------------------
-# 1) Normalisation des noms de colongitudenes
+# 1) Normalisation des noms de colonnes
 # ---------------------------------------------------------
 def normalize_column_name(col: str) -> str:
     """
-    Convertit un nom de colongitudene :
+    Convertit un nom de colonne :
     - en minuscule
     - strip début/fin
     - remplace espaces par '_'
@@ -52,11 +52,11 @@ def rename_columns(df: pl.LazyFrame) -> pl.LazyFrame:
 
 
 # ---------------------------------------------------------
-# 2) Strip de toutes les colongitudenes string
+# 2) Strip de toutes les colonnes string
 # ---------------------------------------------------------
 def strip_all_string_columns(df: pl.LazyFrame) -> pl.LazyFrame:
     """
-    Applique un strip() sur toutes les colongitudenes de type Utf8.
+    Applique un strip() sur toutes les colonnes de type Utf8.
     """
     return df.with_columns([
         pl.col(pl.Utf8).str.strip_chars()
@@ -64,7 +64,7 @@ def strip_all_string_columns(df: pl.LazyFrame) -> pl.LazyFrame:
     ])
 
 # ---------------------------------------------------------
-# 3) Suppression des doublongitudes
+# 3) Suppression des doublons
 # ---------------------------------------------------------
 def drop_duplicates(df: pl.LazyFrame) -> pl.LazyFrame:
     return df.unique()
@@ -75,7 +75,7 @@ def drop_duplicates(df: pl.LazyFrame) -> pl.LazyFrame:
 # ---------------------------------------------------------
 def split_code_postal_commune(df: pl.LazyFrame) -> pl.LazyFrame:
     """
-    Suppose une colongitudene 'code_postal_et_commune' de type :
+    Suppose une colonne 'code_postal_et_commune' de type :
     '75001 Paris'
     '13002 Marseille'
     etc.
@@ -140,7 +140,7 @@ def load_uri_mapping(path: str = input_uri_mapping_path) -> pl.DataFrame:
 # charger categories.json (label -> main/sub/type)
 def load_category_hierarchy(path: str = input_categories_path) -> pl.DataFrame:
     """
-    Transforme le JSON hiérarchique en DataFrame platitude :
+    Transforme le JSON hiérarchique en DataFrame plat :
     type_principal → main_category, sub_category
     """
     with open(path, "r", encoding="utf-8") as f:
@@ -210,7 +210,7 @@ def apply_full_mapping(df: pl.LazyFrame) -> pl.LazyFrame:
     df = extract_type_principal(df, mapping_df)
     df = enrich_with_categories(df, cat_df)
     
-    # Rajout colongitudene itinéraire Tue /False
+    # Rajout colonne itinéraire Tue /False
     df = df.with_columns([
         (pl.col("sub_category") != "unknown").alias("itineraire")
     ])

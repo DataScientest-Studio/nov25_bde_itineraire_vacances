@@ -29,7 +29,7 @@ def main():
     print(f"Total rows: {df.shape[0]}")
 
     # add h3 column for location filtering
-    df = add_h3_columns(df, latitude_col="latitude", longitude_col="longitude")
+    df = add_h3_columns(df, lat_col="latitude", lon_col="longitude")
 
     # scoring
     df = (
@@ -43,7 +43,7 @@ def main():
         .pipe(add_final_score)
     )
 
-    # Construire la colongitudene texte riche
+    # Construire la colonne texte riche
     #df = build_text_embedding_column(df)
 
     # Ajouter les embeddings

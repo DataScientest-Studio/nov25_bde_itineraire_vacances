@@ -2,7 +2,7 @@ import polars as pl
 
 #"Nombre de POIs dans le même hexagone"
 
-# Mapping logique → colongitudene H3
+# Mapping logique → colonne H3
 RESOLUTION_MAP = {
     "region": "h3_r6",
     "commune": "h3_r8"
@@ -11,7 +11,7 @@ RESOLUTION_MAP = {
 
 def add_density(lf: pl.LazyFrame, level: str = "commune") -> pl.LazyFrame:
     """
-    Ajoute une colongitudene de densité locale basée sur la résolution H3 choisie.
+    Ajoute une colonne de densité locale basée sur la résolution H3 choisie.
 
     level : "region" | "commune" | "quartier"
     """
