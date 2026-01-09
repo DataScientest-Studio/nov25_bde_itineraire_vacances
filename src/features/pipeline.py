@@ -72,7 +72,6 @@ class ItineraryPipeline:
         df_prepared = (
             df_prepared
             .rename({
-                "main_category": "main_category",
                 "day": "cluster_id",
             })
         )

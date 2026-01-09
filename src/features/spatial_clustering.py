@@ -113,7 +113,7 @@ class SpatialClusterer:
         labels = kmeans.fit_predict(coords)
 
         cells_df = cells_df.with_columns(
-            pl.Series("day", labels).cast(pl.Int64)
+            pl.Series("cluster_id", labels).cast(pl.Int64)
         )
 
         return cells_df
@@ -121,7 +121,7 @@ class SpatialClusterer:
 
     def apply(self) -> pl.LazyFrame:
         """
-        Retourne un LazyFrame avec une Colonne supplémentaire 'day'
+        Retourne un LazyFrame avec une Colonne supplémentaire 'cluster_id'
         qui indique à quel jour appartient chaque POI (0..nb_days-1).
         """
 
@@ -140,7 +140,7 @@ class SpatialClusterer:
         # 5. Join sur le LazyFrame initial pour propager 'day' aux POIs
         cells_lf_with_day = cells_df_real.lazy().select([
             "h3_r8",
-            pl.col("day").cast(pl.Int64)
+            pl.col("cluster_id").cast(pl.Int64)
         ])
 
         lf_with_day = (
@@ -148,7 +148,7 @@ class SpatialClusterer:
             .join(cells_lf_with_day, on="h3_r8", how="left")
         )
         lf_with_day = lf_with_day.with_columns(
-            pl.col("day").cast(pl.Int64)
+            pl.col("cluster_id").cast(pl.Int64)
         )
 
         # Ajout de poi_id (LazyFrame)

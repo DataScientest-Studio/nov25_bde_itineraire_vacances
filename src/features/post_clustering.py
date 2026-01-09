@@ -3,6 +3,7 @@ import polars as pl
 import math
 import numpy as np
 from typing import Literal, Dict
+
 from src.features.osrm import OSRMClientAsync
 
 TransportMode = Literal["walk", "bike", "car"]
