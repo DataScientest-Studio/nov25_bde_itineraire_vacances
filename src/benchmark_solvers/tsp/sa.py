@@ -4,6 +4,16 @@ import numpy as np
 
 class SA_Solver(TSPSolverBase):
 
+    def __init__(
+        self,
+        distance_matrix: np.ndarray,
+        start: int = 0,
+        T: int = 100,
+        alpha: float = 0.995,
+        name: str = "SA",
+    ):
+        super().__init__(distance_matrix, start, name=name)
+
     def solve(self):
         # Exemple minimal : tu peux l’enrichir
         import random
