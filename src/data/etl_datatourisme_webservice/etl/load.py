@@ -35,6 +35,8 @@ class DBManager:
                             main_category VARCHAR(45) NOT NULL,
                             sub_category VARCHAR(45) NOT NULL,
                             itinerary_category BOOLEAN NOT NULL);
+
+                         CREATE INDEX IF NOT EXISTS index_category_name ON categories(main_category);
                          """)
         
         # localities table
@@ -77,7 +79,7 @@ class DBManager:
                             h3_5_id VARCHAR(45) NOT NULL REFERENCES h3_levels(h3_5_id),
                             address_id INT NOT NULL REFERENCES addresses(address_id)); 
                          
-                         CREATE INDEX IF NOT EXISTS idx_pois_geom ON pois USING GIST(geom);
+                         CREATE INDEX IF NOT EXISTS index_pois_geom ON pois USING GIST(geom);
                          """)
         # poi_activity table
         self.cur.execute("""
@@ -96,6 +98,9 @@ class DBManager:
                             
                             PRIMARY KEY (poi_id, category_id)
                          );
+
+                         CREATE INDEX IF NOT EXISTS index_poi_id ON poi_category(poi_id);
+                         CREATE INDEX IF NOT EXISTS index_category_id ON poi_category(category_id);
                         """)
         
         # phone table
