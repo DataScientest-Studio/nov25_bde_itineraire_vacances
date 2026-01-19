@@ -1,14 +1,20 @@
 import streamlit as st
 import requests
 import pandas as pd
+import numpy as np
+import folium as flm
+from streamlit_folium import st_folium
+
+
 
 
 st.title("Optimisateur d'itinéraire de vacances")
-st.markdown("application pour planifier vos vacances en toute tranquilité")
+# st.markdown("application pour planifier vos vacances en toute tranquilité")
 st.header("Choix des paramètres")
 
 
 st.write("saisissez les paramètres de vos vacances")
+
 # catégories principales
 main_cat_url = "http://localhost:8000/main_categories"
 try :
@@ -63,5 +69,51 @@ if st.button('Proposer des itinéraires') :
     itin_url = "http://localhost:8000/itineraries"
     response = requests.post(itin_url, json= itin_dict)
     response.raise_for_status()
-    data = response.json()
-    st.json(data)
+    
+    # sauvegarde des résultats :
+    st.session_state.itineraries = response.json()
+    st.session_state.num_days = num_days
+
+if 'itineraries' in st.session_state:
+    st.header("Résultats")
+    data = st.session_state.itineraries
+    for day in range(0, st.session_state.num_days) :
+        route_score = data[f"{day}"]['route_score']
+        route_data = data[f"{day}"]['route_data']
+        route_line = data[f"{day}"]['route_line']
+        
+        #création de la carte pour la journée :
+        ## détérmination du point central de la carte par rapport à l'itinéraire :
+        central_lt = np.mean([route_data[id][3] for id in route_data.keys()])
+        central_lg =np.mean([route_data[id][4] for id in route_data.keys()])
+
+        ## Création de la carte  :
+        m = flm.Map(location=[central_lt, central_lg],
+                    zoom_start=10, 
+                    width=750, 
+                    height=500)
+        
+        ## Ajout des pois de l'itinéraire  :
+        for poi_id, poi_data in route_data.items() :
+            poi_lt = poi_data[3]
+            poi_lg = poi_data[4]
+            poi_name = poi_data[1]
+            poi_description = poi_data[2]
+        
+            flm.Marker(location = [poi_lt, poi_lg],
+                       popup = poi_description,
+                       tooltip = poi_name,
+                       icon = flm.Icon(color= 'purple')
+                        ).add_to(m)
+        
+        ## Ajout de l'itinéraire :
+        flm.PolyLine(route_line, 
+                     color= 'red',
+                     weight=4,
+                     opacity=0.8
+                     ).add_to(m)
+
+
+        st.subheader(f"Itinéraire de la journée n°{day+1}")
+        st_folium(m, width=750, height=500)
+

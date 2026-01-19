@@ -5,7 +5,7 @@ from deap import tools
 import random
 import numpy as np
 
-        
+    
 
 
 class GeneticAlgo() :
@@ -42,7 +42,7 @@ class GeneticAlgo() :
             itin : liste des id des pois d'un itinéraire
             duration_matrix : matrice des durées entre les pois couvrant les pois de l'itinéraire
         """
-        travel_duration = sum([self.matrix[itin[i]][itin[i+1]] for i in range(len(itin)-1)])
+        travel_duration = sum([self.matrix.at[itin[i], itin[i+1]] for i in range(len(itin)-1)])
         return travel_duration
 
     # défintion d'une foction pour évaluer le score d'un itinéraire sur la base de la restauration de l'itinéraire  :
@@ -57,7 +57,7 @@ class GeneticAlgo() :
         """
         df_itin = self.df.loc[self.df.poi_id.isin(itin)]
         itin_resto = df_itin.loc[df_itin.sub_category.isin(resto_cat), 'poi_id']
-        return itin_resto
+        return itin_resto.tolist()
 
     def get_itinerary_activity_duration(self, itin, lunch_duration = 60, activity_duration= 45, resto_cat = ['Restaurants']) :
         """
@@ -91,10 +91,10 @@ class GeneticAlgo() :
     def get_lunch_time(self, itin, start_time = 9):
         itin_resto = self.get_itinerary_resto(itin, resto_cat = ['Restaurants'])
         
-        if itin_resto.shape[0] == 0 : 
+        if len(itin_resto) == 0 : 
             return 0
         else :         
-            resto_itin_index = itin.index(itin_resto.iloc[0]) # on récupère son index dans l'itinéraire
+            resto_itin_index = itin.index(itin_resto[0]) # on récupère son index dans l'itinéraire
             # durée itinéraire avant le retaurant :
             travel_duration = self.get_itinerary_travel_duration(itin[ : resto_itin_index+1])/60 
             activity_duration =  self.get_itinerary_activity_duration(itin[ : resto_itin_index])/60
@@ -104,7 +104,7 @@ class GeneticAlgo() :
     def get_itinerary_resto_score(self, itin, resto_cat = ['Restaurants'] , start_time = 9, lunch_time = 13) :
         # sléection des pois restaurant et comptage de leur nombre : 
         itin_resto = self.get_itinerary_resto(itin, resto_cat = resto_cat)
-        resto_nbre = itin_resto.shape[0]
+        resto_nbre = len(itin_resto)
         
         # calucl d'un score en fonction du nombre de restaurant :
         if resto_nbre == 0 :
@@ -136,6 +136,9 @@ class GeneticAlgo() :
 
         # choix des points de coupure sur la longueur en commun :
         size=  len(itin_s)
+        if size < 2 :
+            return itin1, itin2
+        
         p1, p2 = sorted(random.sample(range(size), 2)) 
 
         # la section à échanger :
@@ -147,7 +150,9 @@ class GeneticAlgo() :
         return itin1, itin2
 
     def mutate_itinerary(self, itin):
-        # choisir deux points aléatoire dans l'itinéraire :
+        if len(itin) < 2:
+            return (itin,)
+        # choisir deux points aléatoire dans l'itinéraire : 
         p1, p2 = random.sample(range(len(itin)), 2)
                         
         # identification des poi et changement d'ordre :
@@ -162,33 +167,31 @@ class GeneticAlgo() :
     ##--------------------------------------------------------------------------------
     ###       création et configuration de la toolbox : conteneurs des opérations GA
     ##--------------------------------------------------------------------------------
+    def generate_random_itinerary(self, itin_min_poi = 5, itin_max_poi = 15) :
+        """ génère aléatoirement des itinéraires aléatoires d'une longueur comprise entre un min et un max 
+        à partir d'une liste d'index de poi 
+        arguments :
+        - poi_list : list d'identifiant de pois
+        - itin_min_poi : longueur minimale d'un itinéraire
+        - itin_max_poi : longueur maximale d'un itinéraire
+        """
+        poi_list = self.df['poi_id'].tolist()
 
+        if len(poi_list) <= itin_min_poi :
+            itin_min_poi = len(poi_list)
+            itin_max_poi =  len(poi_list)
+           
+        if itin_min_poi < len(poi_list) < itin_max_poi :
+            itin_max_poi =  len(poi_list)
+
+        itin_size = random.randint(itin_min_poi, itin_max_poi)
+        itin = random.sample(poi_list, k= itin_size)
+        return creator.Itinerary(itin)
+    
     def setup_toolbox(self, itin_min_poi = 5, itin_max_poi = 15) :
         # création de la toolbox (conteneur de toutes les opérations):
         self.toolbox = base.Toolbox()
-
-        def generate_random_itinerary(itin_min_poi = 5, itin_max_poi = 15) :
-            """ génère aléatoirement des itinéraires aléatoires d'une longueur comprise entre un min et un max 
-            à partir d'une liste d'index de poi 
-            arguments :
-            - poi_list : list d'identifiant de pois
-            - itin_min_poi : longueur minimale d'un itinéraire
-            - itin_max_poi : longueur maximale d'un itinéraire
-            """
-            poi_list = self.df['poi_id'].tolist()
-
-            if len(poi_list) <= itin_min_poi :
-                itin_min_poi = len(poi_list)
-                itin_max_poi =  len(poi_list)
-            
-            if itin_min_poi < len(poi_list) < itin_max_poi :
-                itin_max_poi =  len(poi_list)
-
-            itin_size = random.randint(itin_min_poi, itin_max_poi)
-            itin = random.sample(poi_list, k= itin_size)
-            return creator.Itinerary(itin)
-
-        self.toolbox.register("itinerary", generate_random_itinerary)
+        self.toolbox.register("itinerary", self.generate_random_itinerary, itin_min_poi, itin_max_poi)
           
         self.toolbox.register("population", tools.initRepeat, list, self.toolbox.itinerary)
            
@@ -198,7 +201,7 @@ class GeneticAlgo() :
 
         self.toolbox.register("mutate", self.mutate_itinerary)
 
-        self.toolbox.register("select", tools.selTournament, tournsize=3) # comparaions de 3 itinéraires à la fois
+        self.toolbox.register("select", tools.selTournament, tournsize=3) # comparaion de 3 itinéraires à la fois
 
     ##--------------------------------------------------------------------------------
     ###       algorithme génétique : méthode principale

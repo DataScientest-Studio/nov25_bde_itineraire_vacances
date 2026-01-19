@@ -75,3 +75,28 @@ class DBManager:
         
         result = self.execute_query(query, (longitude, latitude, radius, tuple(sub_categories)))
         return result
+    
+    def get_poi_data(self, poi_id) :
+        query = """
+                    SELECT DISTINCT
+                        p.poi_id,
+                        p.label,
+                        p.description,
+                        p.latitude,
+                        p.longitude,
+                        a.street_address,
+                        a.postal_code,
+                        a.locality,
+                        ph.phone_num,
+                        m.mail_address
+                    FROM pois AS p
+                    LEFT JOIN poi_category as pc USING(poi_id)
+                    LEFT JOIN categories AS c USING(category_id)
+                    LEFT JOIN addresses AS a USING(address_id)
+                    LEFT JOIN phone_contact AS ph USING(poi_id)
+                    LEFT JOIN mail_contact AS m USING(poi_id)
+                    WHERE (p.poi_id = %s)
+                    ;"""
+        
+        result = self.execute_query(query, (poi_id,))
+        return result[0]
