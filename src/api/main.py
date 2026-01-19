@@ -40,9 +40,10 @@ def get_itinerary( itin_params: md.ItineraryRequest) :
         poi_df = poi_df.iloc[0:100]
     
     poi_df = clt.cluster_poi(poi_df, itin_params.num_days)
-
-    duration_matrix = osrm.get_durations_matrix(poi_df, mean = itin_params.mobility_mean)
-
+    
+    poi_gps= poi_df.drop(columns = 'sub_category').drop_duplicates()
+    duration_matrix = osrm.get_durations_matrix(poi_gps, mean = itin_params.mobility_mean)
+    
     dict = {}
 
     for day in range(0, itin_params.num_days) :
@@ -55,7 +56,19 @@ def get_itinerary( itin_params: md.ItineraryRequest) :
                                         ngen=50, 
                                         cxpb=0.75, 
                                         mutpb=0.3)
-        dict[day] = {"route": best_route, "fitness": fitness}
+        
+        # récupération des données descriptives de chaque poi de l'itinéraire : 
+        best_route_data = {poi_id : dbm.get_poi_data(poi_id) for poi_id in best_route}
+        
+        # récupération du tracé de l'itinéraire sur osrm :
+        best_route_gps= poi_gps.loc[poi_gps['poi_id'].isin(best_route)]
+        best_route_line = osrm.get_itin_route(best_route_gps, mean = itin_params.mobility_mean)
+        best_route_line = [[lt, lg] for lt, lg in best_route_line] # coordonnées dans le format (lat, long) pour Folium
+
+        dict[day] = {"route_score": fitness,
+                     "route_data" : best_route_data, 
+                     "route_line" : best_route_line
+                      }
     
     return dict
     
