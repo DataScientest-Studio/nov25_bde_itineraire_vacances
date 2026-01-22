@@ -48,7 +48,7 @@ def load():
                     RETURNING id
                 """), {
                     "r": truncate_text(row.get('addr_rue')), 
-                    "cp": truncate_text(row.get('addr_code_postal'), 20), 
+                    "cp": truncate_text(row.get('addr_cp'), 20), 
                     "c": truncate_text(row.get('addr_commune'), 100)
                 })
                 addr_id = res.fetchone()[0]
@@ -89,6 +89,7 @@ def load():
         except Exception as e:
             trans.rollback()
             print(f"❌ Erreur: {e}")
+            sys.exit(1)
 
 if __name__ == "__main__":
     load()

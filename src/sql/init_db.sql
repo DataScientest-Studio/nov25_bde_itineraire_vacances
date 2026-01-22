@@ -1,3 +1,8 @@
+-- =================================================================
+-- FICHIER D'INITIALISATION COMPLET - ITINÉRAIRE VACANCES
+-- Description : Structure des tables + Géométrie Auto + TOUTES les catégories
+-- =================================================================
+
 -- 1. NETTOYAGE (Ordre inverse des dépendances)
 DROP TABLE IF EXISTS poi CASCADE;
 DROP TABLE IF EXISTS adresse CASCADE;
@@ -34,25 +39,25 @@ CREATE TABLE adresse (
 -- D. Points d'Intérêt (POI)
 CREATE TABLE poi (
     poi_id SERIAL PRIMARY KEY,
-    source_uri VARCHAR(255) UNIQUE,
-    nom_du_poi VARCHAR(255) NOT NULL,
+    
+    -- Données Métier
+    nom_du_poi VARCHAR(255),
     description TEXT,
+    
+    -- Coordonnées brutes
     latitude FLOAT,
     longitude FLOAT,
     
     -- Clés étrangères
-    adresse_id INT,
     main_category_id INT,
     sub_category_id INT,
+    adresse_id INT,
     
-    -- Infos
-    site_web VARCHAR(500),
-    telephone VARCHAR(50),
-    email VARCHAR(150),
-    contacts_json TEXT,
-    itineraire TEXT, -- Ajouté pour stocker le JSON itinéraire
+    -- Infos complémentaires
+    contacts_du_poi TEXT,
+    itineraire TEXT,
     
-    -- H3 Index
+    -- Index Géospatiaux H3
     h3_r6 VARCHAR(15),
     h3_r7 VARCHAR(15),
     h3_r8 VARCHAR(15),
@@ -67,19 +72,23 @@ CREATE TABLE poi (
     opening_score_norm FLOAT DEFAULT 0,
     final_score FLOAT DEFAULT 0,
 
+    -- 📍 COLONNE GÉOMÉTRIQUE AUTOMATIQUE (PostGIS)
+    geom GEOMETRY(Point, 4326) GENERATED ALWAYS AS (ST_SetSRID(ST_Point(longitude, latitude), 4326)) STORED,
+
     -- Contraintes
     CONSTRAINT fk_poi_adresse FOREIGN KEY (adresse_id) REFERENCES adresse(id) ON DELETE SET NULL,
     CONSTRAINT fk_poi_main_cat FOREIGN KEY (main_category_id) REFERENCES main_category(id) ON DELETE SET NULL,
     CONSTRAINT fk_poi_sub_cat FOREIGN KEY (sub_category_id) REFERENCES sub_category(id) ON DELETE SET NULL
 );
 
--- E. Index de performance
+-- 3. CRÉATION DES INDEX (Performance)
+CREATE INDEX idx_pois_geom ON poi USING GIST(geom);
 CREATE INDEX idx_poi_main_cat ON poi(main_category_id);
 CREATE INDEX idx_poi_sub_cat ON poi(sub_category_id);
 CREATE INDEX idx_poi_h3_r9 ON poi(h3_r9);
 CREATE INDEX idx_poi_score ON poi(final_score DESC);
 
--- 3. INSERTION DES DONNÉES DE RÉFÉRENCE (CATÉGORIES)
+-- 4. INSERTION DES DONNÉES DE RÉFÉRENCE (Généré automatiquement)
 
 -- Insertion Main Categories
 INSERT INTO main_category (id, nom_cat) VALUES 
@@ -104,8 +113,7 @@ INSERT INTO main_category (id, nom_cat) VALUES
 (18, 'Patrimoine & Monuments');
 
 -- Insertion Sub Categories
--- Note : Les apostrophes (ex: d'art) sont doublées (d''art) pour le SQL
-INSERT INTO sub_category (id, nom_sous_cat, main_category_id) VALUES
+INSERT INTO sub_category (id, nom_sous_cat, main_category_id) VALUES 
 (0, 'Restauration rapide', 8),
 (1, 'Châteaux & Fortifications', 18),
 (2, 'Religieux', 18),
@@ -143,4 +151,34 @@ INSERT INTO sub_category (id, nom_sous_cat, main_category_id) VALUES
 (34, 'Produits locaux', 8),
 (35, 'Antiquité & Vestiges', 18),
 (36, 'Golf & mini-golf', 13),
-(37, 'Musées & expositions', 10);
+(37, 'Musées & expositions', 10),
+(38, 'Téléphériques & remontées', 15),
+(39, 'Eau vive & cascades', 0),
+(40, 'Aires & jeux', 3),
+(41, 'Patrimoine rural & agricole', 18),
+(42, 'Thermalisme', 2),
+(43, 'Sports collectifs & stades', 13),
+(44, 'Cinéma & audiovisuel', 10),
+(45, 'unknown', 14),
+(46, 'Jeune public', 10),
+(47, 'Géologie & curiosités', 0),
+(48, 'Sports mécaniques', 13),
+(49, 'Patrimoine civil', 18),
+(50, 'Sports outdoor', 13),
+(51, 'Concerts & musique', 10),
+(52, 'unknown', 17),
+(53, 'Fêtes & traditions', 6),
+(54, 'Festivals & grands événements', 10),
+(55, 'Soins & bien-être', 2),
+(56, 'unknown', 5),
+(57, 'Foires & salons', 9),
+(58, 'Cimetières & mémoriaux', 18),
+(59, 'unknown', 11),
+(60, 'Glace & haute montagne', 0),
+(61, 'Sports d''hiver', 13),
+(62, 'Thalasso & balnéo', 2),
+(63, 'Aventure & accrobranche', 13),
+(64, 'Défilés & parades', 6),
+(65, 'Vins & spiritueux', 8);
+
+-- Fin du script
