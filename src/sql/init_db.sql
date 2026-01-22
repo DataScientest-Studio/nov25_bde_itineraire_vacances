@@ -1,8 +1,3 @@
--- =================================================================
--- FICHIER D'INITIALISATION COMPLET - ITINÉRAIRE VACANCES
--- Description : Structure des tables + Géométrie Auto + TOUTES les catégories
--- =================================================================
-
 -- 1. NETTOYAGE (Ordre inverse des dépendances)
 DROP TABLE IF EXISTS poi CASCADE;
 DROP TABLE IF EXISTS adresse CASCADE;
