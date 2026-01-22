@@ -6,7 +6,11 @@ import json
 import logging
 
 # CONFIGURATION SLACK
-#SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/TOBEDIFINED"  # Remplacez par votre URL de webhook Slack
+import os
+
+# Airflow va chercher la variable définie dans le docker-compose
+SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
+
 
 def send_slack_alert(message_text, color="#FF0000"):
     """Fonction générique pour envoyer un message à Slack"""

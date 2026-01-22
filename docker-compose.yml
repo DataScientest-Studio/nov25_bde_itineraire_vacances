@@ -17,6 +17,7 @@ x-airflow-common: &airflow-common
     POSTGRES_VACANCES_DB: vacances
     POSTGRES_VACANCES_USER: vacances_user
     POSTGRES_VACANCES_PASSWORD: vacances_password
+    SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
