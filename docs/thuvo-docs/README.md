@@ -1,5 +1,5 @@
 ## Architecture
-![Prime architecture overview](docs/thuvo-docs/sources/images/architecture_prime_pipeline.JPG)
+![Prime architecture overview](docs/thuvo-docs/sources/images/architecture_prime_pipeline.png)
 
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
