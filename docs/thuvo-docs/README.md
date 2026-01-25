@@ -4,10 +4,10 @@
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
 ## Documentation
-[DataTourisme – Source de données](sources/datatourisme.md)
-[TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
-[Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
-[Architecture du projet](sources/architecture.md)
+- [DataTourisme – Source de données](sources/datatourisme.md)
+- [TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
+- [Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
+- [Architecture du projet](sources/architecture.md)
 
 ## Note légale
 
