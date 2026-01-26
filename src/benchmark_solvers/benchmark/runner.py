@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
-from tsp.base import TSPSolverBase
+
+from benchmark_solvers.tsp.base import TSPSolverBase
 
 
 @dataclass
