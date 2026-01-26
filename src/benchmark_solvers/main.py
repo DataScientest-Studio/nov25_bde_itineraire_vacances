@@ -1,14 +1,14 @@
 import pandas as pd
 from pathlib import Path
 
-from tsp.nn2opt import NN2OptSolver
-from tsp.sa import SA_Solver
-from tsp.ga_solver import GASolver
+from benchmark_solvers.tsp.nn2opt import NN2OptSolver
+from benchmark_solvers.tsp.sa import SA_Solver
+from benchmark_solvers.tsp.ga_tsp_solver import GATspPathSolver
 
-from benchmark.runner import BenchmarkRunner
-from loaders.loader import *
+from benchmark_solvers.benchmark.runner import BenchmarkRunner
+from benchmark_solvers.loaders.loader import *
 
-from analysis.plots import (
+from benchmark_solvers.analysis.plots import (
     boxplot_costs,
     boxplot_gaps,
     heatmap_gap,
@@ -16,14 +16,14 @@ from analysis.plots import (
     stability_plot,
 )
 
-from analysis.metrics import (
+from benchmark_solvers.analysis.metrics import (
     compute_best_per_matrix,
     add_gap_column,
     stability_stats,
     pareto_front,
 )
 
-PROJECT_ROOT = Path("../..")
+PROJECT_ROOT = Path("..")
 OSRM_MATRIX_PATH = PROJECT_ROOT / "data" / "processed"
 
 
@@ -62,7 +62,7 @@ def main():
     solver_classes = [
         NN2OptSolver,
         SA_Solver,
-        GASolver,
+        GATspPathSolver,
         # Neo4jSolver,
     ]
 
