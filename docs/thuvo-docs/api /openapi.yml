@@ -1,0 +1,124 @@
+openapi: 3.0.3
+info:
+  title: Itineraire Vacances - Prime POI API
+  version: "1.0.0"
+  description: >
+    API contract backed by PostgreSQL Gold views.
+    Primary contract view: gold.v_api_poi_prime
+
+servers:
+  - url: https://api.example.com
+
+paths:
+  /v1/poi/prime:
+    get:
+      summary: Liste des POI Prime triés par score
+      description: >
+        Retourne une liste paginée de POI Prime, triée par final_score décroissant.
+        Source: gold.v_api_poi_prime
+      parameters:
+        - name: limit
+          in: query
+          description: Nombre d'éléments à retourner
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: offset
+          in: query
+          description: Décalage pour la pagination
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: category
+          in: query
+          description: Filtre exact sur la catégorie (category)
+          required: false
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Filtre exact sur le format (format)
+          required: false
+          schema:
+            type: string
+        - name: tempo
+          in: query
+          description: Filtre exact sur le tempo (tempo)
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Liste des POI Prime
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      limit: { type: integer }
+                      offset: { type: integer }
+                      count: { type: integer, description: "Nombre d'éléments retournés" }
+                    required: [limit, offset, count]
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PrimePoi"
+                required: [meta, data]
+
+  /v1/poi/prime/{poi_id}:
+    get:
+      summary: Détail d’un POI Prime
+      parameters:
+        - name: poi_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identifiant du POI (URL DataTourisme)
+      responses:
+        "200":
+          description: POI trouvé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrimePoi"
+        "404":
+          description: POI introuvable
+
+components:
+  schemas:
+    PrimePoi:
+      type: object
+      properties:
+        poi_id:
+          type: string
+          example: "https://data.datatourisme.fr/42/462e6825-56eb-325f-8fe3-201d19bff87e"
+        name:
+          type: string
+          example: "Le Monument aux Morts du Maquis des Manis..."
+        category:
+          type: string
+          example: "Patrimoine"
+        format:
+          type: string
+          example: "Visite"
+        tempo:
+          type: string
+          example: "Court"
+        final_score:
+          type: number
+          format: float
+          example: 1.062
+        computed_at:
+          type: string
+          format: date-time
+          example: "2026-01-26T18:33:59Z"
+      required: [poi_id, name, category, format, tempo, final_score, computed_at]
