@@ -10,7 +10,7 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 
 ## Architecture globale
 ![Prime architecture overview](sources/images/architecture_projet.png)
-![Architecture du projet](architecture.md) : 
+[Architecture du projet](architecture.md) : 
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
 ---
@@ -60,10 +60,10 @@ Le scoring n’est pas calculé dans l’API : les endpoints consomment les scor
 Le dossier pipelines contient les pipelines Python responsables de l’ingestion, de la transformation et du chargement des données dans PostgreSQL.
 
 ### Ingestion (Load)
-- ![load_datatourisme_prime_classique.py](src/pipelines/load_datatourisme_prime_classique.py)
-- ![load_datatourisme_prime_experience.py](src/pipelines/load_datatourisme_prime_experience.py)
-- ![load_tripadvisor_france.py](src/pipelines/load_tripadvisor_france.py)
-- ![load_airbnb_paris.py](src/pipelines/load_airbnb_paris.py)
+- [load_datatourisme_prime_classique.py](src/pipelines/load_datatourisme_prime_classique.py)
+- [load_datatourisme_prime_experience.py](src/pipelines/load_datatourisme_prime_experience.py)
+- [load_tripadvisor_france.py](src/pipelines/load_tripadvisor_france.py)
+- [load_airbnb_paris.py](src/pipelines/load_airbnb_paris.py)
 
 Ces scripts :
 - consomment des flux API ou des fichiers Parquet,
@@ -71,9 +71,9 @@ Ces scripts :
 - alimentent la couche **Bronze**.
 
 ### Transformation (Transform)
-- ![transform_datatourisme_france.py](src/pipelines/transform_datatourisme_france.py)
-- ![transform_tripadvisor_france.py](src/pipelines/transform_tripadvisor_france.py)
-- ![transform_airbnb_paris.py](src/pipelines/transform_airbnb_paris.py)
+- [transform_datatourisme_france.py](src/pipelines/transform_datatourisme_france.py)
+- [transform_tripadvisor_france.py](src/pipelines/transform_tripadvisor_france.py)
+- [transform_airbnb_paris.py](src/pipelines/transform_airbnb_paris.py)
 
 Ces étapes :
 - nettoient et normalisent les données,
@@ -90,9 +90,9 @@ Le calcul des scores Prime est déclenché ultérieurement via des vues matéria
 ---
 
 ## Notebooks d’exploration
-- ![DataTourisme – Source de données](sources/datatourisme.md)
-- ![TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
-- ![Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
+- [DataTourisme – Source de données](sources/datatourisme.md)
+- [TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
+- [Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
   
 Ces notebooks documentent la compréhension des sources et les choix de modélisation.
 
