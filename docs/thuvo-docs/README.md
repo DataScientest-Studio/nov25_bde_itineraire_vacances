@@ -16,7 +16,7 @@ Le moteur Prime repose sur une architecture data modulaire allant de l’ingesti
 ---
 
 ## Architecture BDD (PostgreSQL / PostGIS)
-![Architecture_BDD overview](sources/images/architecture_bdd.png)
+![Architecture_BDD overview](thuvo-docs/sources/images/architecture_bdd.png)
 Le moteur Prime repose sur une architecture Bronze / Silver / Gold :
 - Bronze (Raw) : Ingestion des données brutes (JSON, Parquet, API), sans logique métier.
 - Silver (Curated) : Nettoyage, normalisation et enrichissement métier des POI
