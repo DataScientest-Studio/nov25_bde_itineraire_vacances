@@ -1,0 +1,45 @@
+# =====================
+# Python
+# =====================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+
+# =====================
+# Jupyter
+# =====================
+.ipynb_checkpoints/
+
+# =====================
+# Data files (NE PAS PUSH)
+# =====================
+data/
+outputs/
+*.csv
+*.parquet
+*.pkl
+
+# =====================
+# IDE / OS
+# =====================
+.vscode/
+.DS_Store
+Thumbs.db
+
+# =====================
+# Data folders
+# =====================
+data/raw/*
+data/processed/*
+data/outputs/*
+
+# =====================
+# Keep folders but ignore content
+# =====================
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/outputs/.gitkeep
