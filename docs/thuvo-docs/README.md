@@ -8,12 +8,13 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 
 ---
 ## Architecture globale
-![Prime architecture overview](sources/images/architecture_prime_pipeline.png)
-[Architecture du projet](sources/architecture.md)
+![Prime architecture overview](sources/images/architecture_projet.png)
+[Architecture du projet](sources/architecture.md) : 
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
 ---
 ## Architecture BDD (PostgreSQL / PostGIS)
+![Architecture_BDD overview](sources/images/architecture_bdd.png)
 Le moteur Prime repose sur une architecture Bronze / Silver / Gold :
 - Bronze (Raw) : Ingestion des données brutes (JSON, Parquet, API), sans logique métier.
 - Silver (Curated) : Nettoyage, normalisation et enrichissement métier des POI
