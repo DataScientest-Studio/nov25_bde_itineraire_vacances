@@ -15,53 +15,14 @@ Le moteur Prime repose sur une architecture data modulaire allant de l’ingesti
 
 ---
 
-## Architecture BDD (PostgreSQL / PostGIS)
-![Architecture_BDD overview](sources/images/architecture_bdd.png)
-Le moteur Prime repose sur une architecture Bronze / Silver / Gold :
-- Bronze (Raw) : Ingestion des données brutes (JSON, Parquet, API), sans logique métier.
-- Silver (Curated) : Nettoyage, normalisation et enrichissement métier des POI
-(cat scores, formats, tempo, déduplication, identifiant canonique poi_id).
-- Gold (Scores & Serving) : Calcul matérialisé des scores Prime et vues optimisées pour l’API et l’UI.
-
-La base de données est organisée autour de vues et tables spécialisées :
-
-### Tables & vues clés GOLD
-- Gold.mv_poi_score : Materialized View contenant les scores calculés (final_score, reco_score).
-- Gold.v_poi_scored : Vue pivot joignant Silver + scores Gold (dataset enrichi).
-- Gold.v_score_by_category : Agrégats analytiques (KPIs par catégorie).
-- Gold.v_api_poi_prime : Vue contractuelle exposée à l’API (API-only).
-Le calcul du score est centralisé dans la couche data (Gold).
-L’API consomme ces scores sans recalcul lourd.
-Le score Prime est défini par la formule :
-
-**final_score = main_cat_weight × (1 + format_weight + tempo_weight)**
-
-- [001_create_tripadvisor_tables](migrations/001_create_tripadvisor_tables.sql)
-- [002_create_prime_tables](migrations/002_create_prime_tables.sql)
-- [003_fix_prime_postal_code_text](migrations/003_fix_prime_postal_code_text.sql)
-- [004_create_gold_poi_score](migrations/004_create_gold_poi_score.sql)
-- [005_create_gold_views](migrations/005_create_gold_views.sql)
-- [006_create_gold_api_views](migrations/006_create_gold_api_views.sql)
+## Notebooks d’exploration
+- [DataTourisme – Source de données](sources/datatourisme.md)
+- [TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
+- [Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
+  
+Ces notebooks documentent la compréhension des sources et les choix de modélisation.
 
 ---
-
-## API interne (serving layer)
-L’API interne [openapi.yml](api/openapi.yml) assure :
-- la lecture des données depuis PostgreSQL (vues Gold),
-- l’application des filtres Prime (zones, catégories, contraintes),
-- le ranking des POI (ORDER BY score),
-- l’identification des POI satellites et des restaurants de midi,
-- l’enrichissement via le temps de marche (OSRM).
-Exemples de routes : /zones --> /poi --> /prime (ranking + filters) --> /walk-time
-
-Cette spécification sert à :
-- garantir la stabilité du contrat entre l’API et l’UI,
-- faciliter la compréhension du fonctionnement de l’API,
-- permettre la génération automatique de documentation ou de clients.
-Le scoring n’est pas calculé dans l’API : les endpoints consomment les scores pré-calculés dans la couche **Gold**.
-
----
-
 ## Pipelines de données (ETL)
 
 Le dossier pipelines contient les pipelines Python responsables de l’ingestion, de la transformation et du chargement des données dans PostgreSQL.
@@ -107,12 +68,50 @@ Le calcul des scores Prime est déclenché ultérieurement via des vues matéria
 
 ---
 
-## Notebooks d’exploration
-- [DataTourisme – Source de données](sources/datatourisme.md)
-- [TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
-- [Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
-  
-Ces notebooks documentent la compréhension des sources et les choix de modélisation.
+## Architecture BDD (PostgreSQL / PostGIS)
+![Architecture_BDD overview](sources/images/architecture_bdd.png)
+Le moteur Prime repose sur une architecture Bronze / Silver / Gold :
+- Bronze (Raw) : Ingestion des données brutes (JSON, Parquet, API), sans logique métier.
+- Silver (Curated) : Nettoyage, normalisation et enrichissement métier des POI
+(cat scores, formats, tempo, déduplication, identifiant canonique poi_id).
+- Gold (Scores & Serving) : Calcul matérialisé des scores Prime et vues optimisées pour l’API et l’UI.
+
+La base de données est organisée autour de vues et tables spécialisées :
+
+### Tables & vues clés GOLD
+- Gold.mv_poi_score : Materialized View contenant les scores calculés (final_score, reco_score).
+- Gold.v_poi_scored : Vue pivot joignant Silver + scores Gold (dataset enrichi).
+- Gold.v_score_by_category : Agrégats analytiques (KPIs par catégorie).
+- Gold.v_api_poi_prime : Vue contractuelle exposée à l’API (API-only).
+Le calcul du score est centralisé dans la couche data (Gold).
+L’API consomme ces scores sans recalcul lourd.
+Le score Prime est défini par la formule :
+
+**final_score = main_cat_weight × (1 + format_weight + tempo_weight)**
+
+- [001_create_tripadvisor_tables](migrations/001_create_tripadvisor_tables.sql)
+- [002_create_prime_tables](migrations/002_create_prime_tables.sql)
+- [003_fix_prime_postal_code_text](migrations/003_fix_prime_postal_code_text.sql)
+- [004_create_gold_poi_score](migrations/004_create_gold_poi_score.sql)
+- [005_create_gold_views](migrations/005_create_gold_views.sql)
+- [006_create_gold_api_views](migrations/006_create_gold_api_views.sql)
+
+---
+
+## API interne (serving layer)
+L’API interne [openapi.yml](api/openapi.yml) assure :
+- la lecture des données depuis PostgreSQL (vues Gold),
+- l’application des filtres Prime (zones, catégories, contraintes),
+- le ranking des POI (ORDER BY score),
+- l’identification des POI satellites et des restaurants de midi,
+- l’enrichissement via le temps de marche (OSRM).
+Exemples de routes : /zones --> /poi --> /prime (ranking + filters) --> /walk-time
+
+Cette spécification sert à :
+- garantir la stabilité du contrat entre l’API et l’UI,
+- faciliter la compréhension du fonctionnement de l’API,
+- permettre la génération automatique de documentation ou de clients.
+Le scoring n’est pas calculé dans l’API : les endpoints consomment les scores pré-calculés dans la couche **Gold**.
 
 ---
 
