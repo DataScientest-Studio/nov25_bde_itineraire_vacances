@@ -1,5 +1,5 @@
 # App d'Itinéraire de Vacances
-# (modulaire, data-first, orientée produit Prime)
+# (modulaire, data-first, User-first, orientée produit Prime)
 
 **Prime** est un moteur de recommandation d’itinéraires touristiques fondé sur une architecture data modulaire.  
 Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants de midi).
