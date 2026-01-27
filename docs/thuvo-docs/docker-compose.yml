@@ -1,0 +1,68 @@
+# ============================================================
+# docker-compose.yml
+#
+# Ce fichier décrit les services Docker à lancer.
+# Ici : un seul service "db" pour PostgreSQL + PostGIS.
+#
+# Quand tu fais :
+#   docker compose up -d
+# Docker lit ce fichier et démarre les conteneurs.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Liste des services Docker
+# ------------------------------------------------------------
+services:
+
+  # ----------------------------------------------------------
+  # Service "db" : base de données PostgreSQL + PostGIS
+  # ----------------------------------------------------------
+  db:
+
+    # Image Docker utilisée
+    # postgis/postgis = PostgreSQL avec l'extension PostGIS incluse
+    # 16-3.4 = PostgreSQL 16 + PostGIS 3.4
+    image: postgis/postgis:16-3.4
+
+    # Nom explicite du conteneur
+    # Pratique pour les commandes docker exec / docker logs
+    container_name: itineraire_db
+
+    # Variables d'environnement passées au conteneur
+    environment:
+      # Mot de passe du super-utilisateur PostgreSQL (postgres)
+      # Utilisé au tout premier démarrage
+      POSTGRES_USER: thuvo
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: itineraire_vacances_prime
+
+    # Mapping des ports
+    # 5432 (PC) → 5432 (conteneur)
+    # Permet à Python, psql, pgAdmin, etc. de se connecter
+    ports:
+      - "5432:5432"
+
+    # Volumes = données persistantes
+    volumes:
+      # Volume Docker nommé "pgdata"
+      # Contient toutes les données de la base
+      # IMPORTANT : sans ça, tout serait perdu à chaque arrêt
+      - pgdata:/var/lib/postgresql/data
+
+      # Fichier init.sql monté dans le conteneur
+      # PostgreSQL exécute automatiquement tous les .sql
+      # présents dans /docker-entrypoint-initdb.d/
+      # UNIQUEMENT lors de la première création de la base
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+# ------------------------------------------------------------
+# Déclaration des volumes Docker
+# ------------------------------------------------------------
+volumes:
+
+  # Volume nommé "pgdata"
+  # Géré par Docker
+  # Sert à stocker physiquement la base PostgreSQL
+  pgdata:
