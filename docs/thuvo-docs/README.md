@@ -66,6 +66,16 @@ Le scoring n’est pas calculé dans l’API : les endpoints consomment les scor
 
 Le dossier pipelines contient les pipelines Python responsables de l’ingestion, de la transformation et du chargement des données dans PostgreSQL.
 
+### Extraction (Extract)
+L’étape d’extraction alimente le moteur Prime à partir de sources hétérogènes, sans application de logique métier. Elle couvre :
+- DataTourisme : ingestion via flux API JSON compressé, traitée en streaming pour gérer de gros volumes,
+- TripAdvisor et Airbnb : lecture de fichiers CSV / Parquet utilisés comme signaux analytiques complémentaires.
+Les scripts d’extraction assurent :
+- une collecte fiable et reproductible,
+- la traçabilité des sources et des dates d’ingestion,
+- la production de données brutes conformes aux formats d’origine.
+Les données extraites sont ensuite transmises aux étapes de transformation, puis chargées dans la couche Bronze, en amont du mode Prime.
+
 ### Ingestion (Load)
 - [load_datatourisme_prime_classique.py](src/pipelines/load_datatourisme_prime_classique.py)
 - [load_datatourisme_prime_experience.py](src/pipelines/load_datatourisme_prime_experience.py)
