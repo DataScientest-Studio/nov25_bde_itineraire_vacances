@@ -11,7 +11,7 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 ## Architecture globale
 ![Prime architecture overview](sources/images/architecture_projet.png)
 [Architecture du projet](architecture.md) : 
-Le moteur Prime repose sur une architecture data modulaire (chaque brique de données a un rôle clair, indépendant, et remplaçable) allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
+Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires (chaque brique de données a un rôle clair, indépendant, et remplaçable).
 
 ---
 
