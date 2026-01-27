@@ -70,6 +70,7 @@ Le dossier pipelines contient les pipelines Python responsables de l’ingestion
 L’étape d’extraction alimente le moteur Prime à partir de sources hétérogènes, sans application de logique métier. Elle couvre :
 - DataTourisme : ingestion via flux API JSON compressé, traitée en streaming pour gérer de gros volumes,
 - TripAdvisor et Airbnb : lecture de fichiers CSV / Parquet utilisés comme signaux analytiques complémentaires.
+
 Les scripts d’extraction assurent :
 - une collecte fiable et reproductible,
 - la traçabilité des sources et des dates d’ingestion,
