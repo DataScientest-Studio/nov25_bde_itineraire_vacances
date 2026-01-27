@@ -132,7 +132,7 @@ Ce mécanisme permet :
 
 Le mode est contrôlé par variable d’environnement :
 
-```bash
+(bash)
 PRIME_QUALITY_MODE=STRICT | RELAXED
 
 ### Rôle des composants
