@@ -10,7 +10,7 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 
 ## Architecture globale
 ![Prime architecture overview](sources/images/architecture_projet.png)
-![Architecture du projet](thuvo-docs/architecture.md) : 
+![Architecture du projet](architecture.md) : 
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
 ---
