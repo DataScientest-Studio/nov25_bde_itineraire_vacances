@@ -4,9 +4,6 @@
 Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants de midi).
 
 ---
-## Structure du dépôt
-
----
 
 ## Architecture globale
 ![Prime architecture overview](sources/images/architecture_projet.png)
@@ -125,3 +122,7 @@ Ce projet utilise des données issues de sources ouvertes et de sources tierces 
 Aucune donnée brute, aucun contenu propriétaire (textes, images, liens, identifiants publics) issu de TripAdvisor ou Airbnb n’est stocké ni exposé à l’utilisateur final.
 
 Ce projet n’est ni affilié, ni soutenu par TripAdvisor ou Airbnb.
+
+---
+## Structure du dépôt
+
