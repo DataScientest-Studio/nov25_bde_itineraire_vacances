@@ -1,0 +1,16 @@
+# Core
+pandas>=2.0
+numpy>=1.23
+
+# Parquet / IO
+pyarrow>=12.0
+
+# Notebooks
+jupyter
+ipython
+
+# Mapping / geo
+folium
+
+# Utils
+python-dateutil
