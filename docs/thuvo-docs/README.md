@@ -1,4 +1,4 @@
-# Prime – Itinéraire Vacances (Data & Recommandation)
+# Application d'Itinéraire de Vacances (Data & Recommandation Prime)
 
 **Prime** est un moteur de recommandation d’itinéraires touristiques fondé sur une architecture data modulaire.  
 Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants de midi).
