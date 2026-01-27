@@ -132,8 +132,7 @@ Ce mécanisme permet :
 
 Le mode est contrôlé par variable d’environnement :
 
-(bash)
-PRIME_QUALITY_MODE=STRICT | RELAXED
+**PRIME_QUALITY_MODE=STRICT | RELAXED**
 
 ### Rôle des composants
 - ops/data_checks/ : règles de validation métier du score PRIME
