@@ -1,13 +1,97 @@
-## Architecture
-![Prime architecture overview](sources/images/architecture_prime_pipeline.png)
+# Prime – Itinéraire Vacances (Data & Recommandation)
 
+**Prime** est un moteur de recommandation d’itinéraires touristiques fondé sur une architecture data modulaire.  
+Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants de midi).
+
+---
+## Structure du dépôt
+
+---
+## Architecture globale
+![Prime architecture overview](sources/images/architecture_prime_pipeline.png)
+[Architecture du projet](sources/architecture.md)
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
-## Documentation
+---
+## Architecture BDD (PostgreSQL / PostGIS)
+Le moteur Prime repose sur une architecture Bronze / Silver / Gold :
+- Bronze (Raw) : Ingestion des données brutes (JSON, Parquet, API), sans logique métier.
+- Silver (Curated) : Nettoyage, normalisation et enrichissement métier des POI
+(cat scores, formats, tempo, déduplication, identifiant canonique poi_id).
+- Gold (Scores & Serving) : Calcul matérialisé des scores Prime et vues optimisées pour l’API et l’UI.
+
+La base de données est organisée autour de vues et tables spécialisées :
+
+### Tables & vues clés GOLD
+- Gold.mv_poi_score : Materialized View contenant les scores calculés (final_score, reco_score).
+- Gold.v_poi_scored : Vue pivot joignant Silver + scores Gold (dataset enrichi).
+- Gold.v_score_by_category : Agrégats analytiques (KPIs par catégorie).
+- Gold.v_api_poi_prime : Vue contractuelle exposée à l’API (API-only).
+Le calcul du score est centralisé dans la couche data (Gold).
+L’API consomme ces scores sans recalcul lourd.
+Le score Prime est défini par la formule :
+**final_score = main_cat_weight × (1 + format_weight + tempo_weight)**
+
+---
+## API interne (serving layer)
+L’API interne [openapi.yml](api/openapi.yml) assure :
+- la lecture des données depuis PostgreSQL (vues Gold),
+- l’application des filtres Prime (zones, catégories, contraintes),
+- le ranking des POI (ORDER BY score),
+- l’identification des POI satellites et des restaurants de midi,
+- l’enrichissement via le temps de marche (OSRM).
+Exemples de routes : /zones --> /poi --> /prime (ranking + filters) --> /walk-time
+
+Cette spécification sert à :
+- garantir la stabilité du contrat entre l’API et l’UI,
+- faciliter la compréhension du fonctionnement de l’API,
+- permettre la génération automatique de documentation ou de clients.
+Le scoring n’est pas calculé dans l’API : les endpoints consomment les scores pré-calculés dans la couche **Gold**.
+
+---
+
+## Pipelines de données (ETL)
+
+Le dossier pipelines contient les pipelines Python responsables de l’ingestion, de la transformation et du chargement des données dans PostgreSQL.
+
+### Ingestion (Load)
+- [load_datatourisme_prime_classique.py](src/pipelines/load_datatourisme_prime_classique.py)
+- [load_datatourisme_prime_experience.py](src/pipelines/load_datatourisme_prime_experience.py)
+- [load_tripadvisor_france.py](src/pipelines/load_tripadvisor_france.py)
+- [load_airbnb_paris.py](src/pipelines/load_airbnb_paris.py)
+
+Ces scripts :
+- consomment des flux API ou des fichiers Parquet,
+- gèrent le parsing incrémental et le chargement contrôlé,
+- alimentent la couche **Bronze**.
+
+### Transformation (Transform)
+- [transform_datatourisme_france.py](src/pipelines/transform_datatourisme_france.py)
+- [transform_tripadvisor_france.py](src/pipelines/transform_tripadvisor_france.py)
+- [transform_airbnb_paris.py](src/pipelines/transform_airbnb_paris.py)
+
+Ces étapes :
+- nettoient et normalisent les données,
+- appliquent la logique métier (catégories, formats, tempo),
+- construisent la couche **Silver** prête pour le scoring.
+
+Les pipelines sont conçus pour être :
+- idempotents,
+- exécutables de manière indépendante,
+- compatibles avec des stratégies d’upsert incrémental.
+
+Le calcul des scores Prime est déclenché ultérieurement via des vues matérialisées dans la couche **Gold**.
+
+---
+
+## Notebooks d’exploration
 - [DataTourisme – Source de données](sources/datatourisme.md)
 - [TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
 - [Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
-- [Architecture du projet](sources/architecture.md)
+- 
+Ces notebooks documentent la compréhension des sources et les choix de modélisation.
+
+---
 
 ## Note légale
 
