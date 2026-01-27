@@ -112,6 +112,41 @@ Cette spécification sert à :
 Le scoring n’est pas calculé dans l’API : les endpoints consomment les scores pré-calculés dans la couche **Gold**.
 
 ---
+## Quality Gate du scoring PRIME
+
+Le score **PRIME** est un score critique exposé à l’API et au frontend.
+Afin d’éviter toute exposition de résultats incohérents (bug de calcul, données corrompues, régression),
+une **Quality Gate explicite** est placée entre le calcul du score et sa publication.
+
+### Principe
+
+La Quality Gate agit comme un **interrupteur de sécurité** :
+
+- 🟢 **RELAXED** : le score est exposé, mais les anomalies sont détectées, comptabilisées et journalisées
+- 🔴 **STRICT** : toute anomalie bloquante empêche l’exposition du score PRIME
+
+Ce mécanisme permet :
+- de détecter immédiatement un faux calcul PRIME
+- de sécuriser les démonstrations et environnements de production
+- de conserver un mode souple pour le prototypage (MVP)
+
+Le mode est contrôlé par variable d’environnement :
+
+```bash
+PRIME_QUALITY_MODE=STRICT | RELAXED
+
+### Rôle des composants
+- ops/data_checks/ : règles de validation métier du score PRIME
+- ops/quality/ : orchestration de la Quality Gate (blocage / autorisation)
+- domain/prime.py : calcul du score PRIME (source du risque)
+
+La Quality Gate est volontairement séparée du calcul afin de pouvoir détecter
+les erreurs même lorsque le calcul lui-même est incorrect.
+
+- [Règles de contrôle PRIME](src/ops/data_checks/prime_checks.py)
+- [Quality Gate (STRICT / RELAXED)](src/ops/quality/quality_gate.py)
+- [Calcul du score PRIME](src/domain/prime.py)
+---
 
 ## Note légale
 
