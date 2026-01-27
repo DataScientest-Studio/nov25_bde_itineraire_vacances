@@ -36,12 +36,12 @@ Le score Prime est défini par la formule :
 
 **final_score = main_cat_weight × (1 + format_weight + tempo_weight)**
 
-[001_create_tripadvisor_tables](migrations/001_create_tripadvisor_tables.sql)
-[002_create_prime_tables](migrations/002_create_prime_tables.sql)
-[003_fix_prime_postal_code_text](migrations/003_fix_prime_postal_code_text.sql)
-[004_create_gold_poi_score](migrations/004_create_gold_poi_score.sql)
-[005_create_gold_views](migrations/005_create_gold_views.sql)
-[006_create_gold_api_views](migrations/006_create_gold_api_views.sql)
+- [001_create_tripadvisor_tables](migrations/001_create_tripadvisor_tables.sql)
+- [002_create_prime_tables](migrations/002_create_prime_tables.sql)
+- [003_fix_prime_postal_code_text](migrations/003_fix_prime_postal_code_text.sql)
+- [004_create_gold_poi_score](migrations/004_create_gold_poi_score.sql)
+- [005_create_gold_views](migrations/005_create_gold_views.sql)
+- [006_create_gold_api_views](migrations/006_create_gold_api_views.sql)
 
 ---
 
