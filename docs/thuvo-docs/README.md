@@ -6,13 +6,11 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 ---
 ## Structure du dépôt
 
----
 ## Architecture globale
 ![Prime architecture overview](sources/images/architecture_projet.png)
 [Architecture du projet](sources/architecture.md) : 
 Le moteur Prime repose sur une architecture data modulaire allant de l’ingestion des données touristiques à la recommandation d’itinéraires.
 
----
 ## Architecture BDD (PostgreSQL / PostGIS)
 ![Architecture_BDD overview](sources/images/architecture_bdd.png)
 Le moteur Prime repose sur une architecture Bronze / Silver / Gold :
@@ -33,7 +31,6 @@ L’API consomme ces scores sans recalcul lourd.
 Le score Prime est défini par la formule :
 **final_score = main_cat_weight × (1 + format_weight + tempo_weight)**
 
----
 ## API interne (serving layer)
 L’API interne [openapi.yml](api/openapi.yml) assure :
 - la lecture des données depuis PostgreSQL (vues Gold),
@@ -48,8 +45,6 @@ Cette spécification sert à :
 - faciliter la compréhension du fonctionnement de l’API,
 - permettre la génération automatique de documentation ou de clients.
 Le scoring n’est pas calculé dans l’API : les endpoints consomment les scores pré-calculés dans la couche **Gold**.
-
----
 
 ## Pipelines de données (ETL)
 
@@ -83,16 +78,12 @@ Les pipelines sont conçus pour être :
 
 Le calcul des scores Prime est déclenché ultérieurement via des vues matérialisées dans la couche **Gold**.
 
----
-
 ## Notebooks d’exploration
 - [DataTourisme – Source de données](sources/datatourisme.md)
 - [TripAdvisor – Signaux de popularité](sources/tripadvisor.md)
 - [Airbnb – Hébergement (usage analytique)](sources/airbnb.md)
 - 
 Ces notebooks documentent la compréhension des sources et les choix de modélisation.
-
----
 
 ## Note légale
 
