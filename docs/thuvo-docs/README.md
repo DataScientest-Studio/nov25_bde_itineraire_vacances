@@ -146,6 +146,22 @@ les erreurs même lorsque le calcul lui-même est incorrect.
 - [Quality Gate (STRICT / RELAXED)](src/ops/quality/quality_gate.py)
 - [Calcul du score PRIME](src/domain/prime.py)
 ---
+## Stack Docker (optionnelle)
+
+Une stack Docker optionnelle est disponible pour le développement local et les tests.
+Elle comprend notamment :
+- Postgres / PostGIS
+- Un backend FastAPI
+- Une interface Streamlit
+- Des jobs ETL batch
+
+L’ensemble des fichiers liés à Docker est isolé dans le dossier :
+- [`docs/thuvo-docs/docker/`](docs/thuvo-docs/docker)
+- Docker Compose: [`docker-compose.yml`](docs/thuvo-docs/docker/docker-compose.yml)
+- Environment template: [`.env.example`](docs/thuvo-docs/docker/.env.example)
+
+Les modalités d’utilisation et les détails techniques sont documentés localement dans ce répertoire.
+---
 
 ## Note légale
 
