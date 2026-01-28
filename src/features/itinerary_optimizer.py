@@ -6,7 +6,7 @@ import math
 import numpy as np
 import asyncio
 
-from src.features.osrm import OSRMClientAsync
+from features.osrm import OSRMClientAsync
 
 
 @dataclass
@@ -123,7 +123,7 @@ class ItineraryOptimizer:
 
         if df_day.height == 0:
             return df_day.with_columns(
-                pl.lit(None).alias("visit_order"),
+                pl.lit(None).alias("order"),
                 pl.lit(None).alias("cum_cost"),
             )
 
@@ -159,14 +159,14 @@ class ItineraryOptimizer:
             pl.col("osrm_index").map_elements(
                 lambda x: osrm_to_order.get(x, None),
                 return_dtype=pl.Int64
-            ).alias("visit_order"),
+            ).alias("order"),
             pl.col("osrm_index").map_elements(
                 lambda x: osrm_to_cumcost.get(x, None),
                 return_dtype=pl.Float64
             ).alias("cum_cost"),
         ])
 
-        return df_day.sort("visit_order")
+        return df_day.sort("order")
 
     # ---------- Solveur pour tous les jours ----------
 
@@ -182,7 +182,7 @@ class ItineraryOptimizer:
             solved_day = self.solve_day(d)
             solved_list.append(solved_day)
 
-        return pl.concat(solved_list).sort(["cluster_id", "visit_order"])
+        return pl.concat(solved_list).sort(["cluster_id", "order"])
 
     # ---------- - Calcule l’itinéraire optimisé pour ce jour ---
 
@@ -197,13 +197,6 @@ class ItineraryOptimizer:
         df_day = self.solve_day(day)
         return await self.build_day_route_geojson_async(df_day, osrm)
 
-
-    # def build_geojson_all_days(self, day,osrm: OSRMClientAsync):
-    #     days = self.df_pois.select(day).unique().to_series().to_list()
-    #     return {
-    #         day: self.build_geojson_for_day(day, osrm)
-    #         for day in days
-    #     }
 
     async def build_geojson_all_days_async(self, df_itinerary: pl.DataFrame, osrm: OSRMClientAsync):
         """
@@ -231,7 +224,7 @@ class ItineraryOptimizer:
 
 
     async def build_day_route_geojson_async(self, df_day: pl.DataFrame, osrm: OSRMClientAsync):
-        df_day = df_day.sort("visit_order")
+        df_day = df_day.sort("order")
 
         coords = df_day.select(["latitude", "longitude"]).to_numpy().tolist()
         coords = [tuple(row) for row in coords]

@@ -265,7 +265,7 @@ def render_premium_map(
     tooltip = {
         "html": """
         <b>{nom_du_poi}</b><br/>
-        Jour : {day} – Ordre : {visit_order}<br/>
+        Jour : {day} – Ordre : {order}<br/>
         Catégorie : {main_category}<br/>
         Score : {final_score}
         """,
@@ -702,7 +702,7 @@ elif step == 4:
     df_itinerary = get_itinerary()
 
     st.subheader("Table complète")
-    st.dataframe(df_itinerary.sort(["cluster_id", "visit_order"]))
+    st.dataframe(df_itinerary.sort(["cluster_id", "order"]))
 
     st.subheader("Résumé par jour")
     summary = (
@@ -792,7 +792,7 @@ elif step == 5:
 
 
     st.subheader("Détails du parcours")
-    st.dataframe(df_itinerary.sort("visit_order"))
+    st.dataframe(df_itinerary.sort("order"))
 
 # -------------------------------------------------------------------
 # PROFILING (EN BAS DE PAGE)
