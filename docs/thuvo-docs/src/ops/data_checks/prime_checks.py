@@ -11,13 +11,17 @@ Objectifs :
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Set, Union
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 # ---------------------------------------------------------------------
 # Types d'entrée supportés
 # ---------------------------------------------------------------------
 Rows = List[Dict[str, Any]]
-InputLike = Union["pd.DataFrame", Rows]  # pandas optionnel (string annotation)
+InputLike = "pd.DataFrame | Rows"  # pandas optionnel (string annotation)
 
 
 # ---------------------------------------------------------------------
