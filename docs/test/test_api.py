@@ -4,10 +4,9 @@ from src.api.main import app
 client = TestClient(app)
 
 def test_itinerary_endpoint_exists():
-    payload = {
-        # payload minimal valide
-        # adapte selon ce que /itinerary attend vraiment}
-
+    # payload minimal valide
+    # adapte selon ce que /itinerary attend vraiment
+    payload = {"dummy": "value"}
     response = client.post("/itinerary", json=payload)
 
     # Selon choix métier :
