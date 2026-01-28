@@ -9,9 +9,9 @@ from features.osrm import OSRMClientAsync
 TransportMode = Literal["walk", "bike", "car"]
 
 TRANSPORT_MAX_RADIUS_KM: Dict[TransportMode, float] = {
-    "walk": 2.0,
-    "bike": 5.0,
-    "car": 20.0,
+    "walk": 4.0,
+    "bike": 7.0,
+    "car": 25.0,
 }
 
 # Pour limiter le nombre de POIs avant OSRM (optionnel)
@@ -253,7 +253,7 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
         .with_row_index(name="osrm_index")  # index stable pour matrice
         .select(
             [
-                "osrm_index",   # identifiant interne pour la matrice
+                "osrm_index",   
                 "poi_id",
                 "cluster_id",
                 "latitude",
@@ -261,7 +261,6 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
                 "main_category",
                 "sub_category",
                 "final_score",
-                # tu peux garder d'autres colonnes si utile
             ]
         )
     )
@@ -327,24 +326,35 @@ def build_osrm_ready_pois(
 async def build_osrm_matrices_async(
     df_clustered: pl.DataFrame,
     osrm: OSRMClientAsync,
+    profile: str = "foot"
 ):
-    # 1) Extraire coords (latitude, longitude)
-    coords = df_clustered.select(["latitude", "longitude"]).to_numpy().tolist()
+    """
+    Construit les matrices OSRM (distance + durée) en mode async.
+    profile = "foot" | "bike" | "driving"
+    """
+
+    # 1) Extraire coords (lon, lat)
+    coords = df_clustered.select(["longitude", "latitude"]).to_numpy().tolist()
     coords = [tuple(row) for row in coords]
 
     # 2) Ajouter osrm_index
-    df_clustered = df_clustered.with_columns(
-        pl.Series("osrm_index", list(range(len(df_clustered))))
+    if "osrm_index" not in df_clustered.columns:
+        df_clustered = df_clustered.with_columns(
+            pl.Series("osrm_index", list(range(len(df_clustered))))
+        )
+
+    # 3) Appel OSRM
+    result = await osrm.table(
+        coords,
+        annotations="duration,distance",
+        profile=profile
     )
 
-    # 3) Appel OSRM asynchrone
-    result = await osrm.table(coords, annotations="duration,distance")
-
-    # 4) Extraire matrices
+    # 4) Matrices numpy
     dist_matrix = np.array(result["distances"])
     dur_matrix = np.array(result["durations"])
 
-    # 5) Convertir en DataFrames Polars
+    # 5) Conversion Polars
     df_osrm_dist = pl.DataFrame(dist_matrix).with_row_index("osrm_index")
     df_osrm_dur = pl.DataFrame(dur_matrix).with_row_index("osrm_index")
 

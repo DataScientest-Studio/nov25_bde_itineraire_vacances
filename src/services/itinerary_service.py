@@ -24,8 +24,8 @@ class ItineraryService:
                 anchor_lat=req.start.lat,
                 anchor_lon=req.start.lon,
                 osrm=self.osrm,
-                osrm_mode=req.osrm_mode,
-                solver=req.solver,        # <--- AJOUT ICI
+                transport_mode=req.transport_mode,
+                solver=req.solver,        
             )
         )
 

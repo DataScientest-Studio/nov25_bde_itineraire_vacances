@@ -2,36 +2,38 @@ import aiohttp
 import asyncio
 import math
 import numpy as np
-from typing import List, Tuple, Literal
+from typing import List, Tuple
 
 
 class OSRMClientAsync:
+    """
+    Client OSRM asynchrone avec :
+    - détection backend local/public
+    - support du profil (foot, bike, driving)
+    - chunking pour grandes matrices
+    """
+
     def __init__(
         self,
         local_url="http://localhost:5000",
         public_url="https://router.project-osrm.org",
         max_chunk_size: int = 80,
-        max_concurrency: int = 20,   # nombre de requêtes simultanées
+        max_concurrency: int = 20,
     ):
         self.local_url = local_url.rstrip("/")
         self.public_url = public_url.rstrip("/")
-        self.base_url = self.public_url  # détection async plus bas
+        self.base_url = self.public_url
         self.max_chunk_size = max_chunk_size
         self.max_concurrency = max_concurrency
 
-    # async def detect_backend(self):
-    #     """Détecte si l’OSRM local est disponible."""
-    #     try:
-    #         async with aiohttp.ClientSession() as session:
-    #             async with session.get(f"{self.local_url}/health", timeout=0.5) as r:
-    #                 if r.status == 200:
-    #                     self.base_url = self.local_url
-    #                     return
-    #     except:
-    #         pass
-    #     self.base_url = self.public_url
-
+    # ---------------------------------------------------------
+    # Détection backend
+    # ---------------------------------------------------------
     async def detect_backend(self):
+        """
+        Vérifie si l’OSRM local est disponible.
+        Sinon bascule sur OSRM public.
+        """
         try:
             test_url = f"{self.local_url}/route/v1/driving/2.35,48.85;2.36,48.86"
             async with aiohttp.ClientSession() as session:
@@ -44,16 +46,20 @@ class OSRMClientAsync:
 
         self.base_url = self.public_url
 
+    # ---------------------------------------------------------
+    # Utilitaire : conversion coords → "lon,lat;lon,lat"
+    # ---------------------------------------------------------
     @staticmethod
     def _coords_to_str(coords: List[Tuple[float, float]]) -> str:
-        return ";".join([f"{longitude},{latitude}" for latitude, longitude in coords])
+        # coords = [(lon, lat), ...]
+        return ";".join([f"{lon},{lat}" for lon, lat in coords])
 
-    # ----------------------------------------------------------------------
-    # Appel OSRM simple
-    # ----------------------------------------------------------------------
-    async def _table_raw(self, coords, annotations="duration,distance"):
+    # ---------------------------------------------------------
+    # Appel OSRM simple (sans chunk)
+    # ---------------------------------------------------------
+    async def _table_raw(self, coords, annotations="duration,distance", profile="foot"):
         coord_str = self._coords_to_str(coords)
-        url = f"{self.base_url}/table/v1/driving/{coord_str}"
+        url = f"{self.base_url}/table/v1/{profile}/{coord_str}"
         params = {"annotations": annotations}
 
         async with aiohttp.ClientSession() as session:
@@ -61,10 +67,14 @@ class OSRMClientAsync:
                 r.raise_for_status()
                 return await r.json()
 
-    # ----------------------------------------------------------------------
+    # ---------------------------------------------------------
     # Appel OSRM chunké + asynchrone
-    # ----------------------------------------------------------------------
-    async def table(self, coords, annotations="duration,distance"):
+    # ---------------------------------------------------------
+    async def table(self, coords, annotations="duration,distance", profile="foot"):
+        """
+        coords = [(lon, lat), ...]
+        profile = "foot" | "bike" | "driving"
+        """
         await self.detect_backend()
 
         n = len(coords)
@@ -73,7 +83,7 @@ class OSRMClientAsync:
 
         # Cas simple : pas besoin de chunk
         if n <= self.max_chunk_size:
-            return await self._table_raw(coords, annotations)
+            return await self._table_raw(coords, annotations, profile)
 
         chunk_size = self.max_chunk_size
         num_chunks = math.ceil(n / chunk_size)
@@ -97,7 +107,7 @@ class OSRMClientAsync:
                 coord_str_src = self._coords_to_str(sub_coords_src)
                 coord_str_dst = self._coords_to_str(sub_coords_dst)
 
-                url = f"{self.base_url}/table/v1/driving/{coord_str_src};{coord_str_dst}"
+                url = f"{self.base_url}/table/v1/{profile}/{coord_str_src};{coord_str_dst}"
 
                 params = {
                     "sources": ";".join(map(str, range(len(sub_coords_src)))),
@@ -114,7 +124,7 @@ class OSRMClientAsync:
 
                 return (i, j, data)
 
-        # Lancer toutes les tâches en parallèle
+        # Lancer toutes les tâches
         tasks = [
             process_chunk(i, j)
             for i in range(num_chunks)
@@ -144,14 +154,17 @@ class OSRMClientAsync:
 
         return result
 
-    # ----------------------------------------------------------------------
-    # Route GeoJSON (async)
-    # ----------------------------------------------------------------------
-    async def route_geojson(self, start, end):
+    # ---------------------------------------------------------
+    # Route GeoJSON
+    # ---------------------------------------------------------
+    async def route_geojson(self, start, end, profile="driving"):
+        """
+        start/end = (lon, lat)
+        """
         await self.detect_backend()
 
         coord_str = self._coords_to_str([start, end])
-        url = f"{self.base_url}/route/v1/driving/{coord_str}"
+        url = f"{self.base_url}/route/v1/{profile}/{coord_str}"
         params = {"overview": "full", "geometries": "geojson"}
 
         async with aiohttp.ClientSession() as session:

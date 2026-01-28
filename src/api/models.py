@@ -12,7 +12,7 @@ class ItineraryRequest(BaseModel):
     min_score: float
     nb_days: int
     start: StartPoint
-    osrm_mode: str = "walk"
+    transport_mode: str = "walk"
     solver: str = "auto"
 
 class ItineraryDay(BaseModel):
