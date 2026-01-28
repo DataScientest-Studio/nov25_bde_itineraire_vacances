@@ -1,13 +1,13 @@
 import requests
 
-payload = {
+payload =  {
   "commune": "Paris",
   "main_categories": ["Patrimoine & Monuments", "Gastronomie & Restauration", "Shopping & Artisanat"],
   "sub_categories" : ["Restaurants","Bibliothèques & médiation","Restauration rapide","Bars & cafés","Religieux"],
   "min_score": 0.15,
   "nb_days": 3,
   "start": {"lat": 48.86666, "lon": 2.33333},
-  "osrm_mode": "walk",
+  "transport_mode": "walk",
   "solver": "auto"
 
 }
