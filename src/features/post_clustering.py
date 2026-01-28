@@ -4,7 +4,7 @@ import math
 import numpy as np
 from typing import Literal, Dict
 
-from src.features.osrm import OSRMClientAsync
+from features.osrm import OSRMClientAsync
 
 TransportMode = Literal["walk", "bike", "car"]
 
@@ -259,6 +259,7 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
                 "latitude",
                 "longitude",
                 "main_category",
+                "sub_category",
                 "final_score",
                 # tu peux garder d'autres colonnes si utile
             ]
@@ -286,6 +287,9 @@ def build_osrm_ready_pois(
     3) filtre par mode de transport
     4) prépare un df compact pour OSRM
     """
+    if isinstance(df, pl.LazyFrame):
+        df = df.collect()
+
     if df.is_empty():
         return df
 
