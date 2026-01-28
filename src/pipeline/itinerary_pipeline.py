@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Dict, Tuple
 import numpy as np
 import asyncio
+import polars as pl
 
 
 from features.poi_filter import POIFilter
@@ -25,7 +26,6 @@ class ItineraryPipeline:
     """
 
     def __init__(self, pois_path: Path):
-        import polars as pl
         self.pois_path = pois_path
         self.pois_lf = pl.scan_parquet(self.pois_path)
 
