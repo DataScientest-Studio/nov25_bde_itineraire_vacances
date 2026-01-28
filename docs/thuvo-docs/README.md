@@ -155,8 +155,7 @@ Elle comprend notamment :
 - Une interface Streamlit
 - Des jobs ETL batch
 
-L’ensemble des fichiers liés à Docker est isolé dans le dossier :
-- [thuvo-docs/docker/](thuvo-docs/docker)
+L’ensemble des fichiers liés à Docker est isolé dans le dossier [thuvo-docs/docker/]
 - Docker Compose: [docker-compose.yml](docker/docker-compose.yml)
 - Environment template: [.env.example](docker/.env.example)
 
