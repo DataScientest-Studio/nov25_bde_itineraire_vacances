@@ -1,6 +1,8 @@
 from pipeline.itinerary_pipeline import ItineraryPipeline
 from features.osrm import OSRMClientAsync
 from pathlib import Path
+import polars as pl
+
 
 path_input=Path("../data/processed/merged_20260108_174125.parquet")
 
