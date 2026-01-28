@@ -156,9 +156,9 @@ Elle comprend notamment :
 - Des jobs ETL batch
 
 L’ensemble des fichiers liés à Docker est isolé dans le dossier :
-- [`docs/thuvo-docs/docker/`](docs/thuvo-docs/docker)
-- Docker Compose: [`docker-compose.yml`](docs/thuvo-docs/docker/docker-compose.yml)
-- Environment template: [`.env.example`](docs/thuvo-docs/docker/.env.example)
+- [docs/thuvo-docs/docker/](docs/thuvo-docs/docker)
+- Docker Compose: [docker-compose.yml](docker/docker-compose.yml)
+- Environment template: [.env.example](docker/.env.example)
 
 Les modalités d’utilisation et les détails techniques sont documentés localement dans ce répertoire.
 ---
