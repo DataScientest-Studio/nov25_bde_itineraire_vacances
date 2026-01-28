@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./docker/api
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ui:
+    build: ./docker/ui
+    environment:
+      API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./app3.py:/app/app3.py:ro
+    depends_on:
+      - api
+
+  etl:
+    build: ./docker/etl
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      PRIME_CLASSIQUE_PATH: /data/df_prime_classique.parquet
+      PRIME_EXCURSION_PATH: /data/df_prime_excursion.parquet
+      TRIPADVISOR_PATH: /data/df_tripadvisor_France.parquet
+      AIRBNB_PATH: /data/df_airbnb_Paris.parquet
+      DATATOURISME_ZIP_DIR: /snapshots
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/data:ro
+      - "C:/Users/DELL/Data Engineering/Flux datatourisme/snapshots:/snapshots:ro"
+
+volumes:
+  pgdata:
