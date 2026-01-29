@@ -13,4 +13,4 @@ def get_service():
 @router.post("/", response_model=ItineraryResponse)
 def compute_itinerary(req: ItineraryRequest, service: ItineraryService = Depends(get_service)):
     itinerary = service.compute(req)
-    return {"itinerary": itinerary}
+    return itinerary
