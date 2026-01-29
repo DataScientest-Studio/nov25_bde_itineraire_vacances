@@ -37,10 +37,18 @@ class ItineraryService:
 
             result.append({
                 "day": int(cluster_id),
-                "optimizer": optimizer,  # <--- OPTIONNEL MAIS UTILE
                 "pois": df_day.to_dicts(),
                 "total_distance_km": float(df_day["day_total_distance"][0]),
                 "total_duration_min": float(df_day["day_total_duration"][0] / 60),
             })
 
-        return result
+            # Totaux du séjour
+            trip_total_distance = sum(day["total_distance_km"] for day in result)
+            trip_total_duration = sum(day["total_duration_min"] for day in result)
+
+        return {
+            "itinerary": result,
+            "trip_total_distance_km": trip_total_distance,
+            "trip_total_duration_min": trip_total_duration,
+            "optimizer": optimizer
+        }

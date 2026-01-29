@@ -11,6 +11,7 @@ from features.spatial_clustering import SpatialClusterer
 from features.post_clustering import build_osrm_ready_pois, build_osrm_matrices_async
 from features.itinerary_optimizer import ItineraryOptimizer
 from features.optimizer_ga import GeneticAlgo
+from features.optimizer_nn2o import NN2OptAlgo
 from features.osrm import OSRMClientAsync
 
 
@@ -107,24 +108,72 @@ class ItineraryPipeline:
 
     # ---------------------------------------------------------
     # SOLVEUR NN2O
-    # ---------------------------------------------------------
-    def _compute_itinerary_nn2o(
-        self,
-        df_clustered: pl.DataFrame,
-        df_osrm_dur: pl.DataFrame,
-    ) -> Tuple[str, pl.DataFrame]:
+        # ---------------------------------------------------------
+    def _compute_itinerary_nn2o(self, df_clustered: pl.DataFrame, df_osrm_dur: pl.DataFrame):
+        results = []
 
-        # NN2O attend un DataFrame POLARS complet avec cluster_id
-        optimizer = ItineraryOptimizer.from_list_matrix(
-            df_pois=df_clustered,                 
-            matrix=df_osrm_dur.to_numpy(),        
-            metric="duration",
-        )
+        # Matrice globale OSRM (sans la colonne osrm_index)
+        global_matrix = df_osrm_dur.select(
+            [c for c in df_osrm_dur.columns if c != "osrm_index"]
+        ).to_numpy()
 
-        df_itinerary = optimizer.solve_all_days()  
+        for cluster_id in df_clustered["cluster_id"].unique():
+            df_day = df_clustered.filter(pl.col("cluster_id") == cluster_id)
 
+            if df_day.height < 2:
+                continue
+
+            # Indices globaux OSRM
+            indices = df_day["osrm_index"].to_list()
+
+            # Matrice locale
+            local_matrix = global_matrix[np.ix_(indices, indices)]
+
+            # NN2O
+            df_day_pd = df_day.to_pandas()
+            nn2o = NN2OptAlgo(
+                poi_df=df_day_pd,
+                duration_matrix=local_matrix
+            )
+
+            best_route_local, best_cost = nn2o.run_nn2opt(try_all_starts=False)
+
+            if not best_route_local:
+                continue
+
+            # Remapping local → global
+            best_route_global = [indices[i] for i in best_route_local]
+
+            # Construction df_route
+            df_route = df_day.filter(pl.col("osrm_index").is_in(best_route_global))
+
+            # Tri selon l'ordre de l'itinéraire
+            order_map = {v: i for i, v in enumerate(best_route_global)}
+            df_route = df_route.sort(pl.col("osrm_index").replace(order_map))
+
+            # Colonne 'order' locale
+            df_route = df_route.with_columns(
+                pl.Series("order", list(range(df_route.height)))
+            )
+
+            # cluster_id explicite
+            df_route = df_route.with_columns(
+                pl.lit(cluster_id).alias("cluster_id")
+            )
+
+            # Ajouter une colonne solver_used
+            df_route = df_route.with_columns(
+                pl.lit("nn2o").alias("solver_used")
+            )
+
+            results.append(df_route)
+
+        if not results:
+            return "nn2o", pl.DataFrame({"cluster_id": []})
+
+        df_itinerary = pl.concat(results)
         return "nn2o", df_itinerary
-    # ---------------------------------------------------------
+        # ---------------------------------------------------------
     # SOLVEUR GA (sans enrichissement)
     # ---------------------------------------------------------
 
@@ -199,6 +248,10 @@ class ItineraryPipeline:
             # 8. Réinjecter cluster_id
             df_route = df_route.with_columns(
                 pl.lit(cluster_id).alias("cluster_id")
+            )
+            # 9. Ajouter une colonne solver_used
+            df_route = df_route.with_columns(
+                pl.lit("ga").alias("solver_used")
             )
 
             results.append(df_route)
@@ -298,13 +351,7 @@ class ItineraryPipeline:
             osrm=osrm,
             transport_mode=transport_mode,
         )
-        print("DIST MATRIX SHAPE:", df_osrm_dist.shape)
-        print("DUR MATRIX SHAPE:", df_osrm_dur.shape)
-        print("DIST SAMPLE:", df_osrm_dist.to_numpy()[0][:10])
-        print("DUR SAMPLE:", df_osrm_dur.to_numpy()[0][:10])
 
-        print(df_clustered.height)
-        print(df_clustered.head())
 
         # 5. Solveur
         if solver == "nn2o":
@@ -314,13 +361,43 @@ class ItineraryPipeline:
             optimizer, df_itinerary = self._compute_itinerary_ga(df_clustered, df_osrm_dur)
 
         elif solver == "auto":
-            # GA → fallback NN2O
-            optimizer, df_itinerary = self._compute_itinerary_ga(df_clustered, df_osrm_dur)
-            if df_itinerary.is_empty():
-                optimizer, df_itinerary = self._compute_itinerary_nn2o(df_clustered, df_osrm_dur)
-                optimizer = "nn2o_auto_fallback"
-            else:
-                optimizer = "ga_auto"
+            # Mode AUTO intelligent
+            results = []
+
+            for day in df_clustered["cluster_id"].unique():
+                df_day = df_clustered.filter(pl.col("cluster_id") == day)
+                cluster_size = df_day.height
+
+                # Choix du solveur selon la taille du cluster
+                if cluster_size <= 12:
+                    chosen = "nn2o"
+                    _, df_day_it = self._compute_itinerary_nn2o(
+                        df_clustered.filter(pl.col("cluster_id") == day),
+                        df_osrm_dur
+                    )
+                else:
+                    chosen = "ga"
+                    _, df_day_it = self._compute_itinerary_ga(
+                        df_clustered.filter(pl.col("cluster_id") == day),
+                        df_osrm_dur
+                    )
+
+                if df_day_it.is_empty():
+                    continue
+
+                # Tag du solveur utilisé
+                df_day_it = df_day_it.with_columns(
+                    pl.lit(chosen).alias("solver_used")
+                )
+
+                results.append(df_day_it)
+
+            if not results:
+                return df_clustered, df_osrm_dist, df_osrm_dur, pl.DataFrame(), "auto_empty"
+
+            df_itinerary = pl.concat(results)
+            optimizer = "auto"
+
         else:
             raise ValueError(f"Solver inconnu : {solver}")
 
@@ -335,21 +412,31 @@ class ItineraryPipeline:
         for day in df_itinerary["cluster_id"].unique():
             df_day = df_itinerary.filter(pl.col("cluster_id") == day)
 
-            # 1. Toujours trier par osrm_index
-            df_day = df_day.sort("osrm_index")
+            # 1. Garder l'ordre local produit par GA ou NN2O
+            df_day = df_day.sort("order")
 
-            # 2. L’ordre doit être la liste des osrm_index
-            order = df_day["osrm_index"].to_list()
+            # 2. Ordre local (0..n-1)
+            order = df_day["order"].to_list()
 
-            # 3. Matrices OSRM
-            matrix_dur = df_osrm_dur.to_numpy()
-            matrix_dist = df_osrm_dist.to_numpy()
+            # 3. Construire la matrice locale
+            indices = df_day["osrm_index"].to_list()
 
-            # 4. Enrichissement correct
+            global_dur = df_osrm_dur.select(
+                [c for c in df_osrm_dur.columns if c != "osrm_index"]
+            ).to_numpy()
+
+            global_dist = df_osrm_dist.select(
+                [c for c in df_osrm_dist.columns if c != "osrm_index"]
+            ).to_numpy()
+
+            local_matrix_dur = global_dur[np.ix_(indices, indices)]
+            local_matrix_dist = global_dist[np.ix_(indices, indices)]
+
+            # 4. Enrichissement avec matrice locale + ordre local
             df_enriched = self.enrich_itinerary(
                 df_day=df_day,
-                matrix_durations=matrix_dur,
-                matrix_distances=matrix_dist,
+                matrix_durations=local_matrix_dur,
+                matrix_distances=local_matrix_dist,
                 order=order
             )
 
