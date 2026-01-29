@@ -99,4 +99,4 @@ cache_osrm/
 .env
 
 # test directory
-tests
+tests/
