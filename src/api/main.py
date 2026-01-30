@@ -1,18 +1,18 @@
 from fastapi import FastAPI
 import pandas as pd
 
-import api_models as md
-import database as db
-import clustering as clt
-import osrm
-import optimizer_ga as opt
+from src.api import api_models as md
+from src.api import database as db
+from src.api import clustering as clt
+from src.api import osrm
+from src.api import optimizer_ga as opt
 
 
 app = FastAPI()
 
 
 # connexion à la base de données
-dbm = db.DBManager("../data/etl_datatourisme_webservice/postgres_postgis/.env")
+dbm = db.DBManager(".env")
 
 @app.get("/main_categories")
 def get_main_catgories() :

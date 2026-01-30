@@ -5,6 +5,8 @@ import json
 import numpy as np
 import pandas as pd
 
+from utils import fetch_main_categories, fetch_sub_categories
+
 #------------------------------------
 # import de données locales pour test
 #------------------------------------
@@ -12,12 +14,8 @@ import pandas as pd
 df_localities= pd.read_csv('data/localities.csv')
 localities = df_localities['locality'].unique().tolist()
 
-df_main_cat= pd.read_csv('data/main_category.csv')
-main_categories = df_main_cat['nom_cat'].unique().tolist()
 
-df_sub_cat= pd.read_csv('data/sub_category.csv')
-
-# donnée pour simuler un résultat 
+## données pour simuler les résultats 
 with open("data/results_example.json", "r") as f:
     results = json.load(f)
 results = results['itinerary']
@@ -51,20 +49,86 @@ categories_data = {
 
 with st.sidebar:
     st.header("⚙️Filtres")
-    radius = st.slider("Rayon (km)", 1, st.session_state.max_radius, value= st.session_state.payload['rayon'])
 
-    num_days = st.slider("Nombre de jours", 1, st.session_state.max_days, value= st.session_state.payload['nb_days'])
+    # filtre par rayon :
+    def update_radius():
+        """ Mise à jour du rayon dans la payload"""
+        st.session_state.payload['radius'] = st.session_state.radius_widget
+
+    radius = st.slider("Rayon (km)", 
+                       1, 
+                       st.session_state.max_radius, 
+                       value= st.session_state.payload['radius'],
+                       key='radius_widget',
+                       on_change= update_radius
+                       )
+
+    # filtre par nombre de jours :
+    def update_num_days():
+        """ Mise à jour du nombre de jours dans la payload"""
+        st.session_state.payload['nb_days'] = st.session_state.num_days_widget
+
+    num_days = st.slider("Nombre de jours", 
+                         1, 
+                         st.session_state.max_days, 
+                         value= st.session_state.payload['nb_days'],
+                         key= 'num_days_widget',
+                         on_change= update_num_days)
     
+    # filtre par moyen de transport :
+    def update_mobility_mean():
+        """ Mise à jour du moyen de transport dans la payload"""
+        st.session_state.payload['osrm_mode'] = st.session_state.dict_mobility[st.session_state.mobility_mean_widget]
+
+
     index = list(st.session_state.dict_mobility.values()).index(st.session_state.payload['osrm_mode'])
     mobility_mean = st.selectbox("Moyen de mobilité/transport", 
                                  st.session_state.dict_mobility.keys(),
-                                 index=index)
-    main_cat = st.multiselect("Catégorie(s) principale(s)", main_categories, default = st.session_state.payload['main_categories'])
-    main_cat_index= df_main_cat.loc[df_main_cat['nom_cat'].isin(main_cat), 'id']
-    sub_categories = df_sub_cat.loc[df_sub_cat['main_category_id'].isin(main_cat_index),'nom_sous_cat']
-    selected_sub_cat = st.multiselect("Sous-catégorie(s)", sub_categories , default = st.session_state.payload['sub_categories'])
+                                 index=index,
+                                 key= 'mobility_mean_widget',
+                                 on_change= update_mobility_mean)
+    
+    # filtre sur les catégories :
+    main_categories = fetch_main_categories()
 
-    st.button('Mettre à jour')
+    def update_main_categories():
+        """ Mise à jour des catégories principales et réinitialisation des sous-catégories dans la payload"""
+    
+        st.session_state.payload['main_categories'] = st.session_state.main_cat_widget
+        st.session_state.payload['sub_categories'] = []
+
+    main_cat = st.multiselect("Catégorie(s) principale(s)", 
+                              main_categories, 
+                              default = st.session_state.payload['main_categories'],
+                              key = 'main_cat_widget',
+                              on_change=update_main_categories)
+    
+    if main_cat :
+        sub_categories = fetch_sub_categories(main_cat)
+    else :
+        sub_categories = []
+
+    def update_sub_categories():
+        """fonction pour mettre à jour les sub_categories dans la payload au 
+        au changement du champ correspondant"""
+        st.session_state.payload['sub_categories'] = st.session_state.sub_cat_widget
+
+    sub_cat = st.multiselect("Sous-catégorie(s)", 
+                             sub_categories , 
+                             default = st.session_state.payload['sub_categories'],
+                             key='sub_cat_widget',
+                             on_change= update_sub_categories)
+    
+
+    if st.button('Mettre à jour') :
+        payload = st.session_state.payload
+        if (payload["main_categories"]== [] ) or (payload["sub_categories"] == []) or (payload["nb_days"]== 0) or (payload["osrm_mode"] == "") or (payload["radius"] == 0):
+            st.error("❌ Un ou plusieurs paramètres de filtres sont invalides") 
+        else : 
+            st.write(st.session_state.payload)
+
+
+
 
 #------------------------------------
 # Partie centrale avec les résultats

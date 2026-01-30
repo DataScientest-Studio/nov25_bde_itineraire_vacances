@@ -2,24 +2,19 @@ import streamlit as st
 import folium as flm
 from streamlit_folium import st_folium
 
-import requests
+
 import pandas as pd
 import numpy as np
-
 from datetime import timedelta
+
+from utils import fetch_main_categories, fetch_sub_categories
 
 #------------------------------------
 # import de données locales pour test
 #------------------------------------
 
-
 df_localities= pd.read_csv('data/localities.csv')
 localities = df_localities['locality'].unique().tolist()
-
-df_main_cat= pd.read_csv('data/main_category.csv')
-main_categories = df_main_cat['nom_cat'].unique().tolist()
-
-df_sub_cat= pd.read_csv('data/sub_category.csv')
 
 
 #-----------------------------------------------------------
@@ -83,10 +78,10 @@ with st.expander("📍 Quelle est votre destination ?"):
     if locality and radius :
         map, longitude, latitude = create_geo_zone_map(locality, radius)
         st_folium(map, width=600, height=400)
-        st.session_state.payload["start"]["longitude"] = longitude
-        st.session_state.payload["start"]["latitude"] = latitude
+        st.session_state.payload["start"]["lon"] = longitude
+        st.session_state.payload["start"]["lat"] = latitude
         st.session_state.payload["commune"] = df_localities.loc[df_localities['locality']==locality[0], 'locality_name'].values[0]
-        st.session_state.payload["rayon"] = radius
+        st.session_state.payload["radius"] = radius
 
 #---------------------------------------
 ## durée du séjour
@@ -139,32 +134,34 @@ with st.expander("👣 Comment souhaiteriez-vous vous déplacer ?") :
 ## Préférences/activitées souhaitées
 #---------------------------------------
 
-with st.expander("🎯 Qu'est-ce qui vous ferait plaisir ?"):
+with st.expander("🎪 Qu'est-ce qui vous ferait plaisir ?"):
+
+    # catégories principales :
+    main_categories = fetch_main_categories()
     main_cat = st.multiselect("5️⃣ Catégorie(s) principale(s)", main_categories, default = [])
-    main_cat_index= df_main_cat.loc[df_main_cat['nom_cat'].isin(main_cat), 'id']
-    sub_categories = df_sub_cat.loc[df_sub_cat['main_category_id'].isin(main_cat_index),'nom_sous_cat']
-    sub_cat = st.multiselect("6️⃣ Sous-catégorie(s)", sub_categories , default = [])
+    
+    if main_cat :
+        sub_categories= fetch_sub_categories(main_cat)
+        sub_cat = st.multiselect("6️⃣ Sous-catégorie(s)", sub_categories , default = [])
+
     if main_cat and sub_cat : 
         st.session_state.payload['main_categories']= main_cat
         st.session_state.payload['sub_categories']= sub_cat
 
-#with st.expander("🧮 De quel mode de calcul auriez-vous besoin ?") :
-#    options = {'nom' : ['nom à afficher 1', 'nom à afficher 1', 'nom à affocher 3'],
-#               'description': ['description 1' , 'description 2', 'description 3'],
-#               'solver' :['TSP', 'GA', 'neo4j']
-#    }
-#    mode = st.radio("7️⃣ choisissez un des modes proposés :", options= options['nom'])
+#---------------------------------------------------------------------
+## Validation des paramètres et lancement de la recherche
+#---------------------------------------------------------------------
 
 if st.button('Proposer des itinéraires') :
     payload = st.session_state.payload
-    if (payload["commune"] == "") or (payload["main_categories"]== [] ) or (payload["sub_categories"] == []) or payload["nb_days"]== 0 or  payload["start"] == {"lat": 0, "lon": 0} or payload["osrm_mode"] == "" :
+    if (payload["commune"] == "") or (payload["main_categories"]== [] ) or (payload["sub_categories"] == []) or (payload["nb_days"]== 0) or  (payload["start"] == {"lat": 0, "lon": 0}) or (payload["osrm_mode"] == "") or (payload["radius"] == 0):
         st.error("❌ Un ou plusieurs paramètres de recherche sont invalides")
     else : 
         st.write(st.session_state.payload)
         st.session_state.redirect = True
     
 if st.session_state.get('redirect'):
-    if st.button('confirmer') :
+    if st.button('Confirmer') :
         st.switch_page("pages/results.py")
 
 
