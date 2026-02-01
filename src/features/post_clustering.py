@@ -260,6 +260,12 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
                 "longitude",
                 "main_category",
                 "sub_category",
+                "adresse",
+                "code_postal",
+                "commune",
+                "departement",
+                "region",
+                "contacts_du_poi",
                 "final_score",
             ]
         )

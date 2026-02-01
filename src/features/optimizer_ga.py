@@ -228,7 +228,7 @@ class GeneticAlgo:
     #           Boucle principale GA
     # --------------------------------------------------------------------------
 
-    def run_ga(self, pop_size=50, ngen=50, cxpb=0.75, mutpb=0.3):
+    def run_ga(self, pop_size=20, ngen=40, cxpb=0.9, mutpb=0.05):
         """Boucle principale du modèle génétique"""
 
         if self.n_local == 0:

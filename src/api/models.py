@@ -23,6 +23,12 @@ class POI(BaseModel):
     longitude: float
     main_category: str
     sub_category: str
+    adresse: str
+    code_postal: str
+    commune: str
+    departement: str
+    region: str
+    contacts_du_poi: str
     final_score: float
     order: int
     solver_used: str
