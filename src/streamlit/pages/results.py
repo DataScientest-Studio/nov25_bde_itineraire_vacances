@@ -5,42 +5,7 @@ import json
 import numpy as np
 import pandas as pd
 
-from utils import fetch_main_categories, fetch_sub_categories
-
-#------------------------------------
-# import de données locales pour test
-#------------------------------------
-## données pour filtrer :
-df_localities= pd.read_csv('data/localities.csv')
-localities = df_localities['locality'].unique().tolist()
-
-
-## données pour simuler les résultats 
-with open("data/results_example.json", "r") as f:
-    results = json.load(f)
-results = results['itinerary']
-
-
-categories_data = {
-    "Nature & Paysages": {"icon": "tree", "color": "green"},
-    "Information Touristique": {"icon": "info-circle", "color": "blue"},
-    "Bien-être & Santé": {"icon": "spa", "color": "lightblue"},
-    "Famille & Enfants": {"icon": "child", "color": "pink"},
-    "Transports": {"icon": "car", "color": "gray"},
-    "Commodités": {"icon": "shopping-basket", "color": "orange"},
-    "Événements & Traditions": {"icon": "theater-masks", "color": "purple"},
-    "Commerce & Shopping": {"icon": "shopping-bag", "color": "lightred"},
-    "Gastronomie & Restauration": {"icon": "utensils", "color": "red"},
-    "Culture & Musées": {"icon": "landmark", "color": "darkpurple"},
-    "Santé & Urgences": {"icon": "hospital", "color": "darkred"},
-    "Hébergement": {"icon": "hotel", "color": "beige"}, 
-    "Sports & Loisirs": {"icon": "baseball", "color": "cadetblue"},
-    "Services & Mobilité": {"icon": "car-side", "color": "gray"},
-    "Loisirs & Clubs": {"icon": "mask", "color": "darkblue"},
-    "Camping & Plein Air": {"icon": "campground", "color": "darkgreen"},
-    "Patrimoine & Monuments": {"icon": "gopuram", "color": "orange"} 
-}
-
+from utils import fetch_main_categories, fetch_sub_categories, distance_print, time_print
 
 
 #----------------------------------
@@ -129,14 +94,92 @@ with st.sidebar:
 
 
 
+#------------------------------------
+# import de données locales pour test
+#------------------------------------
+
+## données pour simuler les résultats 
+with open("data/response_1769780305242.json", "r") as f:
+    results = json.load(f)
+results = results['itinerary']
+
+
+categories_data = {
+    "Nature & Paysages": {"icon": "tree", "color": "green"},
+    "Information Touristique": {"icon": "info-circle", "color": "blue"},
+    "Bien-être & Santé": {"icon": "spa", "color": "lightblue"},
+    "Famille & Enfants": {"icon": "child", "color": "pink"},
+    "Transports": {"icon": "car", "color": "gray"},
+    "Commodités": {"icon": "shopping-basket", "color": "orange"},
+    "Événements & Traditions": {"icon": "theater-masks", "color": "purple"},
+    "Commerce & Shopping": {"icon": "shopping-bag", "color": "lightred"},
+    "Gastronomie & Restauration": {"icon": "utensils", "color": "red"},
+    "Culture & Musées": {"icon": "landmark", "color": "darkpurple"},
+    "Santé & Urgences": {"icon": "hospital", "color": "darkred"},
+    "Hébergement": {"icon": "hotel", "color": "beige"}, 
+    "Sports & Loisirs": {"icon": "baseball", "color": "cadetblue"},
+    "Services & Mobilité": {"icon": "car-side", "color": "gray"},
+    "Loisirs & Clubs": {"icon": "mask", "color": "darkblue"},
+    "Camping & Plein Air": {"icon": "campground", "color": "darkgreen"},
+    "Patrimoine & Monuments": {"icon": "gopuram", "color": "orange"} 
+}
+
+categories_emoji = {
+    "Nature & Paysages": "🌲",
+    "Information Touristique": "ℹ️",
+    "Bien-être & Santé": "🧘",
+    "Famille & Enfants": "👶",
+    "Transports": "🚗",
+    "Commodités": "🛒",
+    "Événements & Traditions": "🎭",
+    "Commerce & Shopping": "🛍️",
+    "Gastronomie & Restauration": "🍴",
+    "Culture & Musées": "🏛️",
+    "Santé & Urgences": "🏥",
+    "Hébergement": "🏨",
+    "Sports & Loisirs": "⚾",
+    "Services & Mobilité": "🚙",
+    "Loisirs & Clubs": "🎭",
+    "Camping & Plein Air": "⛺",
+    "Patrimoine & Monuments": "🏰"
+}
+
+categories_color = {
+    "Nature & Paysages": "green",
+    "Information Touristique": "blue",
+    "Bien-être & Santé": "blue",
+    "Famille & Enfants": "violet",
+    "Transports": "gray",
+    "Commodités": "orange",
+    "Événements & Traditions": "violet",
+    "Commerce & Shopping": "orange",
+    "Gastronomie & Restauration": "red",
+    "Culture & Musées": "violet",
+    "Santé & Urgences": "red",
+    "Hébergement": "gray",
+    "Sports & Loisirs": "blue",
+    "Services & Mobilité": "gray",
+    "Loisirs & Clubs": "violet",
+    "Camping & Plein Air": "green",
+    "Patrimoine & Monuments": "orange"
+}
 
 #------------------------------------
 # Partie centrale avec les résultats
 #------------------------------------
+
 st.header("🗺️ Nos propositions d'itinéraires")
-col1, col2 = st.columns(2)
+
+if 'show_details' not in st.session_state:
+    st.session_state.show_details = {}
+
+#Récupération de l'icône du mode principale de mobilité :
+osrm_mode = st.session_state.payload['osrm_mode']
+index = list(st.session_state.dict_mobility.values()).index(st.session_state.payload['osrm_mode'])
+mobility_mode_icon= list(st.session_state.dict_mobility.keys())[index][0]
 
 for day in range(0, len(results)) :
+    #récupération de l'itinéraire :
     itinerary = results[day]['pois']
 
     #création de la carte pour la journée :
@@ -165,14 +208,95 @@ for day in range(0, len(results)) :
                                    icon_color='white'
                                    )
                    ).add_to(m)
+        
+    # Récupération des catégories principales de l'itinéraire, de la durée et distance globales et du nombre de poi :
+    main_cat_itin = list(set([poi['main_category'] for poi in itinerary]))
+    day_total_distance= itinerary[0]['day_total_distance']
+    day_total_duration= itinerary[0]['day_total_duration']
+    poi_nbre= len(itinerary)
 
-    if day%2 == 0 :
-        with col1 :      
-            st.subheader(f"Journée n°{day+1}")
-            st_folium(m, width=325, height=300)
-    else: 
-        with col2 :      
-            st.subheader(f"Journée n°{day+1}")
-            st_folium(m, width=325, height=300)
+    ## Affichage des résulats :
+
+    ### Entête :
+    st.subheader(f"Journée n°{day+1}")
+
+    ### badges :
+    badges_markdown = ""
+    for cat in main_cat_itin:
+        emoji = categories_emoji[cat]
+        color = categories_color[cat]
+        badges_markdown += f":{color}-badge[{emoji} {cat}] "
+    st.markdown(badges_markdown)
+    
+    ### synthèse : nombre pois, distance et durée globales
+    st.markdown(f":round_pushpin: {poi_nbre} POIs, :straight_ruler: {distance_print(day_total_distance)}, :hourglass: {time_print(day_total_duration)}")
+
+    
+    if st.session_state.show_details.get(day, False):
+        # 2 colonnes si détails activés
+        col_carte, col_details = st.columns([1, 1])
+        
+        with col_carte:
+            st_folium(m, width=325, height=400)
+            if st.button("Masquer", key=f'hide_{day}'):
+                st.session_state.show_details[day] = False
+                st.rerun()
+        
+        with col_details:
+            with st.container(height=400, border=True):
+                st.markdown('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">', unsafe_allow_html=True)
+ 
+                for i in range(0, len(itinerary)):
+                    if i==0:
+
+                        poi_cat = itinerary[i]['main_category']
+                        icon = categories_data[poi_cat]['icon']
+                        color = categories_data[poi_cat]['color']
+                            
+                        st.markdown(f"""
+                                    <div style="line-height: 1.3; margin-bottom: 15px; margin-left: 10px;">
+                                    <i class="fa fa-{icon}" style="color: {color}; font-size: 18px;"></i> <b>Point d'intérêt N°{i+1}</b><br>
+                                    <small>- Adresse: {itinerary[i]['adresse']}, {itinerary[i]['code_postal']}, {itinerary[i]['commune']}</small><br>
+                                    <small>- Contacts: <a href="{itinerary[i]['contacts_du_poi']}" target="_blank">{itinerary[i]['contacts_du_poi']}</a></small>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                    else:
+                        poi_cat = itinerary[i]['main_category']
+                        icon = categories_data[poi_cat]['icon']
+                        color = categories_data[poi_cat]['color']
+
+                        d= itinerary[i]['distance_from_prev']
+                        t=itinerary[i]['duration_from_prev']
+                            
+
+                        st.markdown(f'''
+                                        <div style="line-height: 1.3; margin-bottom: 15px; margin-top: 15px; margin-left: 20px;">
+                                        <small>{mobility_mode_icon} <b>Distance:</b>  {distance_print(d)}</small><br>
+                                        <small>⏱️ <b>Durée</b>: {time_print(t)}</small><br>
+                                        </div>
+                                        ''', unsafe_allow_html=True)
+                            
+                        st.markdown(f"""
+                                    <div style="line-height: 1.3; margin-bottom: 15px; margin-top: 15px; margin-left: 10px;">
+                                    <i class="fa fa-{icon}" style="color: {color}; font-size: 18px;"></i> <b>Point d'intérêt N°{i+1}</b><br>
+                                    <small>- Adresse: {itinerary[i]['adresse']}, {itinerary[i]['code_postal']}, {itinerary[i]['commune']}</small><br>
+                                    <small>- Contacts: <a href="{itinerary[i]['contacts_du_poi'][1:]}" target="_blank">{itinerary[i]['contacts_du_poi'][1:]}</a></small>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+
+                            
+
+    else:
+        # Pleine largeur par défaut
+        st_folium(m, width=700, height=400)
+        if st.button("Voir plus", key=f'more_{day}'):
+            st.session_state.show_details[day] = True
+            st.rerun()
+
+   
+        
+            
+    
+    
 
     

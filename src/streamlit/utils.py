@@ -25,3 +25,24 @@ def fetch_sub_categories(main_cat) :
         return data['sub_categories']
     except requests.exceptions.RequestException as e:
         st.error(f"Erreur lors de la récupération des données: {e}")
+
+@st.cache_data
+def distance_print(d) :
+    if d>1000 :
+        d=f"{round(d/1000, 1)} km"
+    else :
+        d=f"{round(d,0)} m"
+    return d
+                            
+@st.cache_data
+def time_print(t):
+    t= int(t)
+    if t < 60:
+        return f"{t}s"
+    elif t < 3600:
+        minutes = t // 60
+        return f"{minutes}min"
+    else:
+        hours = t // 3600
+        minutes = (t % 3600) // 60
+        return f"{hours}h {minutes}min"
