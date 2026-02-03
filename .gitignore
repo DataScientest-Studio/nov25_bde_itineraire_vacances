@@ -100,3 +100,6 @@ cache_osrm/
 
 # test directory
 tests/
+
+# airflow logs directory
+logs/
