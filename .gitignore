@@ -99,11 +99,11 @@ cache_osrm/
 .mypy_cache/
 .env
 
-<<<<<<< HEAD
+
 # test directory
 tests/
 
 
 # airflow scheduler logs
 logs/
->>>>>>> origin/master
+
