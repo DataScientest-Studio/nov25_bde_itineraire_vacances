@@ -2,6 +2,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import polars as pl
 
 
 def _save_fig(fig, save_path: str | None):
