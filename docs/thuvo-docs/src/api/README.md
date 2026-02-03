@@ -142,3 +142,13 @@ Version v2 avec :
 ## 12) Licence & données
 Les données sources (ex : DataTourisme) restent soumises à leurs licences respectives.
 Ce projet n’expose que des vues dérivées et ne redistribue pas les datasets bruts.
+
+
+## 13) Quality Gate (PRIME)
+L’API PRIME intègre un mécanisme de contrôle qualité agissant comme un interrupteur de sécurité.
+Il permet de détecter des incohérences de calcul avant exposition API.
+- Mode STRICT : bloque la réponse si des erreurs critiques sont détectées
+- Mode RELAXED : expose les résultats tout en remontant les alertes qualité
+
+Ce mécanisme permet de sécuriser le contrat API tout en autorisant l’expérimentation.
+

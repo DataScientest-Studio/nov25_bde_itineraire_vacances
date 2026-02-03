@@ -14,3 +14,7 @@ folium
 
 # Utils
 python-dateutil
+
+fastapi
+uvicorn[standard]
+pydantic

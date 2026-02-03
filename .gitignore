@@ -32,6 +32,7 @@ var/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+logs/
 
 # Unit test / coverage reports
 htmlcov/
@@ -100,3 +101,12 @@ graphs/
 # Mypy cache
 .mypy_cache/
 .env
+
+
+# test directory
+tests/
+
+
+# airflow scheduler logs
+logs/
+
