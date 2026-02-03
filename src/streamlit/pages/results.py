@@ -5,20 +5,101 @@ import json
 import numpy as np
 import pandas as pd
 
+from utils import fetch_main_categories, fetch_sub_categories, distance_print, time_print
+
+
+#----------------------------------
+# Sidebar pour filtrer
+#------------------------------------
+
+with st.sidebar:
+    st.header("⚙️Filtres")
+
+    # filtre par rayon :
+    def update_radius():
+        """ Mise à jour du rayon dans la payload"""
+        st.session_state.payload['radius'] = st.session_state.radius_widget
+
+    radius = st.slider("Rayon (km)", 
+                       1, 
+                       st.session_state.max_radius, 
+                       value= st.session_state.payload['radius'],
+                       key='radius_widget',
+                       on_change= update_radius
+                       )
+
+    # filtre par nombre de jours :
+    def update_num_days():
+        """ Mise à jour du nombre de jours dans la payload"""
+        st.session_state.payload['nb_days'] = st.session_state.num_days_widget
+
+    num_days = st.slider("Nombre de jours", 
+                         1, 
+                         st.session_state.max_days, 
+                         value= st.session_state.payload['nb_days'],
+                         key= 'num_days_widget',
+                         on_change= update_num_days)
+    
+    # filtre par moyen de transport :
+    def update_mobility_mean():
+        """ Mise à jour du moyen de transport dans la payload"""
+        st.session_state.payload['osrm_mode'] = st.session_state.dict_mobility[st.session_state.mobility_mean_widget]
+
+
+    index = list(st.session_state.dict_mobility.values()).index(st.session_state.payload['osrm_mode'])
+    mobility_mean = st.selectbox("Moyen de mobilité/transport", 
+                                 st.session_state.dict_mobility.keys(),
+                                 index=index,
+                                 key= 'mobility_mean_widget',
+                                 on_change= update_mobility_mean)
+    
+    # filtre sur les catégories :
+    main_categories = fetch_main_categories()
+
+    def update_main_categories():
+        """ Mise à jour des catégories principales et réinitialisation des sous-catégories dans la payload"""
+    
+        st.session_state.payload['main_categories'] = st.session_state.main_cat_widget
+        st.session_state.payload['sub_categories'] = []
+
+    main_cat = st.multiselect("Catégorie(s) principale(s)", 
+                              main_categories, 
+                              default = st.session_state.payload['main_categories'],
+                              key = 'main_cat_widget',
+                              on_change=update_main_categories)
+    
+    if main_cat :
+        sub_categories = fetch_sub_categories(main_cat)
+    else :
+        sub_categories = []
+
+    def update_sub_categories():
+        """fonction pour mettre à jour les sub_categories dans la payload au 
+        au changement du champ correspondant"""
+        st.session_state.payload['sub_categories'] = st.session_state.sub_cat_widget
+
+    sub_cat = st.multiselect("Sous-catégorie(s)", 
+                             sub_categories , 
+                             default = st.session_state.payload['sub_categories'],
+                             key='sub_cat_widget',
+                             on_change= update_sub_categories)
+    
+
+    if st.button('Mettre à jour') :
+        payload = st.session_state.payload
+        if (payload["main_categories"]== [] ) or (payload["sub_categories"] == []) or (payload["nb_days"]== 0) or (payload["osrm_mode"] == "") or (payload["radius"] == 0):
+            st.error("❌ Un ou plusieurs paramètres de filtres sont invalides") 
+        else : 
+            st.write(st.session_state.payload)
+
+
+
 #------------------------------------
 # import de données locales pour test
 #------------------------------------
-## données pour filtrer :
-df_localities= pd.read_csv('data/localities.csv')
-localities = df_localities['locality'].unique().tolist()
 
-df_main_cat= pd.read_csv('data/main_category.csv')
-main_categories = df_main_cat['nom_cat'].unique().tolist()
-
-df_sub_cat= pd.read_csv('data/sub_category.csv')
-
-# donnée pour simuler un résultat 
-with open("data/results_example.json", "r") as f:
+## données pour simuler les résultats 
+with open("data/response_1769780305242.json", "r") as f:
     results = json.load(f)
 results = results['itinerary']
 
@@ -43,36 +124,62 @@ categories_data = {
     "Patrimoine & Monuments": {"icon": "gopuram", "color": "orange"} 
 }
 
+categories_emoji = {
+    "Nature & Paysages": "🌲",
+    "Information Touristique": "ℹ️",
+    "Bien-être & Santé": "🧘",
+    "Famille & Enfants": "👶",
+    "Transports": "🚗",
+    "Commodités": "🛒",
+    "Événements & Traditions": "🎭",
+    "Commerce & Shopping": "🛍️",
+    "Gastronomie & Restauration": "🍴",
+    "Culture & Musées": "🏛️",
+    "Santé & Urgences": "🏥",
+    "Hébergement": "🏨",
+    "Sports & Loisirs": "⚾",
+    "Services & Mobilité": "🚙",
+    "Loisirs & Clubs": "🎭",
+    "Camping & Plein Air": "⛺",
+    "Patrimoine & Monuments": "🏰"
+}
 
-
-#----------------------------------
-# Sidebar pour filtrer
-#------------------------------------
-
-with st.sidebar:
-    st.header("⚙️Filtres")
-    radius = st.slider("Rayon (km)", 1, st.session_state.max_radius, value= st.session_state.payload['rayon'])
-
-    num_days = st.slider("Nombre de jours", 1, st.session_state.max_days, value= st.session_state.payload['nb_days'])
-    
-    index = list(st.session_state.dict_mobility.values()).index(st.session_state.payload['osrm_mode'])
-    mobility_mean = st.selectbox("Moyen de mobilité/transport", 
-                                 st.session_state.dict_mobility.keys(),
-                                 index=index)
-    main_cat = st.multiselect("Catégorie(s) principale(s)", main_categories, default = st.session_state.payload['main_categories'])
-    main_cat_index= df_main_cat.loc[df_main_cat['nom_cat'].isin(main_cat), 'id']
-    sub_categories = df_sub_cat.loc[df_sub_cat['main_category_id'].isin(main_cat_index),'nom_sous_cat']
-    selected_sub_cat = st.multiselect("Sous-catégorie(s)", sub_categories , default = st.session_state.payload['sub_categories'])
-
-    st.button('Mettre à jour')
+categories_color = {
+    "Nature & Paysages": "green",
+    "Information Touristique": "blue",
+    "Bien-être & Santé": "blue",
+    "Famille & Enfants": "violet",
+    "Transports": "gray",
+    "Commodités": "orange",
+    "Événements & Traditions": "violet",
+    "Commerce & Shopping": "orange",
+    "Gastronomie & Restauration": "red",
+    "Culture & Musées": "violet",
+    "Santé & Urgences": "red",
+    "Hébergement": "gray",
+    "Sports & Loisirs": "blue",
+    "Services & Mobilité": "gray",
+    "Loisirs & Clubs": "violet",
+    "Camping & Plein Air": "green",
+    "Patrimoine & Monuments": "orange"
+}
 
 #------------------------------------
 # Partie centrale avec les résultats
 #------------------------------------
+
 st.header("🗺️ Nos propositions d'itinéraires")
-col1, col2 = st.columns(2)
+
+if 'show_details' not in st.session_state:
+    st.session_state.show_details = {}
+
+#Récupération de l'icône du mode principale de mobilité :
+osrm_mode = st.session_state.payload['osrm_mode']
+index = list(st.session_state.dict_mobility.values()).index(st.session_state.payload['osrm_mode'])
+mobility_mode_icon= list(st.session_state.dict_mobility.keys())[index][0]
 
 for day in range(0, len(results)) :
+    #récupération de l'itinéraire :
     itinerary = results[day]['pois']
 
     #création de la carte pour la journée :
@@ -101,14 +208,95 @@ for day in range(0, len(results)) :
                                    icon_color='white'
                                    )
                    ).add_to(m)
+        
+    # Récupération des catégories principales de l'itinéraire, de la durée et distance globales et du nombre de poi :
+    main_cat_itin = list(set([poi['main_category'] for poi in itinerary]))
+    day_total_distance= itinerary[0]['day_total_distance']
+    day_total_duration= itinerary[0]['day_total_duration']
+    poi_nbre= len(itinerary)
 
-    if day%2 == 0 :
-        with col1 :      
-            st.subheader(f"Journée n°{day+1}")
-            st_folium(m, width=325, height=300)
-    else: 
-        with col2 :      
-            st.subheader(f"Journée n°{day+1}")
-            st_folium(m, width=325, height=300)
+    ## Affichage des résulats :
+
+    ### Entête :
+    st.subheader(f"Journée n°{day+1}")
+
+    ### badges :
+    badges_markdown = ""
+    for cat in main_cat_itin:
+        emoji = categories_emoji[cat]
+        color = categories_color[cat]
+        badges_markdown += f":{color}-badge[{emoji} {cat}] "
+    st.markdown(badges_markdown)
+    
+    ### synthèse : nombre pois, distance et durée globales
+    st.markdown(f":round_pushpin: {poi_nbre} POIs, :straight_ruler: {distance_print(day_total_distance)}, :hourglass: {time_print(day_total_duration)}")
+
+    
+    if st.session_state.show_details.get(day, False):
+        # 2 colonnes si détails activés
+        col_carte, col_details = st.columns([1, 1])
+        
+        with col_carte:
+            st_folium(m, width=325, height=400)
+            if st.button("Masquer", key=f'hide_{day}'):
+                st.session_state.show_details[day] = False
+                st.rerun()
+        
+        with col_details:
+            with st.container(height=400, border=True):
+                st.markdown('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">', unsafe_allow_html=True)
+ 
+                for i in range(0, len(itinerary)):
+                    if i==0:
+
+                        poi_cat = itinerary[i]['main_category']
+                        icon = categories_data[poi_cat]['icon']
+                        color = categories_data[poi_cat]['color']
+                            
+                        st.markdown(f"""
+                                    <div style="line-height: 1.3; margin-bottom: 15px; margin-left: 10px;">
+                                    <i class="fa fa-{icon}" style="color: {color}; font-size: 18px;"></i> <b>Point d'intérêt N°{i+1}</b><br>
+                                    <small>- Adresse: {itinerary[i]['adresse']}, {itinerary[i]['code_postal']}, {itinerary[i]['commune']}</small><br>
+                                    <small>- Contacts: <a href="{itinerary[i]['contacts_du_poi']}" target="_blank">{itinerary[i]['contacts_du_poi']}</a></small>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                    else:
+                        poi_cat = itinerary[i]['main_category']
+                        icon = categories_data[poi_cat]['icon']
+                        color = categories_data[poi_cat]['color']
+
+                        d= itinerary[i]['distance_from_prev']
+                        t=itinerary[i]['duration_from_prev']
+                            
+
+                        st.markdown(f'''
+                                        <div style="line-height: 1.3; margin-bottom: 15px; margin-top: 15px; margin-left: 20px;">
+                                        <small>{mobility_mode_icon} <b>Distance:</b>  {distance_print(d)}</small><br>
+                                        <small>⏱️ <b>Durée</b>: {time_print(t)}</small><br>
+                                        </div>
+                                        ''', unsafe_allow_html=True)
+                            
+                        st.markdown(f"""
+                                    <div style="line-height: 1.3; margin-bottom: 15px; margin-top: 15px; margin-left: 10px;">
+                                    <i class="fa fa-{icon}" style="color: {color}; font-size: 18px;"></i> <b>Point d'intérêt N°{i+1}</b><br>
+                                    <small>- Adresse: {itinerary[i]['adresse']}, {itinerary[i]['code_postal']}, {itinerary[i]['commune']}</small><br>
+                                    <small>- Contacts: <a href="{itinerary[i]['contacts_du_poi'][1:]}" target="_blank">{itinerary[i]['contacts_du_poi'][1:]}</a></small>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+
+                            
+
+    else:
+        # Pleine largeur par défaut
+        st_folium(m, width=700, height=400)
+        if st.button("Voir plus", key=f'more_{day}'):
+            st.session_state.show_details[day] = True
+            st.rerun()
+
+   
+        
+            
+    
+    
 
     

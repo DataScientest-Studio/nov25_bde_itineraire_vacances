@@ -39,19 +39,18 @@ class DBManager:
             self.return_conn(conn)
     
     def get_main_categories(self) :
-        query = """ SELECT DISTINCT(main_category)
-                    FROM categories
-                    WHERE itinerary_category = true
-                    ORDER BY main_category;"""
+        query = """ SELECT DISTINCT(nom_cat)
+                    FROM main_category
+                    ORDER BY nom_cat;"""
         result = self.execute_query(query)
         main_categories_list = [row[0] for row in result]
         return main_categories_list
     
     def get_sub_categories(self, main_categories_list) :
-        query = """ SELECT DISTINCT(sub_category)
-                    FROM categories
-                    WHERE main_category in %s
-                    ORDER BY sub_category;"""
+        query = """ SELECT DISTINCT(nom_sous_cat)
+                    FROM sub_category
+                    WHERE main_category_id IN (SELECT id FROM main_category WHERE nom_cat IN %s )
+                    ORDER BY nom_sous_cat;"""
         result = self.execute_query(query, (tuple(main_categories_list),))
         categories_list = [row[0] for row in result]
         return categories_list

@@ -6,6 +6,7 @@ pg= st.navigation([st.Page("pages/search.py", title= "Paramètres de recherche "
 
 #-------------------------------------------------
 # Variables globales :
+#-------------------------------------------------
 ## Nombre max de jours :
 st.session_state.max_days = 30
 st.session_state.max_radius = 30
@@ -13,6 +14,7 @@ st.session_state.dict_mobility = {'👟à pied' : 'walk',
                     '🚗Voiture': 'car',
                     '🚴Vélo' : 'bike',
                     '🚌Transport en commun' : 'public_transport'}
+
 
 
 #------------------------------------------------------------
@@ -26,7 +28,7 @@ if 'payload' not in st.session_state :
         "min_score": 0.15,
         "nb_days": 0,
         "start": {"lat": 0, "lon": 0},
-        "rayon": 0,
+        "radius": 0,
         "osrm_mode": ""
     }
 
