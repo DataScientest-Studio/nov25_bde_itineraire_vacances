@@ -97,3 +97,6 @@ cache_osrm/
 # Mypy cache
 .mypy_cache/
 .env
+
+# airflow scheduler logs
+logs/
