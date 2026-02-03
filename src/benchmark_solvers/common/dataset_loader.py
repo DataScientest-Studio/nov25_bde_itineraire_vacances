@@ -1,14 +1,15 @@
 import glob
 import re
-from benchmark_solvers.common.poi_loader import load_poi_parquet
-from benchmark_solvers.common.osrm_matrix import load_osrm_matrix_parquet
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+
+from benchmark_solvers.common.osrm_matrix import load_osrm_matrix_parquet
+from benchmark_solvers.common.poi_loader import load_poi_parquet
 
 
 def load_all_datasets(
-    poi_dir="benchmark_solvers/data/",
-    matrix_dir="benchmark_solvers/data/"
+    poi_dir="benchmark_solvers/data/", matrix_dir="benchmark_solvers/data/"
 ):
     datasets = {}
 
@@ -24,7 +25,6 @@ def load_all_datasets(
     common_sizes = sorted(set(poi_map.keys()) & set(matrix_map.keys()))
 
     for size in common_sizes:
-
         # ----------------------------------------------------------------------
         # 1) Charger les POIs
         # ----------------------------------------------------------------------
@@ -67,9 +67,7 @@ def load_all_datasets(
 
         # Vérifier que la matrice est carrée
         if matrix_df.shape[0] != matrix_df.shape[1]:
-            raise ValueError(
-                f"Matrix for size {size} is not square: {matrix_df.shape}"
-            )
+            raise ValueError(f"Matrix for size {size} is not square: {matrix_df.shape}")
 
         # Conversion en numpy
         matrix = matrix_df.to_numpy()

@@ -1,6 +1,8 @@
 import random
 from typing import List, Tuple
+
 from deap import base, creator, tools
+
 from .base_tsp_path_solver import TSPSolverBase
 
 
@@ -36,8 +38,12 @@ class GA_TspPathSolver(TSPSolverBase):
 
         self.toolbox = base.Toolbox()
         self.toolbox.register("indices", random.sample, range(self.n), self.n)
-        self.toolbox.register("individual", tools.initIterate, creator.Individual, self.toolbox.indices)
-        self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
+        self.toolbox.register(
+            "individual", tools.initIterate, creator.Individual, self.toolbox.indices
+        )
+        self.toolbox.register(
+            "population", tools.initRepeat, list, self.toolbox.individual
+        )
 
         self.toolbox.register("evaluate", self._evaluate)
         self.toolbox.register("mate", tools.cxOrdered)
@@ -47,7 +53,7 @@ class GA_TspPathSolver(TSPSolverBase):
     def _evaluate(self, individual: List[int]):
         total = 0
         for i in range(len(individual) - 1):
-            total += self.D[individual[i], individual[i+1]]
+            total += self.D[individual[i], individual[i + 1]]
         return (total,)
 
     def solve(self) -> Tuple[List[int], float]:

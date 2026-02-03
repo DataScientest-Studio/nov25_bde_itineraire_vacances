@@ -7,6 +7,7 @@ Objectifs :
 - Même format pour ETL, API et scoring PRIME
 """
 from __future__ import annotations
+
 import json
 import logging
 import os
@@ -29,13 +30,14 @@ class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         # Champs standards communs à tous les logs
         payload: Dict[str, Any] = {
-            "ts": datetime.now(timezone.utc).isoformat(),   # horodatage UTC
-            "level": record.levelname,                      # INFO / WARN / ERROR
-            "logger": record.name,                          # nom logique du logger
-            "msg": record.getMessage(),                     # message principal
+            "ts": datetime.now(timezone.utc).isoformat(),  # horodatage UTC
+            "level": record.levelname,  # INFO / WARN / ERROR
+            "logger": record.name,  # nom logique du logger
+            "msg": record.getMessage(),  # message principal
             "module": record.module,
             "func": record.funcName,
-            "line": record.lineno,}
+            "line": record.lineno,
+        }
 
         # Champs métier optionnels passés via logging.extra
         # ex: logger.info("...", extra={"event": "prime_rank", "zone": "Paris-05"})
@@ -46,9 +48,22 @@ class JsonFormatter(logging.Formatter):
                 continue
             # On évite de dupliquer les attributs internes de LogRecord
             if k in (
-                "name", "levelname", "levelno", "pathname", "filename", "module",
-                "lineno", "funcName", "created", "msecs", "relativeCreated",
-                "thread", "threadName", "processName", "process"):
+                "name",
+                "levelname",
+                "levelno",
+                "pathname",
+                "filename",
+                "module",
+                "lineno",
+                "funcName",
+                "created",
+                "msecs",
+                "relativeCreated",
+                "thread",
+                "threadName",
+                "processName",
+                "process",
+            ):
                 continue
             payload[k] = v
 
@@ -122,7 +137,8 @@ class Timer:
         self.t0 = time.perf_counter()
         self.logger.info(
             "start",
-            extra={"event": "timer_start", **self.fields},)
+            extra={"event": "timer_start", **self.fields},
+        )
         return self
 
     def __exit__(self, exc_type, exc, tb):
@@ -132,7 +148,8 @@ class Timer:
         if exc is None:
             self.logger.info(
                 "end",
-                extra={"event": "timer_end", "duration_ms": duration_ms, **self.fields},)
+                extra={"event": "timer_end", "duration_ms": duration_ms, **self.fields},
+            )
             return False
 
         # Cas erreur : on log + on laisse remonter l’exception
@@ -143,6 +160,8 @@ class Timer:
                 "duration_ms": duration_ms,
                 "error_type": str(exc_type),
                 "error": str(exc),
-                **self.fields,},
-            exc_info=True,)
+                **self.fields,
+            },
+            exc_info=True,
+        )
         return False

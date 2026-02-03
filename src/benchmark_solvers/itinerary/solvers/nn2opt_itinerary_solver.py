@@ -1,8 +1,9 @@
-from .base_itinerary_solver import ItinerarySolverBase
 from benchmark_solvers.itinerary.scoring.itinerary_score import ItineraryScoring
 
-class NN2OptItinerarySolver(ItinerarySolverBase):
+from .base_itinerary_solver import ItinerarySolverBase
 
+
+class NN2OptItinerarySolver(ItinerarySolverBase):
     def __init__(self, poi_df, duration_matrix, start=0):
         super().__init__(poi_df, duration_matrix, name="NN2Opt_Itinerary")
         self.start = start
@@ -34,8 +35,8 @@ class NN2OptItinerarySolver(ItinerarySolverBase):
                 for k in range(i + 1, self.n - 1):
                     new_route = (
                         best_route[:i]
-                        + best_route[i:k+1][::-1]
-                        + best_route[k+1:]
+                        + best_route[i : k + 1][::-1]
+                        + best_route[k + 1 :]
                     )
                     new_score = self.scoring.score(new_route)
 

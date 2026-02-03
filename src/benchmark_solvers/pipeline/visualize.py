@@ -1,7 +1,8 @@
+import os
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
-import os
 
 sns.set(style="whitegrid")
 
@@ -75,11 +76,7 @@ def plot_comparison(comp):
     # Scatter : coût TSP vs score Iti
     plt.figure(figsize=(10, 6))
     sns.scatterplot(
-        data=comp,
-        x="mean_cost_tsp",
-        y="best_score_iti",
-        hue="matrix",
-        s=200
+        data=comp, x="mean_cost_tsp", y="best_score_iti", hue="matrix", s=200
     )
     plt.title("Comparaison TSP vs Itinéraire")
     plt.xlabel("Coût TSP (plus bas = mieux)")
@@ -88,19 +85,9 @@ def plot_comparison(comp):
 
     # Barplot solveur gagnant
     plt.figure(figsize=(10, 6))
+    sns.barplot(data=comp, x="matrix", y="rating_tsp", color="steelblue", label="TSP")
     sns.barplot(
-        data=comp,
-        x="matrix",
-        y="rating_tsp",
-        color="steelblue",
-        label="TSP"
-    )
-    sns.barplot(
-        data=comp,
-        x="matrix",
-        y="best_score_iti",
-        color="orange",
-        label="Itinéraire"
+        data=comp, x="matrix", y="best_score_iti", color="orange", label="Itinéraire"
     )
     plt.title("Comparaison globale TSP vs Itinéraire")
     plt.ylabel("Score / Rating")
@@ -110,12 +97,7 @@ def plot_comparison(comp):
     # Ratio score Iti / coût TSP
     if "tsp_vs_iti_score_ratio" in comp.columns:
         plt.figure(figsize=(10, 6))
-        sns.lineplot(
-            data=comp,
-            x="matrix",
-            y="tsp_vs_iti_score_ratio",
-            marker="o"
-        )
+        sns.lineplot(data=comp, x="matrix", y="tsp_vs_iti_score_ratio", marker="o")
         plt.title("Ratio Score Itinéraire / Coût TSP")
         plt.ylabel("Ratio")
         plt.show()

@@ -8,6 +8,7 @@ REQUIRED_COLUMNS = [
     "sub_category",
 ]
 
+
 def load_poi_parquet(path: str) -> pd.DataFrame:
     df = pd.read_parquet(path)
 

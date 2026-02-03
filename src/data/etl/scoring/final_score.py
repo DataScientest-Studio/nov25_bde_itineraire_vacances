@@ -11,6 +11,7 @@ WEIGHTS = {
     # "opening_score_norm": 0.10,
 }
 
+
 def add_final_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     """
     Combine toutes les métriques normalisées en un score final pondéré.
@@ -35,8 +36,8 @@ def add_final_score(lf: pl.LazyFrame) -> pl.LazyFrame:
     # Normalisation min-max
     lf = lf.with_columns(
         (
-            (pl.col("final_score_raw") - pl.col("final_score_raw").min()) /
-            (pl.col("final_score_raw").max() - pl.col("final_score_raw").min() + 1e-9)
+            (pl.col("final_score_raw") - pl.col("final_score_raw").min())
+            / (pl.col("final_score_raw").max() - pl.col("final_score_raw").min() + 1e-9)
         ).alias("final_score")
     )
 

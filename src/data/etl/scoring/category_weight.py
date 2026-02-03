@@ -32,11 +32,13 @@ def add_category_weight(lf: pl.LazyFrame) -> pl.LazyFrame:
     )
 
     # 2) Normalisation min–max
-    lf = lf.with_columns([
-        (
-            (pl.col("category_weight") - pl.col("category_weight").min()) /
-            (pl.col("category_weight").max() - pl.col("category_weight").min())
-        ).alias("category_weight_norm")
-    ])
+    lf = lf.with_columns(
+        [
+            (
+                (pl.col("category_weight") - pl.col("category_weight").min())
+                / (pl.col("category_weight").max() - pl.col("category_weight").min())
+            ).alias("category_weight_norm")
+        ]
+    )
 
     return lf

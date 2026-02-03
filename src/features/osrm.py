@@ -1,8 +1,9 @@
-import aiohttp
 import asyncio
 import math
-import numpy as np
 from typing import List, Tuple
+
+import aiohttp
+import numpy as np
 
 
 class OSRMClientAsync:
@@ -112,7 +113,13 @@ class OSRMClientAsync:
                 params = {
                     "sources": ";".join(map(str, range(len(sub_coords_src)))),
                     "destinations": ";".join(
-                        map(str, range(len(sub_coords_src), len(sub_coords_src) + len(sub_coords_dst)))
+                        map(
+                            str,
+                            range(
+                                len(sub_coords_src),
+                                len(sub_coords_src) + len(sub_coords_dst),
+                            ),
+                        )
                     ),
                     "annotations": annotations,
                 }
@@ -126,9 +133,7 @@ class OSRMClientAsync:
 
         # Lancer toutes les tâches
         tasks = [
-            process_chunk(i, j)
-            for i in range(num_chunks)
-            for j in range(num_chunks)
+            process_chunk(i, j) for i in range(num_chunks) for j in range(num_chunks)
         ]
 
         for coro in asyncio.as_completed(tasks):

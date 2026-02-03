@@ -88,6 +88,9 @@ archive/
 # exclude cache_osrm
 cache_osrm/
 
+# exclude graphs
+graphs/
+
 # Mac OS-specific storage files
 .DS_Store
 

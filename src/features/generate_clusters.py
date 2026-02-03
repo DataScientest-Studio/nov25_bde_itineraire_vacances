@@ -1,23 +1,38 @@
 import time
 from pathlib import Path
-import polars as pl
 
+import polars as pl
 from poi_filter import POIFilter
 from spatial_clustering import SpatialClusterer
 
-
-
 DATA_DIR = Path("../../data")
 POIS_PATH = DATA_DIR / "processed" / "merged_20260106_135958.parquet"
-OUTPUT_DIR = DATA_DIR / "processed" 
+OUTPUT_DIR = DATA_DIR / "processed"
 
-MAIN_CATEGORY = ["Culture & Musées","Patrimoine & Monuments",
-                "Gastronomie & Restauration","Bien-être & Santé", "Hébergement","Sports & Loisirs","Santé & Urgences",
-                "Famille & Enfants","Culture & Musées","Transports",
-                "Shopping & Artisanat","Nature & Paysages","Patrimoine & Monuments",
-                "Services & Mobilité","Commerce & Shopping","Camping & Plein Air","Commodités",
-                "Transports touristiques","Loisirs & Clubs","Événements & Traditions","Information Touristique"
-            ]
+MAIN_CATEGORY = [
+    "Culture & Musées",
+    "Patrimoine & Monuments",
+    "Gastronomie & Restauration",
+    "Bien-être & Santé",
+    "Hébergement",
+    "Sports & Loisirs",
+    "Santé & Urgences",
+    "Famille & Enfants",
+    "Culture & Musées",
+    "Transports",
+    "Shopping & Artisanat",
+    "Nature & Paysages",
+    "Patrimoine & Monuments",
+    "Services & Mobilité",
+    "Commerce & Shopping",
+    "Camping & Plein Air",
+    "Commodités",
+    "Transports touristiques",
+    "Loisirs & Clubs",
+    "Événements & Traditions",
+    "Information Touristique",
+]
+
 
 def save_clustered_by_day(clustered_lf: pl.LazyFrame, OUTPUT_DIR: str):
     output = Path(OUTPUT_DIR)
@@ -40,22 +55,19 @@ def save_clustered_by_day(clustered_lf: pl.LazyFrame, OUTPUT_DIR: str):
 def main():
     start_total = time.perf_counter()
 
-    commune = 'Quiberon'
+    commune = "Quiberon"
 
     ###############################
     # Filtrage des POIs
     ###############################
 
-    pois_lf= pl.scan_parquet(POIS_PATH)
+    pois_lf = pl.scan_parquet(POIS_PATH)
     print(len(pois_lf.collect()))
 
     filter_pois = POIFilter(pois_lf)
     filtered_pois = (
-        filter_pois
-        .set_commune(commune)
-        .set_categories(
-            main_categories=MAIN_CATEGORY
-        )
+        filter_pois.set_commune(commune)
+        .set_categories(main_categories=MAIN_CATEGORY)
         .set_min_score(0.2)
         .apply()
     )
@@ -80,6 +92,7 @@ def main():
     print(clustered.filter(pl.col("day") == 2).collect())  # jour 2
 
     save_clustered_by_day(clustered, f"clustered_days_{commune}")
-    
+
+
 if __name__ == "__main__":
     main()

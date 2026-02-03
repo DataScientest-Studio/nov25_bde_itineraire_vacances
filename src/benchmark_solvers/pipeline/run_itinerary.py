@@ -1,9 +1,11 @@
-from benchmark_solvers.common.dataset_loader import load_all_datasets
-from benchmark_solvers.itinerary.benchmark.itinerary_runner import ItineraryBenchmarkRunner
-
 import os
+
 import pandas as pd
 
+from benchmark_solvers.common.dataset_loader import load_all_datasets
+from benchmark_solvers.itinerary.benchmark.itinerary_runner import (
+    ItineraryBenchmarkRunner,
+)
 
 
 def run_itinerary():
@@ -46,7 +48,18 @@ def run_itinerary():
         print("Warning: 'mean_score' column not found in results.")
 
     print("\n=== BEST ITINERARY SOLUTIONS ===")
-    cols = [c for c in ["matrix", "solver", "mean_score", "best_score", "mean_time", "variety"] if c in df_sorted.columns]
+    cols = [
+        c
+        for c in [
+            "matrix",
+            "solver",
+            "mean_score",
+            "best_score",
+            "mean_time",
+            "variety",
+        ]
+        if c in df_sorted.columns
+    ]
     print(df_sorted[cols])
 
     # 5) Sauvegarde

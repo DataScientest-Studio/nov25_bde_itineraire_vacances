@@ -1,9 +1,16 @@
+import folium
 import matplotlib.pyplot as plt
 import numpy as np
-import folium
+
 
 def radar_itinerary(df, solver_name):
-    metrics = ["mean_score", "variety", "lunch_time_score", "duration_score", "distance_score"]
+    metrics = [
+        "mean_score",
+        "variety",
+        "lunch_time_score",
+        "duration_score",
+        "distance_score",
+    ]
     values = df[df["solver"] == solver_name][metrics].iloc[0].values
 
     # Normalisation 0-1
@@ -21,6 +28,7 @@ def radar_itinerary(df, solver_name):
     ax.set_title(f"Radar Chart – {solver_name}")
     return fig
 
+
 def timeline_itinerary(route, poi_df, scoring):
     import matplotlib.pyplot as plt
 
@@ -35,12 +43,11 @@ def timeline_itinerary(route, poi_df, scoring):
         current_time += duration
 
     fig, ax = plt.subplots(figsize=(10, 2))
-    ax.barh([0]*len(times), times, left=np.cumsum([0]+times[:-1]))
+    ax.barh([0] * len(times), times, left=np.cumsum([0] + times[:-1]))
     ax.set_yticks([])
     ax.set_xticks(np.arange(9, 20))
     ax.set_title("Timeline de la journée")
     return fig
-
 
 
 def folium_itinerary(route, poi_df):
@@ -56,11 +63,12 @@ def folium_itinerary(route, poi_df):
         folium.Marker(
             location=(row.latitude, row.longitude),
             popup=row["name"],
-            tooltip=row["sub_category"]
+            tooltip=row["sub_category"],
         ).add_to(m)
 
     folium.PolyLine(coords, color="blue", weight=4).add_to(m)
     return m
+
 
 def score_vs_distance(df, matrix_name):
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -76,6 +84,7 @@ def score_vs_distance(df, matrix_name):
     ax.legend()
     return fig
 
+
 def boxplot_scores(runner_results, matrix_name):
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -88,6 +97,7 @@ def boxplot_scores(runner_results, matrix_name):
     ax.set_title(f"Distribution des scores – {matrix_name}")
     ax.set_ylabel("Score touristique")
     return fig
+
 
 def variety_barplot(route, poi_df):
     df = poi_df.loc[poi_df.osrm_index.isin(route)]

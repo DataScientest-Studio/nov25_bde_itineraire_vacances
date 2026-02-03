@@ -1,18 +1,18 @@
+import asyncio
 import time
 from pathlib import Path
 from typing import Dict, Tuple
+
 import numpy as np
-import asyncio
 import polars as pl
 
-
-from features.poi_filter import POIFilter
-from features.spatial_clustering import SpatialClusterer
-from features.post_clustering import build_osrm_ready_pois, build_osrm_matrices_async
 from features.itinerary_optimizer import ItineraryOptimizer
 from features.optimizer_ga import GeneticAlgo
 from features.optimizer_nn2o import NN2OptAlgo
 from features.osrm import OSRMClientAsync
+from features.poi_filter import POIFilter
+from features.post_clustering import build_osrm_matrices_async, build_osrm_ready_pois
+from features.spatial_clustering import SpatialClusterer
 
 
 class ItineraryPipeline:
@@ -37,7 +37,9 @@ class ItineraryPipeline:
         return (
             POIFilter(self.pois_lf)
             .set_commune(commune)
-            .set_categories(main_categories=main_categories, sub_categories=sub_categories)
+            .set_categories(
+                main_categories=main_categories, sub_categories=sub_categories
+            )
             .set_min_score(min_score)
             .apply()
         )
@@ -65,7 +67,6 @@ class ItineraryPipeline:
         target_restaurants: int = 2,
         restaurant_category: str = "Gastronomie & Restauration",
     ) -> pl.DataFrame:
-
         if "day" in df_prepared.columns and "cluster_id" not in df_prepared.columns:
             df_prepared = df_prepared.rename({"day": "cluster_id"})
 
@@ -98,7 +99,6 @@ class ItineraryPipeline:
         osrm: OSRMClientAsync,
         transport_mode: str,
     ) -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
-
         profile = self._get_osrm_profile(transport_mode)
 
         df_clustered, df_osrm_dist, df_osrm_dur = asyncio.run(
@@ -108,8 +108,10 @@ class ItineraryPipeline:
 
     # ---------------------------------------------------------
     # SOLVEUR NN2O
-        # ---------------------------------------------------------
-    def _compute_itinerary_nn2o(self, df_clustered: pl.DataFrame, df_osrm_dur: pl.DataFrame):
+    # ---------------------------------------------------------
+    def _compute_itinerary_nn2o(
+        self, df_clustered: pl.DataFrame, df_osrm_dur: pl.DataFrame
+    ):
         results = []
 
         # Matrice globale OSRM (sans la colonne osrm_index)
@@ -131,10 +133,7 @@ class ItineraryPipeline:
 
             # NN2O
             df_day_pd = df_day.to_pandas()
-            nn2o = NN2OptAlgo(
-                poi_df=df_day_pd,
-                duration_matrix=local_matrix
-            )
+            nn2o = NN2OptAlgo(poi_df=df_day_pd, duration_matrix=local_matrix)
 
             best_route_local, best_cost = nn2o.run_nn2opt(try_all_starts=False)
 
@@ -157,14 +156,10 @@ class ItineraryPipeline:
             )
 
             # cluster_id explicite
-            df_route = df_route.with_columns(
-                pl.lit(cluster_id).alias("cluster_id")
-            )
+            df_route = df_route.with_columns(pl.lit(cluster_id).alias("cluster_id"))
 
             # Ajouter une colonne solver_used
-            df_route = df_route.with_columns(
-                pl.lit("nn2o").alias("solver_used")
-            )
+            df_route = df_route.with_columns(pl.lit("nn2o").alias("solver_used"))
 
             results.append(df_route)
 
@@ -174,6 +169,7 @@ class ItineraryPipeline:
         df_itinerary = pl.concat(results)
         return "nn2o", df_itinerary
         # ---------------------------------------------------------
+
     # SOLVEUR GA (sans enrichissement)
     # ---------------------------------------------------------
 
@@ -182,7 +178,6 @@ class ItineraryPipeline:
         df_clustered: pl.DataFrame,
         df_osrm_dur: pl.DataFrame,
     ) -> Tuple[str, pl.DataFrame]:
-
         results = []
 
         for cluster_id in df_clustered["cluster_id"].unique():
@@ -202,17 +197,11 @@ class ItineraryPipeline:
             # 3. GA travaille sur la matrice locale
             df_day_pd = df_day.to_pandas()
 
-            ga = GeneticAlgo(
-                poi_df=df_day_pd,
-                duration_matrix=local_matrix
-            )
+            ga = GeneticAlgo(poi_df=df_day_pd, duration_matrix=local_matrix)
             ga.setup_toolbox(itin_min_poi=5, itin_max_poi=15)
 
             best_route_local, fitness = ga.run_ga(
-                pop_size=50,
-                ngen=50,
-                cxpb=0.75,
-                mutpb=0.3
+                pop_size=50, ngen=50, cxpb=0.75, mutpb=0.3
             )
 
             # Si GA n’a rien trouvé → on ignore ce cluster
@@ -236,9 +225,7 @@ class ItineraryPipeline:
 
             # 6. Trier df_route dans l’ordre de best_route_global
             order_map = {v: i for i, v in enumerate(best_route_global)}
-            df_route = df_route.sort(
-                pl.col("osrm_index").replace(order_map)
-            )
+            df_route = df_route.sort(pl.col("osrm_index").replace(order_map))
 
             # 7. Ajouter une colonne order cohérente (0..n-1)
             df_route = df_route.with_columns(
@@ -246,13 +233,9 @@ class ItineraryPipeline:
             )
 
             # 8. Réinjecter cluster_id
-            df_route = df_route.with_columns(
-                pl.lit(cluster_id).alias("cluster_id")
-            )
+            df_route = df_route.with_columns(pl.lit(cluster_id).alias("cluster_id"))
             # 9. Ajouter une colonne solver_used
-            df_route = df_route.with_columns(
-                pl.lit("ga").alias("solver_used")
-            )
+            df_route = df_route.with_columns(pl.lit("ga").alias("solver_used"))
 
             results.append(df_route)
 
@@ -291,17 +274,21 @@ class ItineraryPipeline:
             cumulative_distance.append(cum_d)
             cumulative_duration.append(cum_t)
 
-        df_enriched = df_day.with_columns([
-            pl.Series("distance_from_prev", distance_from_prev).cast(pl.Float64),
-            pl.Series("duration_from_prev", duration_from_prev).cast(pl.Float64),
-            pl.Series("cumulative_distance", cumulative_distance).cast(pl.Float64),
-            pl.Series("cumulative_duration", cumulative_duration).cast(pl.Float64),
-        ])
+        df_enriched = df_day.with_columns(
+            [
+                pl.Series("distance_from_prev", distance_from_prev).cast(pl.Float64),
+                pl.Series("duration_from_prev", duration_from_prev).cast(pl.Float64),
+                pl.Series("cumulative_distance", cumulative_distance).cast(pl.Float64),
+                pl.Series("cumulative_duration", cumulative_duration).cast(pl.Float64),
+            ]
+        )
 
-        df_enriched = df_enriched.with_columns([
-            pl.lit(float(cumulative_distance[-1])).alias("day_total_distance"),
-            pl.lit(float(cumulative_duration[-1])).alias("day_total_duration"),
-        ])
+        df_enriched = df_enriched.with_columns(
+            [
+                pl.lit(float(cumulative_distance[-1])).alias("day_total_distance"),
+                pl.lit(float(cumulative_duration[-1])).alias("day_total_duration"),
+            ]
+        )
 
         return df_enriched
 
@@ -319,21 +306,21 @@ class ItineraryPipeline:
         anchor_lon,
         osrm: OSRMClientAsync,
         transport_mode: str = "walk",
-        solver: str = "nn2o",   # <--- AJOUT ICI
+        solver: str = "nn2o",  # <--- AJOUT ICI
         max_pois_per_cluster: int = 40,
         osrm_min_score: float = 0.2,
         target_restaurants: int = 2,
         restaurant_category: str = "Gastronomie & Restauration",
     ):
-
         # 1. Filtrage
-        filtered_lf = self._filter_pois(commune, main_categories, sub_categories, min_score)
+        filtered_lf = self._filter_pois(
+            commune, main_categories, sub_categories, min_score
+        )
 
         # 2. Clustering
-        df_prepared = (
-            self._cluster_pois(filtered_lf, nb_days, anchor_lat, anchor_lon)
-            .collect()
-        )
+        df_prepared = self._cluster_pois(
+            filtered_lf, nb_days, anchor_lat, anchor_lon
+        ).collect()
 
         # 3. Préparation OSRM
         df_clustered = self._build_osrm_ready_pois(
@@ -352,13 +339,16 @@ class ItineraryPipeline:
             transport_mode=transport_mode,
         )
 
-
         # 5. Solveur
         if solver == "nn2o":
-            optimizer, df_itinerary = self._compute_itinerary_nn2o(df_clustered, df_osrm_dur)
+            optimizer, df_itinerary = self._compute_itinerary_nn2o(
+                df_clustered, df_osrm_dur
+            )
 
         elif solver == "ga":
-            optimizer, df_itinerary = self._compute_itinerary_ga(df_clustered, df_osrm_dur)
+            optimizer, df_itinerary = self._compute_itinerary_ga(
+                df_clustered, df_osrm_dur
+            )
 
         elif solver == "auto":
             # Mode AUTO intelligent
@@ -372,35 +362,36 @@ class ItineraryPipeline:
                 if cluster_size <= 12:
                     chosen = "nn2o"
                     _, df_day_it = self._compute_itinerary_nn2o(
-                        df_clustered.filter(pl.col("cluster_id") == day),
-                        df_osrm_dur
+                        df_clustered.filter(pl.col("cluster_id") == day), df_osrm_dur
                     )
                 else:
                     chosen = "ga"
                     _, df_day_it = self._compute_itinerary_ga(
-                        df_clustered.filter(pl.col("cluster_id") == day),
-                        df_osrm_dur
+                        df_clustered.filter(pl.col("cluster_id") == day), df_osrm_dur
                     )
 
                 if df_day_it.is_empty():
                     continue
 
                 # Tag du solveur utilisé
-                df_day_it = df_day_it.with_columns(
-                    pl.lit(chosen).alias("solver_used")
-                )
+                df_day_it = df_day_it.with_columns(pl.lit(chosen).alias("solver_used"))
 
                 results.append(df_day_it)
 
             if not results:
-                return df_clustered, df_osrm_dist, df_osrm_dur, pl.DataFrame(), "auto_empty"
+                return (
+                    df_clustered,
+                    df_osrm_dist,
+                    df_osrm_dur,
+                    pl.DataFrame(),
+                    "auto_empty",
+                )
 
             df_itinerary = pl.concat(results)
             optimizer = "auto"
 
         else:
             raise ValueError(f"Solver inconnu : {solver}")
-
 
         if df_itinerary.is_empty() or "cluster_id" not in df_itinerary.columns:
             print("⚠️ df_itinerary vide ou sans cluster_id")
@@ -437,7 +428,7 @@ class ItineraryPipeline:
                 df_day=df_day,
                 matrix_durations=local_matrix_dur,
                 matrix_distances=local_matrix_dist,
-                order=order
+                order=order,
             )
 
             df_enriched_days.append(df_enriched)

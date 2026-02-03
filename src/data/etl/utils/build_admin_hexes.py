@@ -13,6 +13,7 @@ ADMIN_HEXES_PATH = DATA_DIR / "processed" / "admin_hexes.json"
 # Communes → H3
 # ---------------------------------------------------------
 
+
 def build_communes_hex(resolver, res=8):
     results = {}
 
@@ -44,6 +45,7 @@ def build_communes_hex(resolver, res=8):
 # Régions → H3
 # ---------------------------------------------------------
 
+
 def build_regions_hex(resolver, res=6):
     results = {}
 
@@ -72,8 +74,8 @@ def build_regions_hex(resolver, res=6):
 # Main
 # ---------------------------------------------------------
 
-def main():
 
+def main():
     print("Chargement des parquets...")
     resolver = BoundingBoxResolver()
 
@@ -84,10 +86,7 @@ def main():
     regions_hex = build_regions_hex(resolver, res=6)
 
     print("Sauvegarde dans admin_hexes.json...")
-    out = {
-        "commune": communes_hex,
-        "region": regions_hex
-    }
+    out = {"commune": communes_hex, "region": regions_hex}
 
     with open(ADMIN_HEXES_PATH, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False)

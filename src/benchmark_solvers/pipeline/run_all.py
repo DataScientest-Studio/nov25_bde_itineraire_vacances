@@ -1,10 +1,13 @@
 import os
+
 import pandas as pd
 
 from benchmark_solvers.common.dataset_loader import load_all_datasets
-from benchmark_solvers.tsp.benchmark.tsp_runner import TSPBenchmarkRunner
-from benchmark_solvers.itinerary.benchmark.itinerary_runner import ItineraryBenchmarkRunner
 from benchmark_solvers.comparator.compare_tsp_itinerary import build_comparison_table
+from benchmark_solvers.itinerary.benchmark.itinerary_runner import (
+    ItineraryBenchmarkRunner,
+)
+from benchmark_solvers.tsp.benchmark.tsp_runner import TSPBenchmarkRunner
 
 
 def run_all():
@@ -64,8 +67,12 @@ def run_all():
 
     display_cols = [
         "matrix",
-        "solver_tsp", "mean_cost_tsp", "rating_tsp",
-        "solver_iti", "best_score_iti", "variety_iti",
+        "solver_tsp",
+        "mean_cost_tsp",
+        "rating_tsp",
+        "solver_iti",
+        "best_score_iti",
+        "variety_iti",
     ]
 
     display_cols = [c for c in display_cols if c in comp_results.columns]

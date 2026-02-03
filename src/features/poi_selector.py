@@ -1,5 +1,7 @@
 import time
+
 import polars as pl
+
 
 class POISelector:
     """
@@ -44,19 +46,24 @@ class POISelector:
     # ------------------------------------------------------------------
     def _compute_diversity_subcat_norm(self, lf: pl.LazyFrame) -> pl.LazyFrame:
         return (
-            lf
-            .with_columns([
-                pl.count().over(["cluster_id", "sub_category"]).alias("subcat_count")
-            ])
-            .with_columns([
-                (1 / (1 + pl.col("subcat_count"))).alias("diversity_raw")
-            ])
-            .with_columns([
-                (
-                    (pl.col("diversity_raw") - pl.col("diversity_raw").min().over("cluster_id"))
-                    / (pl.col("diversity_raw").max().over("cluster_id") - pl.col("diversity_raw").min().over("cluster_id"))
-                ).alias("diversity_subcat_norm")
-            ])
+            lf.with_columns(
+                [pl.count().over(["cluster_id", "sub_category"]).alias("subcat_count")]
+            )
+            .with_columns([(1 / (1 + pl.col("subcat_count"))).alias("diversity_raw")])
+            .with_columns(
+                [
+                    (
+                        (
+                            pl.col("diversity_raw")
+                            - pl.col("diversity_raw").min().over("cluster_id")
+                        )
+                        / (
+                            pl.col("diversity_raw").max().over("cluster_id")
+                            - pl.col("diversity_raw").min().over("cluster_id")
+                        )
+                    ).alias("diversity_subcat_norm")
+                ]
+            )
             .drop(["subcat_count", "diversity_raw"])
         )
 
@@ -104,8 +111,7 @@ class POISelector:
         start = time.time()
 
         lf2 = (
-            lf
-            .filter(pl.col("main_category") == self.restaurant_label)
+            lf.filter(pl.col("main_category") == self.restaurant_label)
             .with_columns(
                 pl.col("mixed_score")
                 .rank("dense", descending=True)
@@ -126,8 +132,7 @@ class POISelector:
         start = time.time()
 
         lf2 = (
-            lf
-            .filter(pl.col("main_category") != self.restaurant_label)
+            lf.filter(pl.col("main_category") != self.restaurant_label)
             .with_columns(
                 pl.col("mixed_score")
                 .rank("dense", descending=True)
@@ -166,20 +171,21 @@ class POISelector:
 
         # 5) Limite globale appliquée uniquement aux non-restos
         lf_nr_limited = (
-            lf_nr
-            .with_columns(
+            lf_nr.with_columns(
                 pl.col("mixed_score")
                 .rank("dense", descending=True)
                 .over("cluster_id")
                 .alias("rank_cluster")
             )
-            .filter(pl.col("rank_cluster") <= self.max_pois_per_cluster - self.min_restaurants)
+            .filter(
+                pl.col("rank_cluster")
+                <= self.max_pois_per_cluster - self.min_restaurants
+            )
             .drop("rank_cluster")
         )
 
         # 6) Fusion finale
         return pl.concat([lf_r, lf_nr_limited]).drop("is_restaurant")
-      
 
     # ------------------------------------------------------------------
     # 6) Pipeline principal
@@ -212,15 +218,15 @@ class POISelector:
 
         # 6) tri final
         start = time.time()
-        lf_final = (
-            lf_selected
-            .sort([
+        lf_final = lf_selected.sort(
+            [
                 "cluster_id",
                 pl.col("main_category"),
                 "sub_category",
                 pl.col("mixed_score").sort(descending=True),
-            ])
-            .select([
+            ]
+        ).select(
+            [
                 "cluster_id",
                 "poi_id",
                 "latitude",
@@ -229,7 +235,7 @@ class POISelector:
                 "sub_category",
                 "final_score",
                 "mixed_score",
-            ])
+            ]
         )
         self._profile("final_sort_and_select", start)
 

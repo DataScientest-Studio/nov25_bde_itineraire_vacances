@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def radar_chart(df, solver_name):
     metrics = ["efficiency", "robustness", "edge_ratio", "pareto_score"]
     values = df[df["solver"] == solver_name][metrics].iloc[0].values
@@ -20,6 +21,7 @@ def radar_chart(df, solver_name):
     ax.set_title(f"Radar Chart – {solver_name}")
     return fig
 
+
 def pareto_plot(df, matrix_name):
     fig, ax = plt.subplots(figsize=(7, 5))
 
@@ -33,6 +35,7 @@ def pareto_plot(df, matrix_name):
     ax.set_title(f"Pareto Distance/Temps – {matrix_name}")
     ax.legend()
     return fig
+
 
 def boxplot_costs(runner_results, matrix_name):
     fig, ax = plt.subplots(figsize=(7, 5))

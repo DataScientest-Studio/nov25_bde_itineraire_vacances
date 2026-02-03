@@ -11,7 +11,7 @@ Objectifs :
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable, Mapping, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Sequence
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -30,10 +30,10 @@ InputLike = "pd.DataFrame | Rows"  # pandas optionnel (string annotation)
 # ---------------------------------------------------------------------
 @dataclass(frozen=True)
 class Issue:
-    severity: str          # "ERROR" ou "WARN"
-    check: str             # nom du contrôle
-    message: str           # description lisible
-    n_rows: int            # nombre de lignes impactées
+    severity: str  # "ERROR" ou "WARN"
+    check: str  # nom du contrôle
+    message: str  # description lisible
+    n_rows: int  # nombre de lignes impactées
     sample_ids: list[Any]  # exemples de poi_id (ou index)
 
 
@@ -83,7 +83,9 @@ def _iter_rows(data: InputLike) -> Iterable[dict[str, Any]]:
     if callable(to_dict):
         rows = to_dict(orient="records")
         if not isinstance(rows, list):
-            raise TypeError("DataFrame.to_dict(orient='records') must return a list of dict.")
+            raise TypeError(
+                "DataFrame.to_dict(orient='records') must return a list of dict."
+            )
         return rows  # type: ignore[return-value]
 
     raise TypeError(
@@ -105,7 +107,9 @@ def _get_columns(data: InputLike) -> set[str]:
 
     cols = getattr(data, "columns", None)
     if cols is None:
-        raise TypeError("Unsupported PRIME input type (expected DataFrame-like with .columns).")
+        raise TypeError(
+            "Unsupported PRIME input type (expected DataFrame-like with .columns)."
+        )
     return set(cols)
 
 
@@ -119,7 +123,9 @@ def _as_float(x: Any) -> float | None:
         return None
 
 
-def _sample_ids_from_rows(rows: Sequence[Row], mask: Sequence[bool], k: int = 10) -> list[Any]:
+def _sample_ids_from_rows(
+    rows: Sequence[Row], mask: Sequence[bool], k: int = 10
+) -> list[Any]:
     """
     Extrait quelques poi_id (ou index) pour debug, sans exposer tout le dataset.
     """
@@ -159,7 +165,9 @@ def check_required_schema(data: InputLike) -> list[Issue]:
     bad_mask = []
     for row in rows:
         poi_id = row.get("poi_id")
-        bad_mask.append(poi_id is None or (isinstance(poi_id, str) and poi_id.strip() == ""))
+        bad_mask.append(
+            poi_id is None or (isinstance(poi_id, str) and poi_id.strip() == "")
+        )
 
     if any(bad_mask):
         issues.append(
@@ -296,7 +304,9 @@ def check_final_score_formula(data: InputLike, tol: float = 1e-6) -> list[Issue]
 # Check 5 : Distribution outliers (robuste, sans numpy)
 # Méthode MAD : outlier si |z_robust| > z_thresh
 # ---------------------------------------------------------------------
-def check_distribution_anomalies(data: InputLike, z_thresh: float = 6.0, min_n: int = 30) -> list[Issue]:
+def check_distribution_anomalies(
+    data: InputLike, z_thresh: float = 6.0, min_n: int = 30
+) -> list[Issue]:
     rows = list(_iter_rows(data))
 
     scores: list[float] = []
@@ -313,13 +323,21 @@ def check_distribution_anomalies(data: InputLike, z_thresh: float = 6.0, min_n: 
     # median
     s_sorted = sorted(scores)
     mid = len(s_sorted) // 2
-    median = s_sorted[mid] if len(s_sorted) % 2 == 1 else (s_sorted[mid - 1] + s_sorted[mid]) / 2.0
+    median = (
+        s_sorted[mid]
+        if len(s_sorted) % 2 == 1
+        else (s_sorted[mid - 1] + s_sorted[mid]) / 2.0
+    )
 
     # MAD
     abs_dev = [abs(x - median) for x in scores]
     abs_dev_sorted = sorted(abs_dev)
     mid2 = len(abs_dev_sorted) // 2
-    mad = abs_dev_sorted[mid2] if len(abs_dev_sorted) % 2 == 1 else (abs_dev_sorted[mid2 - 1] + abs_dev_sorted[mid2]) / 2.0
+    mad = (
+        abs_dev_sorted[mid2]
+        if len(abs_dev_sorted) % 2 == 1
+        else (abs_dev_sorted[mid2 - 1] + abs_dev_sorted[mid2]) / 2.0
+    )
 
     if mad == 0:
         return []

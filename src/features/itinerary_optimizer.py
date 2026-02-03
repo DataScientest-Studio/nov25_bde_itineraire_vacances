@@ -1,10 +1,12 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import List, Dict, Sequence, Literal, Optional
-import polars as pl
-import math
-import numpy as np
+
 import asyncio
+import math
+from dataclasses import dataclass
+from typing import Dict, List, Literal, Optional, Sequence
+
+import numpy as np
+import polars as pl
 
 from features.osrm import OSRMClientAsync
 
@@ -17,8 +19,9 @@ class ItineraryOptimizer:
     - utilise osrm_index pour mapper les lignes/colonnes de la matrice aux POIs
     - heuristique : nearest neighbor + 2-opt
     """
-    df_pois: pl.DataFrame                     # df_clustered
-    dist_matrix: np.ndarray                   # matrice distances/durations NxN
+
+    df_pois: pl.DataFrame  # df_clustered
+    dist_matrix: np.ndarray  # matrice distances/durations NxN
     metric: Literal["distance", "duration"] = "duration"
 
     @classmethod
@@ -36,7 +39,9 @@ class ItineraryOptimizer:
 
     # ---------- Heuristique TSP : nearest neighbor ----------
 
-    def _nearest_neighbor(self, indices: List[int], start_index: Optional[int] = None) -> List[int]:
+    def _nearest_neighbor(
+        self, indices: List[int], start_index: Optional[int] = None
+    ) -> List[int]:
         """
         Construit un tour initial avec nearest neighbor.
         'indices' sont des osrm_index (subset pour un jour donné).
@@ -98,7 +103,7 @@ class ItineraryOptimizer:
             for i in range(1, len(best) - 2):
                 for k in range(i + 1, len(best) - 1):
                     new_tour = best[:]
-                    new_tour[i:k+1] = reversed(best[i:k+1])
+                    new_tour[i : k + 1] = reversed(best[i : k + 1])
                     new_cost = self._tour_cost(new_tour)
                     if new_cost < best_cost:
                         best = new_tour
@@ -155,16 +160,20 @@ class ItineraryOptimizer:
         osrm_to_cumcost = {idx: c for idx, c in zip(tour, cum_cost)}
 
         # enrichir df_day
-        df_day = df_day.with_columns([
-            pl.col("osrm_index").map_elements(
-                lambda x: osrm_to_order.get(x, None),
-                return_dtype=pl.Int64
-            ).alias("order"),
-            pl.col("osrm_index").map_elements(
-                lambda x: osrm_to_cumcost.get(x, None),
-                return_dtype=pl.Float64
-            ).alias("cum_cost"),
-        ])
+        df_day = df_day.with_columns(
+            [
+                pl.col("osrm_index")
+                .map_elements(
+                    lambda x: osrm_to_order.get(x, None), return_dtype=pl.Int64
+                )
+                .alias("order"),
+                pl.col("osrm_index")
+                .map_elements(
+                    lambda x: osrm_to_cumcost.get(x, None), return_dtype=pl.Float64
+                )
+                .alias("cum_cost"),
+            ]
+        )
 
         return df_day.sort("order")
 
@@ -189,7 +198,7 @@ class ItineraryOptimizer:
     # def build_geojson_for_day(self, day, osrm: OSRMClientAsync):
     #     df_day = self.solve_day(day)
     #     return build_day_route_geojson(df_day, osrm)
-    
+
     async def build_geojson_for_day_async(self, day, osrm: OSRMClientAsync):
         """
         Génère la route OSRM (GeoJSON) pour un jour donné, en mode async.
@@ -197,20 +206,15 @@ class ItineraryOptimizer:
         df_day = self.solve_day(day)
         return await self.build_day_route_geojson_async(df_day, osrm)
 
-
-    async def build_geojson_all_days_async(self, df_itinerary: pl.DataFrame, osrm: OSRMClientAsync):
+    async def build_geojson_all_days_async(
+        self, df_itinerary: pl.DataFrame, osrm: OSRMClientAsync
+    ):
         """
         Génère les routes OSRM (GeoJSON) pour tous les jours.
         Retourne un dict {day: GeoJSON}.
         """
 
-        days = (
-            df_itinerary
-            .select("cluster_id")
-            .unique()
-            .to_series()
-            .to_list()
-        )
+        days = df_itinerary.select("cluster_id").unique().to_series().to_list()
 
         tasks = {}
 
@@ -222,8 +226,9 @@ class ItineraryOptimizer:
 
         return {day: geo for day, geo in zip(tasks.keys(), results)}
 
-
-    async def build_day_route_geojson_async(self, df_day: pl.DataFrame, osrm: OSRMClientAsync):
+    async def build_day_route_geojson_async(
+        self, df_day: pl.DataFrame, osrm: OSRMClientAsync
+    ):
         df_day = df_day.sort("order")
 
         coords = df_day.select(["latitude", "longitude"]).to_numpy().tolist()
@@ -244,8 +249,4 @@ class ItineraryOptimizer:
             else:
                 full_coords.extend(seg["coordinates"][1:])
 
-        return {
-            "type": "LineString",
-            "coordinates": full_coords
-        }
-
+        return {"type": "LineString", "coordinates": full_coords}
