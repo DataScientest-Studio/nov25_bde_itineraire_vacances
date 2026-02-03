@@ -1,10 +1,9 @@
-
-
-import time
-import polars as pl
-import numpy as np
 import hashlib
-from typing import Literal, Dict, Any, List
+import time
+from typing import Any, Dict, List, Literal
+
+import numpy as np
+import polars as pl
 
 
 def hash_order(order: List[int]) -> str:
@@ -28,7 +27,9 @@ def evaluate_solver_on_cluster(
     Retourne : temps, distance totale, durée totale, signature d'ordre.
     """
 
-    print(f"    → [{solver.upper()}] run {run_id} | matrix={matrix_id} | n={df_cluster.height}")
+    print(
+        f"    → [{solver.upper()}] run {run_id} | matrix={matrix_id} | n={df_cluster.height}"
+    )
 
     start = time.perf_counter()
 
@@ -44,7 +45,7 @@ def evaluate_solver_on_cluster(
 
         runtime_ms = (time.perf_counter() - start) * 1000
 
-        #print(f"      ✓ OK | dist={total_distance:.1f}m | dur={total_duration:.1f}s | {runtime_ms:.1f}ms")
+        # print(f"      ✓ OK | dist={total_distance:.1f}m | dur={total_duration:.1f}s | {runtime_ms:.1f}ms")
         return {
             "solver": solver,
             "cluster_size": df_cluster.height,
@@ -58,7 +59,7 @@ def evaluate_solver_on_cluster(
 
     # 2. Extraire l’ordre OSRM
     order = df_route.sort("order")["osrm_index"].to_list()
-    
+
     # 3. Enrichissement via ton pipeline
     df_itinerary = pipeline.enrich_itinerary(
         df_day=df_route,
@@ -71,7 +72,6 @@ def evaluate_solver_on_cluster(
     # 4. Totaux
     total_distance = float(df_itinerary["day_total_distance"].max())
     total_duration = float(df_itinerary["day_total_duration"].max())
-
 
     # 5. Signature de l’ordre (pour mesurer la stabilité)
     order_sig = hash_order(order)

@@ -1,12 +1,13 @@
 import time
+
 import polars as pl
 
 from benchmark.ga_solver import run_ga_on_cluster
 
 GA_CONFIGS = {
-    "fast":     {"pop_size": 20, "ngen": 40, "cxpb": 0.9, "mutpb": 0.05},
+    "fast": {"pop_size": 20, "ngen": 40, "cxpb": 0.9, "mutpb": 0.05},
     "balanced": {"pop_size": 30, "ngen": 60, "cxpb": 0.8, "mutpb": 0.10},
-    "premium":  {"pop_size": 40, "ngen": 80, "cxpb": 0.8, "mutpb": 0.10},
+    "premium": {"pop_size": 40, "ngen": 80, "cxpb": 0.8, "mutpb": 0.10},
 }
 
 
@@ -44,7 +45,6 @@ def run_ga_tuning(
             print(f"  → Config GA = {config_name}")
 
             for run in range(runs_per_cluster):
-
                 start = time.perf_counter()
 
                 best_route_local, fitness = run_ga_on_cluster(
@@ -59,15 +59,17 @@ def run_ga_tuning(
 
                 runtime_ms = (time.perf_counter() - start) * 1000
 
-                results.append({
-                    "cluster_size": size,
-                    "cluster_id": cluster_id,
-                    "config": config_name,
-                    "run": run,
-                    "runtime_ms": runtime_ms,
-                    "fitness": fitness,
-                    "success": best_route_local is not None,
-                })
+                results.append(
+                    {
+                        "cluster_size": size,
+                        "cluster_id": cluster_id,
+                        "config": config_name,
+                        "run": run,
+                        "runtime_ms": runtime_ms,
+                        "fitness": fitness,
+                        "success": best_route_local is not None,
+                    }
+                )
 
                 print(f"      ✓ runtime={runtime_ms:.1f}ms | fitness={fitness}")
 

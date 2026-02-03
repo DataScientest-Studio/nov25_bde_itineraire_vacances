@@ -1,7 +1,8 @@
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import polars as pl
 import seaborn as sns
-import matplotlib.pyplot as plt
-from pathlib import Path
 
 
 def _save_fig(fig, save_path: str | None):
@@ -16,20 +17,37 @@ def _save_fig(fig, save_path: str | None):
 # 1) Courbes du seuil AUTO
 # ---------------------------------------------------------
 
+
 def plot_size_comparison(df: pl.DataFrame, save_path: str | None = None):
     dfp = df.to_pandas()
 
     fig, axes = plt.subplots(3, 1, figsize=(10, 14))
 
-    sns.lineplot(data=dfp, x="cluster_size", y="total_distance", hue="solver", ax=axes[0], marker="o")
+    sns.lineplot(
+        data=dfp,
+        x="cluster_size",
+        y="total_distance",
+        hue="solver",
+        ax=axes[0],
+        marker="o",
+    )
     axes[0].set_title("Distance totale vs Taille du cluster")
     axes[0].grid(True)
 
-    sns.lineplot(data=dfp, x="cluster_size", y="total_duration", hue="solver", ax=axes[1], marker="o")
+    sns.lineplot(
+        data=dfp,
+        x="cluster_size",
+        y="total_duration",
+        hue="solver",
+        ax=axes[1],
+        marker="o",
+    )
     axes[1].set_title("Durée totale vs Taille du cluster")
     axes[1].grid(True)
 
-    sns.lineplot(data=dfp, x="cluster_size", y="runtime_ms", hue="solver", ax=axes[2], marker="o")
+    sns.lineplot(
+        data=dfp, x="cluster_size", y="runtime_ms", hue="solver", ax=axes[2], marker="o"
+    )
     axes[2].set_title("Temps d'exécution vs Taille du cluster")
     axes[2].grid(True)
 
@@ -42,6 +60,7 @@ def plot_size_comparison(df: pl.DataFrame, save_path: str | None = None):
 # ---------------------------------------------------------
 # 2) Stabilité par matrice
 # ---------------------------------------------------------
+
 
 def plot_stability(df: pl.DataFrame, solver_name: str, save_path: str | None = None):
     dfp = df.to_pandas()
@@ -70,13 +89,14 @@ def plot_stability(df: pl.DataFrame, solver_name: str, save_path: str | None = N
 # 3) Analyse de la stabilité de l’ordre
 # ---------------------------------------------------------
 
-def plot_order_stability(df: pl.DataFrame, solver_name: str, save_path: str | None = None):
+
+def plot_order_stability(
+    df: pl.DataFrame, solver_name: str, save_path: str | None = None
+):
     dfp = df.to_pandas()
 
     order_counts = (
-        dfp.groupby(["matrix_id", "order_signature"])
-        .size()
-        .reset_index(name="count")
+        dfp.groupby(["matrix_id", "order_signature"]).size().reset_index(name="count")
     )
 
     fig = plt.figure(figsize=(10, 6))
@@ -87,12 +107,13 @@ def plot_order_stability(df: pl.DataFrame, solver_name: str, save_path: str | No
     _save_fig(fig, save_path)
     plt.show()
 
+
 # ---------------------------------------------------------
 # 4) Analyse des configurations GA
 # ---------------------------------------------------------
 import matplotlib.pyplot as plt
-import seaborn as sns
 import polars as pl
+import seaborn as sns
 
 
 def plot_ga_tuning(df_ga_tuning: pl.DataFrame, save_path: str | None = None):
@@ -109,13 +130,7 @@ def plot_ga_tuning(df_ga_tuning: pl.DataFrame, save_path: str | None = None):
     # 1. Runtime GA
     # ---------------------------------------------------------
     plt.figure(figsize=(10, 6))
-    sns.lineplot(
-        data=pdf,
-        x="matrix_id",
-        y="runtime_ga",
-        hue="config",
-        marker="o"
-    )
+    sns.lineplot(data=pdf, x="matrix_id", y="runtime_ga", hue="config", marker="o")
     plt.title("Runtime GA selon configuration")
     plt.xlabel("Taille du cluster")
     plt.ylabel("Runtime (ms)")
@@ -129,13 +144,7 @@ def plot_ga_tuning(df_ga_tuning: pl.DataFrame, save_path: str | None = None):
     # 2. Distance GA
     # ---------------------------------------------------------
     plt.figure(figsize=(10, 6))
-    sns.lineplot(
-        data=pdf,
-        x="matrix_id",
-        y="dist_ga",
-        hue="config",
-        marker="o"
-    )
+    sns.lineplot(data=pdf, x="matrix_id", y="dist_ga", hue="config", marker="o")
     plt.title("Distance GA selon configuration")
     plt.xlabel("Taille du cluster")
     plt.ylabel("Distance totale")
@@ -149,13 +158,7 @@ def plot_ga_tuning(df_ga_tuning: pl.DataFrame, save_path: str | None = None):
     # 3. Ratio gain/coût
     # ---------------------------------------------------------
     plt.figure(figsize=(10, 6))
-    sns.lineplot(
-        data=pdf,
-        x="matrix_id",
-        y="ratio_gain_cost",
-        hue="config",
-        marker="o"
-    )
+    sns.lineplot(data=pdf, x="matrix_id", y="ratio_gain_cost", hue="config", marker="o")
     plt.title("Ratio gain/coût (GA vs NN2O) selon configuration")
     plt.xlabel("Taille du cluster")
     plt.ylabel("Ratio gain/coût")

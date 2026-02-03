@@ -1,34 +1,49 @@
-from benchmark.benchmark_ga_tuning import run_ga_tuning
 import polars as pl
 
-from pipeline.itinerary_pipeline import ItineraryPipeline
-from features.osrm import OSRMClientAsync  
-from benchmark.visualize_ga_tuning import plot_ga_tuning, plot_runtime, plot_fitness, plot_tradeoff
-
 from benchmark.benchmark_ga_tuning import run_ga_tuning
-from benchmark.ga_selection import select_best_ga_config
 from benchmark.benchmark_io import save_benchmark
+from benchmark.ga_selection import select_best_ga_config
+from benchmark.visualize_ga_tuning import (
+    plot_fitness,
+    plot_ga_tuning,
+    plot_runtime,
+    plot_tradeoff,
+)
+from features.osrm import OSRMClientAsync
+from pipeline.itinerary_pipeline import ItineraryPipeline
 
 # ---------------------------------------------------------
 # 1. PARAMÈTRES DU BENCHMARK
 # ---------------------------------------------------------
 
 COMMUNE = "Paris"
-MAIN_CATEGORIES = ["Patrimoine & Monuments", 
-                        "Gastronomie & Restauration",
-                        "Culture & Musées",
-                        "Commerce & Shopping",
-                        "Camping & Plein Air",
-                        "Famille & Enfants",
-                        "Nature & Paysages",
-                        "Sports & Loisirs",
-                        "Bien-être & Santé",
-                        "Loisirs & Clubs"]
+MAIN_CATEGORIES = [
+    "Patrimoine & Monuments",
+    "Gastronomie & Restauration",
+    "Culture & Musées",
+    "Commerce & Shopping",
+    "Camping & Plein Air",
+    "Famille & Enfants",
+    "Nature & Paysages",
+    "Sports & Loisirs",
+    "Bien-être & Santé",
+    "Loisirs & Clubs",
+]
 
-SUB_CATEGORIES = ["Restaurants","Bibliothèques & médiation","Restauration rapide","Bars & cafés",
-                    "Religieux","Sports collectifs & stades","Parcs & loisirs","Cimet,ières & mémoriaux",
-                    "Zoo & animaux","Théâtres & cinémas","Salles de concert & clubs","Commerces"
-                    ]
+SUB_CATEGORIES = [
+    "Restaurants",
+    "Bibliothèques & médiation",
+    "Restauration rapide",
+    "Bars & cafés",
+    "Religieux",
+    "Sports collectifs & stades",
+    "Parcs & loisirs",
+    "Cimet,ières & mémoriaux",
+    "Zoo & animaux",
+    "Théâtres & cinémas",
+    "Salles de concert & clubs",
+    "Commerces",
+]
 MIN_SCORE = 0.15
 NB_DAYS = 5
 ANCHOR_LAT = 48.86666
@@ -41,10 +56,10 @@ INPUT_PATH = "../data/processed/merged_20260108_174125.parquet"
 CLUSTER_SIZES = [2, 10, 25, 50]
 
 # répétitions par matrice
-RUNS_PER_MATRIX = 4
+RUNS_PER_MATRIX = 5
 
 # répétitions par taille pour seuil AUTO
-RUNS_PER_SIZE = 4
+RUNS_PER_SIZE = 5
 
 
 # ---------------------------------------------------------
@@ -56,9 +71,7 @@ osrm = OSRMClientAsync("http://localhost:5000")
 pipeline = ItineraryPipeline(pois_path=INPUT_PATH)
 
 print("Filtrage des POIs…")
-filtered_lf = pipeline._filter_pois(
-    COMMUNE, MAIN_CATEGORIES, SUB_CATEGORIES, MIN_SCORE
-)
+filtered_lf = pipeline._filter_pois(COMMUNE, MAIN_CATEGORIES, SUB_CATEGORIES, MIN_SCORE)
 
 print("Clustering…")
 df_prepared = pipeline._cluster_pois(
@@ -104,7 +117,7 @@ df_clustered = df_clustered.with_columns(
     pl.len().over("cluster_id").alias("cluster_size")
 )
 
-print('AFTER creation col',df_clustered.columns)
+print("AFTER creation col", df_clustered.columns)
 
 print("Création matrice WALK perturbée…")
 dist_walk_pert = dist_walk * 1.02
@@ -148,10 +161,11 @@ save_benchmark(results)
 plot_ga_tuning(df_ga_tuning, save_path=f"../data/graphs/ga_tuning_{transport_mode}.png")
 plot_runtime(df_ga_tuning, save_path=f"../data/graphs/ga_runtime_{transport_mode}.png")
 plot_fitness(df_ga_tuning, save_path=f"../data/graphs/ga_fitness_{transport_mode}.png")
-plot_tradeoff(df_ga_tuning, save_path=f"../data/graphs/ga_tradeoff_{transport_mode}.png")
+plot_tradeoff(
+    df_ga_tuning, save_path=f"../data/graphs/ga_tradeoff_{transport_mode}.png"
+)
 
 
 best_config, summary = select_best_ga_config(df_ga_tuning)
 
 print("Meilleure configuration GA :", best_config)
-

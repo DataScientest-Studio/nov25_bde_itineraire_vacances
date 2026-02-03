@@ -1,19 +1,19 @@
-from typing import Any
-import zipfile
+import ast
 import json
+import re
+import zipfile
 from collections import Counter
 from datetime import datetime
-import pandas as pd
-from typing import Any
-import ast
-import re
 from pathlib import Path
-import numpy as np
+from typing import Any
 
+import numpy as np
+import pandas as pd
 
 # =====================================================================================
 # HELPERS GÉNÉRIQUES (robustes notebook → script)
 # =====================================================================================
+
 
 def as_list(x: Any) -> list:
     """
@@ -43,8 +43,8 @@ def list_object_files(zip_path: str) -> list[str]:
     """
     with zipfile.ZipFile(zip_path) as z:
         return [
-            n for n in z.namelist()
-            if n.startswith("objects/") and n.endswith(".json")]
+            n for n in z.namelist() if n.startswith("objects/") and n.endswith(".json")
+        ]
 
 
 # ================================================================================================
@@ -68,15 +68,14 @@ def extract_datatourisme(path: str) -> pd.DataFrame:
     raise ValueError(f"Format non supporté: {path}")
 
 
-
 # ================================================================================================
 # C) CHECK data-safe (structure / volume / types / géoloc / fraîcheur)
 # ================================================================================================
 
 
-#-----------------------------------------
+# -----------------------------------------
 # C.1) Check volume réel de POI¶
-#-----------------------------------------
+# -----------------------------------------
 """
 Identification des fichiers POI dans le flux Datatourisme
 pour détecter toute anomalie de volume avant de lancer des traitements plus coûteux.
@@ -85,7 +84,9 @@ Objectif :
 - Évaluer rapidement le volume réel de données à traiter
 - Disposer d’un indicateur simple pour détecter une anomalie de flux (ex : flux vide ou incomplet)
 """
-zip_path = r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+zip_path = (
+    r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+)
 
 # Récupération de la liste complète des fichiers présents dans l’archive
 # Les POI sont stockés dans le dossier "objects/" et chaque POI correspond
@@ -96,10 +97,9 @@ object_files = list_object_files(zip_path)
 print("Nombre total de POI :", len(object_files))
 
 
-
-#-----------------------------------------
+# -----------------------------------------
 # C.2) Check répartition par type (@type)¶
-#-----------------------------------------
+# -----------------------------------------
 """
 Objectif : chaque Point of Interest est décrit par un ou plusieurs types. Avant toute transformation ou scoring,
 il est crucial de vérifier que la répartition des types est cohérente avec les attentes métier.
@@ -111,23 +111,23 @@ Approche :
 - Échantillonnage (20 000 POI suffisent pour ce check)
 - Comptage des types avec Counter
 """
-zip_path = r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+zip_path = (
+    r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+)
 type_counter = Counter()
 
 with zipfile.ZipFile(zip_path) as z:
-    
     # On parcourt un échantillon (rapide et suffisant)
     for name in object_files[:20_000]:
-        
         # Lecture du JSON directement depuis l'archive
         data = json.loads(z.read(name))
-        
+
         # Le champ @type peut être une string ou une liste
         types = data.get("@type", [])
-        
+
         if isinstance(types, str):
             types = [types]
-            
+
         # Mise à jour du compteur
         type_counter.update(types)
 
@@ -135,10 +135,9 @@ with zipfile.ZipFile(zip_path) as z:
 type_counter.most_common(10)
 
 
-
-#-----------------------------------------
+# -----------------------------------------
 # C.3) Check blog-ready
-#-----------------------------------------
+# -----------------------------------------
 """
 Inspection de la structure d’un POI Datatourisme : Cette inspection permet de constater que certains champs,
 comme isLocatedAt, peuvent varier en structure (liste ou objet) selon les sources de données amont.
@@ -152,10 +151,11 @@ Cette étape est essentielle pour :
 - éviter les hypothèses incorrectes sur la structure des données
 """
 
-zip_path = r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+zip_path = (
+    r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+)
 
 with zipfile.ZipFile(zip_path) as z:
-
     # Sélection d’un POI représentatif (premier fichier du flux)
     # Un seul objet suffit pour explorer la structure générale
     first = object_files[0]
@@ -180,10 +180,9 @@ print("\nisLocatedAt type:", type(data.get("isLocatedAt")))
 print("\nisLocatedAt (preview):", str(data.get("isLocatedAt"))[:800])
 
 
-
-#-----------------------------------------
+# -----------------------------------------
 # C.4) Check GEO (lat/long)¶
-#-----------------------------------------
+# -----------------------------------------
 """
 CHECK DATA-SAFE — Géolocalisation (latitude/longitude) peuvent être positionnées à différents niveaux de la hiérarchie isLocatedAt.
 il est donc nécessaire de détecter et normaliser ces structures avant toute exploitation géographique.
@@ -195,7 +194,9 @@ Approche :
 - Échantillonnage (10 000 POI suffisent)
 - Comptage GEO OK vs GEO manquant
 """
-zip_path = r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+zip_path = (
+    r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+)
 
 geo_ok = 0
 geo_missing = 0
@@ -204,10 +205,8 @@ geo_missing = 0
 N = 10_000
 
 with zipfile.ZipFile(zip_path) as z:
-
     # Parcours d’un échantillon de POI
     for name in object_files[:N]:
-
         # Lecture du POI directement depuis l’archive ZIP
         data = json.loads(z.read(name))
 
@@ -216,7 +215,6 @@ with zipfile.ZipFile(zip_path) as z:
         # Parcours des localisations associées au POI
         # as_list() sécurise le cas dict / list / None
         for loc in as_list(data.get("isLocatedAt")):
-
             # Cas 1 — Coordonnées directement sous isLocatedAt
             geo = loc.get("schema:geo")
             if isinstance(geo, dict):
@@ -250,10 +248,9 @@ print(f"GEO OK : {geo_ok}/{total} ({geo_ok / total:.1%})")
 print(f"GEO manquant : {geo_missing}/{total} ({geo_missing / total:.1%})")
 
 
-
-#-----------------------------------------
+# -----------------------------------------
 # C.5) Check Fraîcheur du flux
-#-----------------------------------------
+# -----------------------------------------
 """
 CHECK DATA-SAFE — Fraîcheur des données Datatourisme :
 La vérification de la fraîcheur des données confirme que le flux Datatourisme consommé correspond bien au dernier run du fournisseur.
@@ -263,7 +260,9 @@ Objectif :
 - Vérifier que le flux est récent
 - Confirmer la cohérence avec l'heure de notification
 """
-zip_path = r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+zip_path = (
+    r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+)
 # Liste des dates de mise à jour collectées
 dates = []
 
@@ -272,16 +271,14 @@ dates = []
 N = 5_000  # échantillon suffisant
 
 with zipfile.ZipFile(zip_path) as z:
-
     # Parcours d’un échantillon de POI
     for name in object_files[:N]:
-
         # Lecture du POI directement depuis l’archive ZIP
         data = json.loads(z.read(name))
 
         # Extraction de la date de dernière mise à jour Datatourisme
         d = data.get("lastUpdateDatatourisme")
-        
+
         if d:
             # Conversion de la date ISO 8601 en objet datetime Python
             dates.append(datetime.fromisoformat(d.replace("Z", "")))
@@ -290,7 +287,6 @@ with zipfile.ZipFile(zip_path) as z:
 print("Date min :", min(dates))
 print("Date max :", max(dates))
 print("Nombre de POI avec date :", len(dates))
-
 
 
 # ================================================================================================
@@ -312,7 +308,9 @@ Objectif :
 # ---------------------------------------------
 # 0) Paramètres
 # ---------------------------------------------
-zip_path = r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+zip_path = (
+    r"C:\Users\DELL\data\datatourisme\snapshots\2026-01-25_flux250126_complete.zip"
+)
 
 RENAME_MAP = {
     # Identité / typologie
@@ -320,23 +318,18 @@ RENAME_MAP = {
     "@type": "poi_types",
     "rdfs:label.fr": "label_fr",
     "rdfs:label.en": "label_en",
-
     # Localisation administrative
     "isLocatedAt.schema:address.schema:postalCode": "postal_code",
     "isLocatedAt.schema:address.hasAddressCity.insee": "city_insee",
     "isLocatedAt.schema:address.hasAddressCity.isPartOfDepartment.insee": "dept_insee",
     "isLocatedAt.schema:address.hasAddressCity.isPartOfDepartment.isPartOfRegion.insee": "region_insee",
-
     # Coordonnées géographiques
     "isLocatedAt.schema:geo.schema:latitude": "latitude",
     "isLocatedAt.schema:geo.schema:longitude": "longitude",
-
     # Capacité / jauge
     "allowedPersons": "allowed_persons",
-
     # Avis / rating (attention : sur Datatourisme c’est souvent “étoiles officielles” pour hébergement)
     "hasReview.hasReviewValue.schema:ratingValue": "rating_value",
-
     # Itinéraires / randonnées
     "tourDistance": "tour_distance_m",
     "duration": "duration_min",
@@ -345,70 +338,61 @@ RENAME_MAP = {
     "hasPracticeCondition.durationDays": "practice_duration_days",
     "positiveCumulDifference": "positive_elevation_gain_m",
     "negativeCumulDifference": "negative_elevation_loss_m",
-
     # Prix
     "offers.schema:priceSpecification.schema:price": "price",
     "offers.schema:priceSpecification.schema:minPrice": "min_price",
     "offers.schema:priceSpecification.schema:maxPrice": "max_price",
-
     # Style architectural
     "hasArchitecturalStyle.rdfs:label.fr": "architectural_style_fr",
     "hasArchitecturalStyle.rdfs:label.en": "architectural_style_en",
-
     # Description courte
     "hasDescription.shortDescription.fr": "short_desc_fr",
     "hasDescription.shortDescription.en": "short_desc_en",
-
     # Reviews / labels
     "hasReview.hasReviewValue.rdfs:label.fr": "review_value_label_fr",
     "hasReview.hasReviewValue.rdfs:label.en": "review_value_label_en",
     "hasReview.hasReviewValue.isCompliantWith": "review_compliant_with",
-
     # Thèmes
     "hasTheme.rdfs:label.fr": "theme_fr",
     "hasTheme.rdfs:label.en": "theme_en",
-
     # Adresse
     "isLocatedAt.schema:address.schema:addressLocality": "address_locality",
     "isLocatedAt.schema:address.schema:streetAddress": "street_address",
-
     # Ville / département / région / pays (labels)
     "isLocatedAt.schema:address.hasAddressCity.rdfs:label.fr": "city_label_fr",
     "isLocatedAt.schema:address.hasAddressCity.isPartOfDepartment.rdfs:label.fr": "dept_label_fr",
     "isLocatedAt.schema:address.hasAddressCity.isPartOfDepartment.isPartOfRegion.rdfs:label.fr": "region_label_fr",
     "isLocatedAt.schema:address.hasAddressCity.isPartOfDepartment.isPartOfRegion.isPartOfCountry.rdfs:label.fr": "country_label_fr",
-
     # Horaires d'ouverture (souvent des listes dans la réalité)
     "isLocatedAt.schema:openingHoursSpecification.schema:opens": "opens_time",
     "isLocatedAt.schema:openingHoursSpecification.schema:closes": "closes_time",
     "isLocatedAt.schema:openingHoursSpecification.schema:validFrom": "hours_valid_from",
     "isLocatedAt.schema:openingHoursSpecification.schema:validThrough": "hours_valid_through",
-
     # Updates (dates)
     "lastUpdateDatatourisme": "last_update_datatourisme",
-
     # Dates (événements / périodes)
     "schema:startDate": "start_date",
     "schema:endDate": "end_date",
-
     # Practice condition (difficulté, locomotion)
     "hasPracticeCondition.hasDifficultyLevel.rdfs:label.fr": "difficulty_level_fr",
     "hasPracticeCondition.hasLocomotionMode.rdfs:label.fr": "locomotion_mode_fr",
-
     # Tour type
     "hasTourType.rdfs:label.fr": "tour_type_fr",
-
     # Contacts / médias
     "hasContact.foaf:homepage": "contact_homepage",
     "hasRepresentation.ebucore:hasRelatedResource.ebucore:locator": "media_resource_url",
-    "hasMainRepresentation.ebucore:hasRelatedResource.ebucore:locator": "main_media_url",}
+    "hasMainRepresentation.ebucore:hasRelatedResource.ebucore:locator": "main_media_url",
+}
 
 
 # 1) Lister les fichiers POI dans le ZIP (1 POI = 1 JSON dans objects/)
 # ---------------------------------------------
 def list_object_files(zip_path: str) -> list[str]:
     with zipfile.ZipFile(zip_path) as z:
-        return [n for n in z.namelist() if n.startswith("objects/") and n.endswith(".json")]
+        return [
+            n for n in z.namelist() if n.startswith("objects/") and n.endswith(".json")
+        ]
+
 
 object_files = list_object_files(zip_path)
 print("Nombre de POI dans le zip :", len(object_files))
@@ -470,8 +454,15 @@ def datatourisme_zip_to_df(
     rows: list[dict[str, Any]] = []
 
     with zipfile.ZipFile(zip_path) as z:
-        files = object_files if object_files is not None else [
-            n for n in z.namelist() if n.startswith("objects/") and n.endswith(".json")]
+        files = (
+            object_files
+            if object_files is not None
+            else [
+                n
+                for n in z.namelist()
+                if n.startswith("objects/") and n.endswith(".json")
+            ]
+        )
         if limit is not None:
             files = files[:limit]
 
@@ -496,12 +487,21 @@ def datatourisme_zip_to_df(
 
     # Float-like
     float_cols = [
-        "latitude", "longitude",
-        "allowed_persons", "rating_value",
-        "tour_distance_m", "duration_min", "practice_duration_min",
-        "duration_days", "practice_duration_days",
-        "positive_elevation_gain_m", "negative_elevation_loss_m",
-        "price", "min_price", "max_price",]
+        "latitude",
+        "longitude",
+        "allowed_persons",
+        "rating_value",
+        "tour_distance_m",
+        "duration_min",
+        "practice_duration_min",
+        "duration_days",
+        "practice_duration_days",
+        "positive_elevation_gain_m",
+        "negative_elevation_loss_m",
+        "price",
+        "min_price",
+        "max_price",
+    ]
     for c in float_cols:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
@@ -519,47 +519,64 @@ def datatourisme_zip_to_df(
 # ---------------------
 ORDERED_COLS = [
     # A. Identité / clés
-    "poi_id", "poi_types",
-
+    "poi_id",
+    "poi_types",
     # B. Contenu
-    "label_fr", "label_en", "short_desc_fr", "short_desc_en",
-
+    "label_fr",
+    "label_en",
+    "short_desc_fr",
+    "short_desc_en",
     # C. Coordonnées
-    "latitude", "longitude",
-
+    "latitude",
+    "longitude",
     # D. Admin
     "country_label_fr",
-    "region_insee", "region_label_fr",
-    "dept_insee", "dept_label_fr",
-    "city_insee", "city_label_fr",
+    "region_insee",
+    "region_label_fr",
+    "dept_insee",
+    "dept_label_fr",
+    "city_insee",
+    "city_label_fr",
     "postal_code",
-
     # E. Adresse
-    "address_locality", "street_address",
-
+    "address_locality",
+    "street_address",
     # F. Tags
-    "theme_fr", "theme_en", "architectural_style_fr", "architectural_style_en",
-
+    "theme_fr",
+    "theme_en",
+    "architectural_style_fr",
+    "architectural_style_en",
     # G. Médias
-    "main_media_url", "media_resource_url", "contact_homepage",
-
+    "main_media_url",
+    "media_resource_url",
+    "contact_homepage",
     # I. Reviews / labels
-    "rating_value", "review_value_label_fr", "review_value_label_en", "review_compliant_with",
-
+    "rating_value",
+    "review_value_label_fr",
+    "review_value_label_en",
+    "review_compliant_with",
     # J. Horaires
-    "opens_time", "closes_time",
-    "hours_valid_from", "hours_valid_through",
-
+    "opens_time",
+    "closes_time",
+    "hours_valid_from",
+    "hours_valid_through",
     # L. Itinéraires / pratique
     "allowed_persons",
-    "difficulty_level_fr", "locomotion_mode_fr", "tour_type_fr",
+    "difficulty_level_fr",
+    "locomotion_mode_fr",
+    "tour_type_fr",
     "tour_distance_m",
-    "duration_min", "practice_duration_min",
-    "duration_days", "practice_duration_days",
-    "positive_elevation_gain_m", "negative_elevation_loss_m",
-
+    "duration_min",
+    "practice_duration_min",
+    "duration_days",
+    "practice_duration_days",
+    "positive_elevation_gain_m",
+    "negative_elevation_loss_m",
     # M. Dates & fraîcheur
-    "start_date", "end_date", "last_update_datatourisme",]
+    "start_date",
+    "end_date",
+    "last_update_datatourisme",
+]
 
 
 # 5) Exécution (construction du df brut Datatourisme)
@@ -569,11 +586,11 @@ df_dt = datatourisme_zip_to_df(
     rename_map=RENAME_MAP,
     object_files=object_files,
     limit=None,
-    column_order=ORDERED_COLS,)
+    column_order=ORDERED_COLS,
+)
 
 print("df_dt shape:", df_dt.shape)
 print(df_dt.head(3))
-
 
 
 # ----------------------------------------------------------------------------------------
@@ -589,7 +606,8 @@ FR_METRO_BOUNDS = {
     "lat_min": 41.0,
     "lat_max": 51.6,
     "lon_min": -5.5,
-    "lon_max": 10.0,}
+    "lon_max": 10.0,
+}
 
 
 def clean_geo_fr_metro(
@@ -650,7 +668,9 @@ def deduplicate_keep_best(
 
     # si la colonne de fraîcheur existe, on l’utilise
     if last_update_col in out.columns:
-        out["_last_update_dt"] = pd.to_datetime(out[last_update_col], errors="coerce", utc=True)
+        out["_last_update_dt"] = pd.to_datetime(
+            out[last_update_col], errors="coerce", utc=True
+        )
         out = out.sort_values(["_last_update_dt", "_quality"], ascending=[False, False])
     else:
         # fallback : uniquement richesse
@@ -678,8 +698,10 @@ def dedup_datatourisme_fr_metro(
     def _report(tag: str, d: pd.DataFrame):
         report[tag] = {
             "rows": int(len(d)),
-            "dup_poi_id": int(d.duplicated(["poi_id"]).sum()) if "poi_id" in d.columns else None,}
-
+            "dup_poi_id": int(d.duplicated(["poi_id"]).sum())
+            if "poi_id" in d.columns
+            else None,
+        }
 
     # 1) GEO clean
     d1 = clean_geo_fr_metro(df)
@@ -688,13 +710,16 @@ def dedup_datatourisme_fr_metro(
     # colonnes "richesse" (on ne garde que celles qui existent)
     if quality_cols is None:
         quality_cols = [
-            "label_fr", "short_desc_fr",
-            "main_media_url", "media_resource_url",
+            "label_fr",
+            "short_desc_fr",
+            "main_media_url",
+            "media_resource_url",
             "theme_fr",
-            "street_address", "address_locality",
-            "contact_homepage",]
+            "street_address",
+            "address_locality",
+            "contact_homepage",
+        ]
         quality_cols = [c for c in quality_cols if c in d1.columns]
-
 
     # 2) dédup SAFE sur poi_id (si dispo)
     if "poi_id" in d1.columns:
@@ -702,12 +727,12 @@ def dedup_datatourisme_fr_metro(
             d1,
             key_cols=["poi_id"],
             last_update_col="last_update_datatourisme",
-            quality_cols=quality_cols,)
+            quality_cols=quality_cols,
+        )
     else:
         d2 = d1.copy()
 
     _report("after_dedup_poi_id", d2)
-
 
     # 3) dédup STRICT optionnel
     if strict:
@@ -737,6 +762,7 @@ def dedup_datatourisme_fr_metro(
 
     return d2, report
 
+
 # Exécution : UNE SEULE FOIS
 # (choisis strict=True ou strict=False)
 # --------------------------------------
@@ -744,10 +770,10 @@ df_clean, rep = dedup_datatourisme_fr_metro(df_dt, strict=True, coord_round=6)
 print(rep)
 
 
-
 # --------------------------------------------
 # T.2.2) Créer colonne is_resto (robuste)
 # --------------------------------------------
+
 
 def _norm_type(t: str) -> str:
     """
@@ -779,15 +805,34 @@ def _norm_label(s: str) -> str:
 
 # Préfix forts : si le label commence par ça, c’est très probablement un resto
 RESTO_LABEL_PREFIXES = (
-    "restaurant", "resto", "pizzeria", "crêperie", "creperie",
-    "bar-restaurant", "bar restaurant", "café-restaurant",
-    "cafe-restaurant", "cafe restaurant", "tacos", "snack",
-    "kebab", "grill",)
+    "restaurant",
+    "resto",
+    "pizzeria",
+    "crêperie",
+    "creperie",
+    "bar-restaurant",
+    "bar restaurant",
+    "café-restaurant",
+    "cafe-restaurant",
+    "cafe restaurant",
+    "tacos",
+    "snack",
+    "kebab",
+    "grill",
+)
 
 # Mots-clés (moins stricts)
 RESTO_LABEL_KEYWORDS = (
-    "restaurant", "pizzeria", "bistrot", "snack",
-    "kebab", "tacos", "grill", "burger", "sushi",)
+    "restaurant",
+    "pizzeria",
+    "bistrot",
+    "snack",
+    "kebab",
+    "tacos",
+    "grill",
+    "burger",
+    "sushi",
+)
 
 
 def compute_is_resto_from_types(poi_types) -> bool:
@@ -837,18 +882,21 @@ def compute_is_resto_from_label(label_fr: str) -> bool:
 
     return False
 
+
 # Création des colonnes
 df_clean["is_resto_type"] = df_clean["poi_types"].apply(compute_is_resto_from_types)
 df_clean["is_resto_label"] = df_clean["label_fr"].apply(compute_is_resto_from_label)
 df_clean["is_resto"] = df_clean["is_resto_type"] | df_clean["is_resto_label"]
 
 
-
 # --------------------------------------------
 # T.2.3) Créer colonnes label flags (UI signals)
 # --------------------------------------------
 
-def add_label_flags(df: pd.DataFrame, label_col: str = "review_value_label_fr") -> pd.DataFrame:
+
+def add_label_flags(
+    df: pd.DataFrame, label_col: str = "review_value_label_fr"
+) -> pd.DataFrame:
     """
     Crée des colonnes booléennes de flags à partir de `label_col`.
     - True : le label appartient à une famille
@@ -856,52 +904,123 @@ def add_label_flags(df: pd.DataFrame, label_col: str = "review_value_label_fr") 
     """
     LABEL_GROUPS = {
         "is_label_incontournable": {
-            "Patrimoine Mondial UNESCO", "Monument Historique", "Grand Site de France", "Musée de France",
-            "Architecture contemporaine remarquable", "Entreprise du Patrimoine Vivant, EPV",
-            "Maison des Illustres", "Jardin remarquable", "Jardin protégé Monument Historique",
-            "Plus Beaux Villages de France", "Petites cités de caractère", "Ville ou Pays d'art et d'histoire",
-            "Site protégé", "Parc Naturel National", "Réserve naturelle nationale",},
+            "Patrimoine Mondial UNESCO",
+            "Monument Historique",
+            "Grand Site de France",
+            "Musée de France",
+            "Architecture contemporaine remarquable",
+            "Entreprise du Patrimoine Vivant, EPV",
+            "Maison des Illustres",
+            "Jardin remarquable",
+            "Jardin protégé Monument Historique",
+            "Plus Beaux Villages de France",
+            "Petites cités de caractère",
+            "Ville ou Pays d'art et d'histoire",
+            "Site protégé",
+            "Parc Naturel National",
+            "Réserve naturelle nationale",
+        },
         "is_label_famille": {"Famille plus"},
         "is_label_handicap": {
-            "Tourisme & Handicap auditif", "Tourisme & Handicap mental",
-            "Tourisme & Handicap visuel", "Tourisme & Handicap moteur",},
+            "Tourisme & Handicap auditif",
+            "Tourisme & Handicap mental",
+            "Tourisme & Handicap visuel",
+            "Tourisme & Handicap moteur",
+        },
         "is_label_hebergement": {
-            "5 étoiles", "4 étoiles", "3 étoiles", "3 épis / Confort",
-            "4 épis / Premium", "5 épis / Luxury ", "3 Clés", "4 Clés", "5 Clés",
-            "Gîtes de France", "Chambre d'hôtes référence", "Hébergement Pêche",
-            "Hôtel Elégance", "Hôtel Essentiel", "Auberge de Village", "Hôtel Cosy",
-            "Camping Qualité",},
+            "5 étoiles",
+            "4 étoiles",
+            "3 étoiles",
+            "3 épis / Confort",
+            "4 épis / Premium",
+            "5 épis / Luxury ",
+            "3 Clés",
+            "4 Clés",
+            "5 Clés",
+            "Gîtes de France",
+            "Chambre d'hôtes référence",
+            "Hébergement Pêche",
+            "Hôtel Elégance",
+            "Hôtel Essentiel",
+            "Auberge de Village",
+            "Hôtel Cosy",
+            "Camping Qualité",
+        },
         "is_label_gastronomie": {
-            "Maître Restaurateur", "Gault&Millau", "Sélection Michelin",
-            "Restaurant Gourmand", "Restaurateur de Qualité", "Restaurant de Terroir",
-            "Bottin Gourmand", "Restaurant Savoureux", "Food Index for Good",
-            "Le Fooding", "Maître Cuisinier de France", "Table gastronomique",
+            "Maître Restaurateur",
+            "Gault&Millau",
+            "Sélection Michelin",
+            "Restaurant Gourmand",
+            "Restaurateur de Qualité",
+            "Restaurant de Terroir",
+            "Bottin Gourmand",
+            "Restaurant Savoureux",
+            "Food Index for Good",
+            "Le Fooding",
+            "Maître Cuisinier de France",
+            "Table gastronomique",
             "Membre du Conservatoire Grand Sud des Cuisines de Terroir",
-            "Table de terroir", "Tables et auberges de France", "Ecotable",
-            "Sites Remarquables du Goût", "Bistrot de Pays", "Membre Gourméditerrannée",
-            "Vélo & Fromage", "3 étoiles Michelin",},
+            "Table de terroir",
+            "Tables et auberges de France",
+            "Ecotable",
+            "Sites Remarquables du Goût",
+            "Bistrot de Pays",
+            "Membre Gourméditerrannée",
+            "Vélo & Fromage",
+            "3 étoiles Michelin",
+        },
         "is_label_artisanat": {
-            "Vignobles & Découvertes", "Agriculture Biologique", "Bienvenue à la ferme",
-            "Vignerons Indépendants de France", "Accueil Paysan", "Agriculture raisonnée",
-            "Artisans Militants de la Qualité", "Domaine du conservatoire de l'espace littoral",
-            "Teritoria",},
+            "Vignobles & Découvertes",
+            "Agriculture Biologique",
+            "Bienvenue à la ferme",
+            "Vignerons Indépendants de France",
+            "Accueil Paysan",
+            "Agriculture raisonnée",
+            "Artisans Militants de la Qualité",
+            "Domaine du conservatoire de l'espace littoral",
+            "Teritoria",
+        },
         "is_label_randonnee": {
             "Plan Départemental des Itinéraires de Promenade et de Randonnée, PDIPR",
             "Itinéraire de promenade et de randonnée, PR",
             "Fédération Française de Randonnée",
             "Itinéraire de sentier de grande randonnée, GR",
-            "Itinéraire de sentier de grande randonnée de pays GRP",},
+            "Itinéraire de sentier de grande randonnée de pays GRP",
+        },
         "is_label_green": {
-            "4 fleurs", "3 fleurs", "5 fleurs", "Parc Naturel Régional", "Qualité Tourisme",
-            "Pavillon bleu", "Espace Naturel Sensible", "Ecolabel européen",
-            "Valeurs Parc Naturel Régional", "Valeur", "Démarche Tourisme Responsable",
-            "Station Verte", "Esprit parc national",
-            "Balade à roulette, BR", "Clé Vacances", "Véloroute", "Destination d'excellence",
+            "4 fleurs",
+            "3 fleurs",
+            "5 fleurs",
+            "Parc Naturel Régional",
+            "Qualité Tourisme",
+            "Pavillon bleu",
+            "Espace Naturel Sensible",
+            "Ecolabel européen",
+            "Valeurs Parc Naturel Régional",
+            "Valeur",
+            "Démarche Tourisme Responsable",
+            "Station Verte",
+            "Esprit parc national",
+            "Balade à roulette, BR",
+            "Clé Vacances",
+            "Véloroute",
+            "Destination d'excellence",
             "Zone naturelle d'intérêt écologique, faunistique et floristique, ZNIEFF",
-            "Réserve naturelle régionale", "Plus Beaux Détours de France", "Site VTT-FFC",
-            "Natura 2000", "City Break Confort", "Aire Naturelle", "Relais & châteaux",
-            "Fleurs de Soleil", "Eco Jardin", "ISO 20121", "City Break Premium",
-            "Accueil chemins de Compostelle en France", "Grande Traversée VTT-FFC",},}
+            "Réserve naturelle régionale",
+            "Plus Beaux Détours de France",
+            "Site VTT-FFC",
+            "Natura 2000",
+            "City Break Confort",
+            "Aire Naturelle",
+            "Relais & châteaux",
+            "Fleurs de Soleil",
+            "Eco Jardin",
+            "ISO 20121",
+            "City Break Premium",
+            "Accueil chemins de Compostelle en France",
+            "Grande Traversée VTT-FFC",
+        },
+    }
 
     out = df.copy()
 
@@ -917,9 +1036,9 @@ def add_label_flags(df: pd.DataFrame, label_col: str = "review_value_label_fr") 
 
     return out
 
+
 # exécution
 df_clean = add_label_flags(df_clean, label_col="review_value_label_fr")
-
 
 
 # --------------------------------------------
@@ -957,12 +1076,15 @@ df_clean["is_etoile"] = df_clean["rating_value"].ge(1).fillna(False)
 # Cette variable ne représente PAS un niveau de satisfaction,
 # mais un positionnement tarifaire / de gamme.
 
-df_clean["price_level"] = np.select([df_clean["rating_value"].isna() | (df_clean["rating_value"] <= 2),
-                                      df_clean["rating_value"] == 3,
-                                      df_clean["rating_value"] >= 4],
-                                     ["eco", "normal", "premium"],
-                                     default="eco")
-
+df_clean["price_level"] = np.select(
+    [
+        df_clean["rating_value"].isna() | (df_clean["rating_value"] <= 2),
+        df_clean["rating_value"] == 3,
+        df_clean["rating_value"] >= 4,
+    ],
+    ["eco", "normal", "premium"],
+    default="eco",
+)
 
 
 # --------------------------------------------
@@ -1002,12 +1124,14 @@ Notes / bonnes pratiques :
 """
 
 import re
+
 import pandas as pd
 
 # 0) GARDE-FOU : construire poi_types_clean (liste de types sans préfixe)
 # ---------------------------------------------------------------------
 
 _prefix_re = re.compile(r"^[a-z0-9_]+:", flags=re.IGNORECASE)
+
 
 def strip_prefix(t: str) -> str:
     """
@@ -1020,6 +1144,7 @@ def strip_prefix(t: str) -> str:
     t = str(t).strip().lower()
     t = _prefix_re.sub("", t)
     return t
+
 
 def to_types_clean(x) -> list[str]:
     """
@@ -1043,6 +1168,7 @@ def to_types_clean(x) -> list[str]:
         return []
     return [strip_prefix(s)]
 
+
 # créer la colonne si absente
 if "poi_types_clean" not in df_clean.columns:
     df_clean["poi_types_clean"] = df_clean["poi_types"].apply(to_types_clean)
@@ -1061,7 +1187,8 @@ CAT_WEIGHT = {
     "Bien-être & Santé": 0.2,
     "Services & Pratique": 0.1,
     "Itinéraires & Circuits": 0.0,
-    "Hébergement": 0.0,}
+    "Hébergement": 0.0,
+}
 
 
 # 2) Mapping type -> main_category
@@ -1074,34 +1201,82 @@ for t in ["culturalsite"]:
 
 # Patrimoine & Monuments
 for t in [
-    "archeologicalsite","abbey","basilica","cathedral","chapel","church","cloister","convent",
-    "calvary","castle","citadel","bastide","aqueduct","bridge","collegiate","commanderie",
-    "chartreuse","bishopric","cityheritage","house","civilcemetery","buddhisttemple"]:
+    "archeologicalsite",
+    "abbey",
+    "basilica",
+    "cathedral",
+    "chapel",
+    "church",
+    "cloister",
+    "convent",
+    "calvary",
+    "castle",
+    "citadel",
+    "bastide",
+    "aqueduct",
+    "bridge",
+    "collegiate",
+    "commanderie",
+    "chartreuse",
+    "bishopric",
+    "cityheritage",
+    "house",
+    "civilcemetery",
+    "buddhisttemple",
+]:
     TYPE_TO_CAT[t] = "Patrimoine & Monuments"
 
 # Gastronomie & Restauration
-for t in ["foodestablishment","fastfoodrestaurant","cafeorcoffeeshop","bakery","coveredmarket"]:
+for t in [
+    "foodestablishment",
+    "fastfoodrestaurant",
+    "cafeorcoffeeshop",
+    "bakery",
+    "coveredmarket",
+]:
     TYPE_TO_CAT[t] = "Gastronomie & Restauration"
 
 # Hébergement
-for t in ["accommodation","apartment"]:
+for t in ["accommodation", "apartment"]:
     TYPE_TO_CAT[t] = "Hébergement"
 
 # Événements & Spectacles & Exposition
-for t in ["event","businessevent","circusplace", "auditorium"]:
+for t in ["event", "businessevent", "circusplace", "auditorium"]:
     TYPE_TO_CAT[t] = "Événements & Spectacles & Exposition"
 
 # Loisirs & Activités familiales
 for t in [
-    "library","cinematheque","educationaltrail",
-    "amusementpark","adventurepark","bowlingalley","minigolf","golfcourse","climbingwall",
-    "gymnasium","frontonbelotacourt","casino","movietheater","activityprovider","nauticalcentre",
-    "marina","launchingramp","downhillskiresort","crosscountryskiresort","downhillskirun",
-    "crosscountryskitrail","dogsleddingtrail","aquarium","product","convenientservice","civicstructure"]:
+    "library",
+    "cinematheque",
+    "educationaltrail",
+    "amusementpark",
+    "adventurepark",
+    "bowlingalley",
+    "minigolf",
+    "golfcourse",
+    "climbingwall",
+    "gymnasium",
+    "frontonbelotacourt",
+    "casino",
+    "movietheater",
+    "activityprovider",
+    "nauticalcentre",
+    "marina",
+    "launchingramp",
+    "downhillskiresort",
+    "crosscountryskiresort",
+    "downhillskirun",
+    "crosscountryskitrail",
+    "dogsleddingtrail",
+    "aquarium",
+    "product",
+    "convenientservice",
+    "civicstructure",
+]:
     TYPE_TO_CAT[t] = "Loisirs & Activités familiales"
 
 # Nature & Paysages
-for t in ["park","placeofinterest","landform", "arena"]:
+for t in ["park", "placeofinterest", "landform", "arena"]:
     TYPE_TO_CAT[t] = "Nature & Paysages"
 
 # Shopping & Artisanat
@@ -1109,13 +1284,19 @@ for t in ["localbusiness", "businessplace"]:
     TYPE_TO_CAT[t] = "Shopping & Artisanat"
 
 # Bien-être & Santé
-for t in ["balneotherapycentre","hammam"]:
+for t in ["balneotherapycentre", "hammam"]:
     TYPE_TO_CAT[t] = "Bien-être & Santé"
 
 # Services & Pratique
 for t in [
-    "touristinformationcenter","airport","airfield","busstop","busstation",
-    "equipmentrentalshop","equipmentrepairshop","multipurposeroomorcommunityroom"
+    "touristinformationcenter",
+    "airport",
+    "airfield",
+    "busstop",
+    "busstation",
+    "equipmentrentalshop",
+    "equipmentrepairshop",
+    "multipurposeroomorcommunityroom",
 ]:
     TYPE_TO_CAT[t] = "Services & Pratique"
 
@@ -1127,7 +1308,10 @@ TYPE_TO_CAT["orderedlist"] = "Itinéraires & Circuits"
 # -------------------------------
 IGNORE_TYPES = set()
 
-def pick_main_category_by_weight(types_clean, type_to_cat=TYPE_TO_CAT, cat_weight=CAT_WEIGHT):
+
+def pick_main_category_by_weight(
+    types_clean, type_to_cat=TYPE_TO_CAT, cat_weight=CAT_WEIGHT
+):
     """
     Retour: (best_cat, best_weight, candidates_sorted)
     """
@@ -1171,8 +1355,8 @@ df_clean["main_cat_candidates"] = tmp.apply(lambda x: x[2])
 
 # Flag Prime+ (itinéraires)
 df_clean["is_prime_plus"] = df_clean["poi_types_clean"].apply(
-    lambda xs: "orderedlist" in xs if isinstance(xs, list) else False)
-
+    lambda xs: "orderedlist" in xs if isinstance(xs, list) else False
+)
 
 
 # ----------------------------------------------------------
@@ -1191,25 +1375,91 @@ Le "format" décrit la nature de l'interaction utilisateur avec un POI, indépen
 TYPE_TO_FORMAT = {}
 
 for t in [
-    "culturalsite", "archeologicalsite", "abbey", "basilica", "cathedral", "chapel", "church",
-    "cloister", "convent", "calvary", "castle", "citadel", "bastide", "aqueduct", "bridge",
-    "collegiate", "commanderie", "chartreuse", "bishopric", "cityheritage", "house",
-    "civilcemetery", "buddhisttemple", "park", "placeofinterest", "landform"]:
+    "culturalsite",
+    "archeologicalsite",
+    "abbey",
+    "basilica",
+    "cathedral",
+    "chapel",
+    "church",
+    "cloister",
+    "convent",
+    "calvary",
+    "castle",
+    "citadel",
+    "bastide",
+    "aqueduct",
+    "bridge",
+    "collegiate",
+    "commanderie",
+    "chartreuse",
+    "bishopric",
+    "cityheritage",
+    "house",
+    "civilcemetery",
+    "buddhisttemple",
+    "park",
+    "placeofinterest",
+    "landform",
+]:
     TYPE_TO_FORMAT[t] = "lieu"
 
 for t in [
-    "event", "businessevent", "arena", "circusplace", "library", "cinematheque", "auditorium", "educationaltrail",
-    "amusementpark", "adventurepark", "bowlingalley", "minigolf", "golfcourse", "climbingwall",
-    "gymnasium", "frontonbelotacourt", "casino", "movietheater", "activityprovider", "nauticalcentre",
-    "marina", "launchingramp", "downhillskiresort", "crosscountryskiresort", "downhillskirun",
-    "crosscountryskitrail", "dogsleddingtrail", "aquarium", "businessplace",
-    "localbusiness", "equipmentrentalshop", "equipmentrepairshop"]:
+    "event",
+    "businessevent",
+    "arena",
+    "circusplace",
+    "library",
+    "cinematheque",
+    "auditorium",
+    "educationaltrail",
+    "amusementpark",
+    "adventurepark",
+    "bowlingalley",
+    "minigolf",
+    "golfcourse",
+    "climbingwall",
+    "gymnasium",
+    "frontonbelotacourt",
+    "casino",
+    "movietheater",
+    "activityprovider",
+    "nauticalcentre",
+    "marina",
+    "launchingramp",
+    "downhillskiresort",
+    "crosscountryskiresort",
+    "downhillskirun",
+    "crosscountryskitrail",
+    "dogsleddingtrail",
+    "aquarium",
+    "businessplace",
+    "localbusiness",
+    "equipmentrentalshop",
+    "equipmentrepairshop",
+]:
     TYPE_TO_FORMAT[t] = "expérience"
 
 for t in [
-    "balneotherapycentre", "hammam", "touristinformationcenter", "convenientservice", "civicstructure",
-    "airport", "airfield", "busstop", "busstation", "accommodation", "apartment", "multipurposeroomorcommunityroom",
-    "foodestablishment", "fastfoodrestaurant", "cafeorcoffeeshop", "bakery", "coveredmarket", "product"]:
+    "balneotherapycentre",
+    "hammam",
+    "touristinformationcenter",
+    "convenientservice",
+    "civicstructure",
+    "airport",
+    "airfield",
+    "busstop",
+    "busstation",
+    "accommodation",
+    "apartment",
+    "multipurposeroomorcommunityroom",
+    "foodestablishment",
+    "fastfoodrestaurant",
+    "cafeorcoffeeshop",
+    "bakery",
+    "coveredmarket",
+    "product",
+]:
     TYPE_TO_FORMAT[t] = "besoin"
 
 TYPE_TO_FORMAT["orderedlist"] = "parcours"
@@ -1252,6 +1502,7 @@ def compute_format_label_from_clean(types_clean) -> str:
 # 3) Cache (clé = tuple(types_clean))
 _format_cache = {}
 
+
 def compute_format_label_cached(types_clean) -> str:
     key = tuple(types_clean) if isinstance(types_clean, list) else tuple()
     if key in _format_cache:
@@ -1263,9 +1514,10 @@ def compute_format_label_cached(types_clean) -> str:
 
 # 4) Application au DF
 _format_cache = {}  # reset avant recalcul
-df_clean["format_label"] = df_clean["poi_types_clean"].apply(compute_format_label_cached)
+df_clean["format_label"] = df_clean["poi_types_clean"].apply(
+    compute_format_label_cached
+)
 df_clean["format_weight"] = df_clean["format_label"].map(FORMAT_WEIGHT).fillna(0.0)
-
 
 
 # ----------------------------------------------------------
@@ -1285,25 +1537,91 @@ Le tempo est utilisé dans le scoring Prime pour moduler la densité d’un itin
 TYPE_TO_TEMPO = {}
 
 for t in [
-    "culturalsite", "archeologicalsite", "abbey", "basilica", "cathedral", "chapel", "church",
-    "cloister", "convent", "calvary", "castle", "citadel", "bastide", "aqueduct", "bridge",
-    "collegiate", "commanderie", "chartreuse", "bishopric", "cityheritage", "house",
-    "civilcemetery", "buddhisttemple", "park", "placeofinterest", "landform"]:
+    "culturalsite",
+    "archeologicalsite",
+    "abbey",
+    "basilica",
+    "cathedral",
+    "chapel",
+    "church",
+    "cloister",
+    "convent",
+    "calvary",
+    "castle",
+    "citadel",
+    "bastide",
+    "aqueduct",
+    "bridge",
+    "collegiate",
+    "commanderie",
+    "chartreuse",
+    "bishopric",
+    "cityheritage",
+    "house",
+    "civilcemetery",
+    "buddhisttemple",
+    "park",
+    "placeofinterest",
+    "landform",
+]:
     TYPE_TO_TEMPO[t] = "lent"
 
 for t in [
-    "balneotherapycentre", "hammam", "touristinformationcenter", "convenientservice", "civicstructure",
-    "airport", "airfield", "busstop", "busstation", "accommodation", "apartment", "multipurposeroomorcommunityroom",
-    "foodestablishment", "fastfoodrestaurant", "cafeorcoffeeshop", "bakery", "coveredmarket", "product"]:
+    "balneotherapycentre",
+    "hammam",
+    "touristinformationcenter",
+    "convenientservice",
+    "civicstructure",
+    "airport",
+    "airfield",
+    "busstop",
+    "busstation",
+    "accommodation",
+    "apartment",
+    "multipurposeroomorcommunityroom",
+    "foodestablishment",
+    "fastfoodrestaurant",
+    "cafeorcoffeeshop",
+    "bakery",
+    "coveredmarket",
+    "product",
+]:
     TYPE_TO_TEMPO[t] = "normal"
 
 for t in [
-    "event", "businessevent", "arena", "circusplace", "library", "cinematheque", "auditorium", "educationaltrail",
-    "amusementpark", "adventurepark", "bowlingalley", "minigolf", "golfcourse", "climbingwall",
-    "gymnasium", "frontonbelotacourt", "casino", "movietheater", "activityprovider", "nauticalcentre",
-    "marina", "launchingramp", "downhillskiresort", "crosscountryskiresort", "downhillskirun",
-    "crosscountryskitrail", "dogsleddingtrail", "aquarium", "businessplace",
-    "localbusiness", "equipmentrentalshop", "equipmentrepairshop"]:
+    "event",
+    "businessevent",
+    "arena",
+    "circusplace",
+    "library",
+    "cinematheque",
+    "auditorium",
+    "educationaltrail",
+    "amusementpark",
+    "adventurepark",
+    "bowlingalley",
+    "minigolf",
+    "golfcourse",
+    "climbingwall",
+    "gymnasium",
+    "frontonbelotacourt",
+    "casino",
+    "movietheater",
+    "activityprovider",
+    "nauticalcentre",
+    "marina",
+    "launchingramp",
+    "downhillskiresort",
+    "crosscountryskiresort",
+    "downhillskirun",
+    "crosscountryskitrail",
+    "dogsleddingtrail",
+    "aquarium",
+    "businessplace",
+    "localbusiness",
+    "equipmentrentalshop",
+    "equipmentrepairshop",
+]:
     TYPE_TO_TEMPO[t] = "dynamique"
 
 TYPE_TO_TEMPO["orderedlist"] = "zen"
@@ -1312,7 +1630,8 @@ TEMPO_WEIGHT = {
     "lent": 0.09,
     "normal": 0.06,
     "dynamique": 0.03,
-    "zen": 0.0,}
+    "zen": 0.0,
+}
 
 
 # 2) Calcul tempo_label depuis poi_types_clean (liste)
@@ -1349,6 +1668,7 @@ def compute_tempo_label_from_clean(types_clean) -> str:
 # 3) Cache (clé = tuple(types_clean))
 _tempo_cache = {}
 
+
 def compute_tempo_label_cached(types_clean) -> str:
     key = tuple(types_clean) if isinstance(types_clean, list) else tuple()
     if key in _tempo_cache:
@@ -1364,7 +1684,6 @@ df_clean["tempo_label"] = df_clean["poi_types_clean"].apply(compute_tempo_label_
 
 # fallback “normal” = 0.06 (pas 0.6)
 df_clean["tempo_weight"] = df_clean["tempo_label"].map(TEMPO_WEIGHT).fillna(0.06)
-
 
 
 # --------------------------------------------
@@ -1390,9 +1709,8 @@ for c in ["main_cat_weight", "format_weight", "tempo_weight"]:
 
 # Calcul vectorisé (rapide et stable)
 df_clean["score_prime"] = df_clean["main_cat_weight"] * (
-    1 + df_clean["format_weight"] + df_clean["tempo_weight"])
-
-
+    1 + df_clean["format_weight"] + df_clean["tempo_weight"]
+)
 
 
 # ----------------------------------------------------------------------------------------
@@ -1410,24 +1728,30 @@ Normalisation des colonnes
 - Conversion des identifiants et codes (ex: postal_code) en formats stables et cohérents pour l’affichage.
 """
 
+
 def safe_str(s: pd.Series) -> pd.Series:
     """String propre : strip, NA conservés"""
     return s.astype("string").str.strip().replace("", pd.NA)
 
+
 def to_float32(s: pd.Series) -> pd.Series:
     return pd.to_numeric(s, errors="coerce").astype("float32")
+
 
 def to_int32_nullable(s: pd.Series) -> pd.Series:
     return pd.to_numeric(s, errors="coerce").astype("Int32")
 
+
 def to_int16_nullable(s: pd.Series) -> pd.Series:
     return pd.to_numeric(s, errors="coerce").astype("Int16")
+
 
 def list_to_str(s: pd.Series) -> pd.Series:
     """liste → 'a|b|c' ; NA si pas liste"""
     return s.apply(
         lambda x: "|".join(map(str, x)) if isinstance(x, list) and len(x) > 0 else pd.NA
     ).astype("string")
+
 
 def normalize_datatourisme(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -1452,14 +1776,30 @@ def normalize_datatourisme(df: pd.DataFrame) -> pd.DataFrame:
 
     # Géolocalisation
     for c in ["latitude", "longitude"]:
-        df[c] = to_float32(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="float32")
+        df[c] = (
+            to_float32(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="float32")
+        )
 
     # Localisation administrative
     for c in ["country_label_fr", "region_label_fr", "dept_label_fr", "city_label_fr"]:
-        df[c] = safe_str(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+        df[c] = (
+            safe_str(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="string")
+        )
 
-    for c, fn in [("region_insee", to_int32_nullable), ("dept_insee", to_int16_nullable), ("city_insee", to_int32_nullable)]:
-        df[c] = fn(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="Int32")
+    for c, fn in [
+        ("region_insee", to_int32_nullable),
+        ("dept_insee", to_int16_nullable),
+        ("city_insee", to_int32_nullable),
+    ]:
+        df[c] = (
+            fn(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="Int32")
+        )
 
     # postal_code : garder en string pour préserver les zéros
     if "postal_code" in df.columns:
@@ -1471,27 +1811,59 @@ def normalize_datatourisme(df: pd.DataFrame) -> pd.DataFrame:
 
     # Adresse / contact
     for c in ["address_locality", "street_address", "contact_homepage"]:
-        df[c] = safe_str(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+        df[c] = (
+            safe_str(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="string")
+        )
 
     # Médias
     for c in ["main_media_url", "media_resource_url"]:
-        df[c] = safe_str(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+        df[c] = (
+            safe_str(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="string")
+        )
 
     # Rating / capacité
-    df["rating_value"] = to_float32(df["rating_value"]) if "rating_value" in df.columns else pd.Series(pd.NA, index=df.index, dtype="float32")
-    df["allowed_persons"] = to_int16_nullable(df["allowed_persons"]) if "allowed_persons" in df.columns else pd.Series(pd.NA, index=df.index, dtype="Int16")
+    df["rating_value"] = (
+        to_float32(df["rating_value"])
+        if "rating_value" in df.columns
+        else pd.Series(pd.NA, index=df.index, dtype="float32")
+    )
+    df["allowed_persons"] = (
+        to_int16_nullable(df["allowed_persons"])
+        if "allowed_persons" in df.columns
+        else pd.Series(pd.NA, index=df.index, dtype="Int16")
+    )
 
     # Prix
     for c in ["price", "min_price", "max_price"]:
-        df[c] = to_float32(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="float32")
-    df["price_level"] = safe_str(df["price_level"]) if "price_level" in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+        df[c] = (
+            to_float32(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="float32")
+        )
+    df["price_level"] = (
+        safe_str(df["price_level"])
+        if "price_level" in df.columns
+        else pd.Series(pd.NA, index=df.index, dtype="string")
+    )
 
     # Catégorisation
     for c in ["main_category", "format_label", "tempo_label"]:
-        df[c] = safe_str(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+        df[c] = (
+            safe_str(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="string")
+        )
 
     for c in ["main_cat_weight", "format_weight", "tempo_weight", "score_prime"]:
-        df[c] = to_float32(df[c]) if c in df.columns else pd.Series(0.0, index=df.index, dtype="float32")
+        df[c] = (
+            to_float32(df[c])
+            if c in df.columns
+            else pd.Series(0.0, index=df.index, dtype="float32")
+        )
 
     if "main_cat_candidates" in df.columns:
         df["main_cat_candidates"] = list_to_str(df["main_cat_candidates"])
@@ -1500,11 +1872,20 @@ def normalize_datatourisme(df: pd.DataFrame) -> pd.DataFrame:
 
     # Booléens : safe (crée la colonne si absente)
     BOOL_COLS = [
-        "is_resto_type", "is_resto_label", "is_resto",
-        "is_label_incontournable", "is_label_famille", "is_label_handicap",
-        "is_label_hebergement", "is_label_gastronomie", "is_label_artisanat",
-        "is_label_randonnee", "is_label_green",
-        "is_etoile", "is_prime_plus",]
+        "is_resto_type",
+        "is_resto_label",
+        "is_resto",
+        "is_label_incontournable",
+        "is_label_famille",
+        "is_label_handicap",
+        "is_label_hebergement",
+        "is_label_gastronomie",
+        "is_label_artisanat",
+        "is_label_randonnee",
+        "is_label_green",
+        "is_etoile",
+        "is_prime_plus",
+    ]
     for c in BOOL_COLS:
         if c not in df.columns:
             df[c] = False
@@ -1513,23 +1894,45 @@ def normalize_datatourisme(df: pd.DataFrame) -> pd.DataFrame:
 
     # Colonnes excursion (safe)
     for c in ["difficulty_level_fr", "locomotion_mode_fr", "tour_type_fr"]:
-        df[c] = safe_str(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+        df[c] = (
+            safe_str(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="string")
+        )
 
     for c in [
-        "tour_distance_m", "duration_min", "practice_duration_min",
-        "duration_days", "practice_duration_days",
-        "positive_elevation_gain_m", "negative_elevation_loss_m",]:
-        df[c] = to_float32(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="float32")
+        "tour_distance_m",
+        "duration_min",
+        "practice_duration_min",
+        "duration_days",
+        "practice_duration_days",
+        "positive_elevation_gain_m",
+        "negative_elevation_loss_m",
+    ]:
+        df[c] = (
+            to_float32(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="float32")
+        )
 
-    for c in ["start_date", "end_date", "hours_valid_from", "hours_valid_through", "last_update_datatourisme"]:
-        df[c] = safe_str(df[c]) if c in df.columns else pd.Series(pd.NA, index=df.index, dtype="string")
+    for c in [
+        "start_date",
+        "end_date",
+        "hours_valid_from",
+        "hours_valid_through",
+        "last_update_datatourisme",
+    ]:
+        df[c] = (
+            safe_str(df[c])
+            if c in df.columns
+            else pd.Series(pd.NA, index=df.index, dtype="string")
+        )
 
     return df
 
 
 df_norm = normalize_datatourisme(df_clean)
 df_norm.info(memory_usage="deep")
-
 
 
 # --------------------------------------------
@@ -1567,22 +1970,18 @@ préalablement normalisé (`df_norm`).
 UI_RENAME_MAP = {
     # ids / source
     "poi_id": "source_id",
-
     # géoloc
     "latitude": "lat",
     "longitude": "lon",
-
     # contenu
     "label_fr": "name",
     "contact_homepage": "url",
-
     # adresse
     "street_address": "address",
     "city_label_fr": "city",
     "region_label_fr": "region",
     "dept_label_fr": "departement",
     "country_label_fr": "country",
-
     # catégories
     "main_category": "main_category_compressed",
     "review_compliant_with": "sub_category",
@@ -1590,7 +1989,8 @@ UI_RENAME_MAP = {
     "short_desc_fr": "snippet",
     "short_desc_en": "snippet_en",
     "rating_value": "rating",
-    "allowed_persons": "max_people",}
+    "allowed_persons": "max_people",
+}
 
 df_ui = df_norm.rename(columns=UI_RENAME_MAP).copy()
 
@@ -1603,13 +2003,21 @@ df_ui["distance_km"] = pd.Series(np.nan, index=df_ui.index, dtype="float32")
 if "main_category_compressed" not in df_ui.columns:
     df_ui["main_category_compressed"] = pd.NA
 else:
-    df_ui["main_category_compressed"] = df_ui["main_category_compressed"].astype("string")
+    df_ui["main_category_compressed"] = df_ui["main_category_compressed"].astype(
+        "string"
+    )
 
 # type_principal : si c’est une liste -> string "a|b|c" (plus stable pour parquet/UI)
 if "type_principal" in df_ui.columns:
-    df_ui["type_principal"] = df_ui["type_principal"].apply(
-        lambda x: "|".join(map(str, x)) if isinstance(x, list) else (str(x) if pd.notna(x) else pd.NA)
-    ).astype("string")
+    df_ui["type_principal"] = (
+        df_ui["type_principal"]
+        .apply(
+            lambda x: "|".join(map(str, x))
+            if isinstance(x, list)
+            else (str(x) if pd.notna(x) else pd.NA)
+        )
+        .astype("string")
+    )
 else:
     df_ui["type_principal"] = pd.Series(pd.NA, index=df_ui.index, dtype="string")
 
@@ -1617,13 +2025,21 @@ else:
 # 2) Splitter en 2 dataframes (Prime classique vs Excursion)
 EXCURSION_CAT = "Itinéraires & Circuits"
 
-df_prime_classique = df_ui[df_ui["main_category_compressed"].fillna("") != EXCURSION_CAT].copy()
-df_prime_excursion = df_ui[df_ui["main_category_compressed"].fillna("") == EXCURSION_CAT].copy()
+df_prime_classique = df_ui[
+    df_ui["main_category_compressed"].fillna("") != EXCURSION_CAT
+].copy()
+df_prime_excursion = df_ui[
+    df_ui["main_category_compressed"].fillna("") == EXCURSION_CAT
+].copy()
 
 
 # 3) Export parquet compressé (dossiers créés si besoin)
-out_prime_classique = Path(r"C:\Users\DELL\Downloads\ItineraireVacances3\df_prime_classique.parquet")
-out_prime_excursion = Path(r"C:\Users\DELL\Downloads\ItineraireVacances3\df_prime_excursion.parquet")
+out_prime_classique = Path(
+    r"C:\Users\DELL\Downloads\ItineraireVacances3\df_prime_classique.parquet"
+)
+out_prime_excursion = Path(
+    r"C:\Users\DELL\Downloads\ItineraireVacances3\df_prime_excursion.parquet"
+)
 
 
 def save_parquet_safe(df: pd.DataFrame, path: Path):
@@ -1644,18 +2060,17 @@ def save_parquet_safe(df: pd.DataFrame, path: Path):
         df.to_parquet(path, index=False, compression="snappy")
         print("saved with snappy:", str(path))
 
+
 save_parquet_safe(df_prime_classique, out_prime_classique)
 save_parquet_safe(df_prime_excursion, out_prime_excursion)
 
 str(out_prime_classique), str(out_prime_excursion)
 
 
-
 # =========================================================================
 # checkpoint de validation
 # =========================================================================
 if __name__ == "__main__":
-
     print("=== PIPELINE START ===")
 
     print("df_norm :", df_norm.shape)
@@ -1669,4 +2084,3 @@ if __name__ == "__main__":
     print(df_prime_excursion.head(3))
 
     print("\n=== PIPELINE END ===")
-

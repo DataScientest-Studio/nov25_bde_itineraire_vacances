@@ -1,9 +1,10 @@
-
-
-import polars as pl
-import numpy as np
 from typing import List
+
+import numpy as np
+import polars as pl
+
 from .evaluate_solver import evaluate_solver_on_cluster
+
 
 def compare_solvers_on_sizes(
     df_all_pois: pl.DataFrame,
@@ -34,13 +35,11 @@ def compare_solvers_on_sizes(
 
         # Sélectionner un sous-échantillon de POIs
         df_sample = df_all_pois.sample(size, with_replacement=False)
-        
 
         for run_id in range(runs_per_size):
             print(f"    • Run {run_id}")
 
             for solver in ["ga", "nn2o"]:
-
                 res = evaluate_solver_on_cluster(
                     solver=solver,
                     df_cluster=df_sample,

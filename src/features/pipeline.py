@@ -1,18 +1,21 @@
+import asyncio
 import time
 from pathlib import Path
 from typing import Dict
-import asyncio
 
 import polars as pl
 
-from src.features.poi_filter import POIFilter
-from src.features.spatial_clustering import SpatialClusterer
-from src.features.post_clustering import build_osrm_ready_pois, build_osrm_matrices_async
 from src.features.itinerary_optimizer import ItineraryOptimizer
 from src.features.osrm import OSRMClientAsync
-
+from src.features.poi_filter import POIFilter
+from src.features.post_clustering import (
+    build_osrm_matrices_async,
+    build_osrm_ready_pois,
+)
+from src.features.spatial_clustering import SpatialClusterer
 
 DEFAULT_VISIT_TIME = 45 * 60  # 45 minutes en secondes
+
 
 class ItineraryPipeline:
     """
@@ -69,11 +72,10 @@ class ItineraryPipeline:
         df_prepared = sortie de _cluster_pois (éventuellement déjà "balancée").
         """
 
-        df_prepared = (
-            df_prepared
-            .rename({
+        df_prepared = df_prepared.rename(
+            {
                 "day": "cluster_id",
-            })
+            }
         )
 
         df_clustered = build_osrm_ready_pois(
@@ -159,19 +161,39 @@ class ItineraryPipeline:
 
         periods = ["morning" if t < 4 * 3600 else "afternoon" for t in cum_total]
 
-        derived = pl.DataFrame({
-            "order": pl.Series("order", list(range(1, len(poi_order) + 1)), dtype=pl.Int64),
-            "distance_from_prev": pl.Series("distance_from_prev", distances, dtype=pl.Float64),
-            "duration_from_prev": pl.Series("duration_from_prev", durations, dtype=pl.Float64),
-            "visit_time": pl.Series("visit_time", visit_times, dtype=pl.Int64),
-            "step_total_duration": pl.Series("step_total_duration", step_total, dtype=pl.Float64),
-            "cum_distance": pl.Series("cum_distance", cum_distances, dtype=pl.Float64),
-            "cum_duration": pl.Series("cum_duration", cum_durations, dtype=pl.Float64),
-            "cum_total_duration": pl.Series("cum_total_duration", cum_total, dtype=pl.Float64),
-            "day_total_distance": pl.Series("day_total_distance", [total_d] * len(poi_order), dtype=pl.Float64),
-            "day_total_duration": pl.Series("day_total_duration", [total_all] * len(poi_order), dtype=pl.Float64),
-            "period": pl.Series("period", periods, dtype=pl.Utf8),
-        })
+        derived = pl.DataFrame(
+            {
+                "order": pl.Series(
+                    "order", list(range(1, len(poi_order) + 1)), dtype=pl.Int64
+                ),
+                "distance_from_prev": pl.Series(
+                    "distance_from_prev", distances, dtype=pl.Float64
+                ),
+                "duration_from_prev": pl.Series(
+                    "duration_from_prev", durations, dtype=pl.Float64
+                ),
+                "visit_time": pl.Series("visit_time", visit_times, dtype=pl.Int64),
+                "step_total_duration": pl.Series(
+                    "step_total_duration", step_total, dtype=pl.Float64
+                ),
+                "cum_distance": pl.Series(
+                    "cum_distance", cum_distances, dtype=pl.Float64
+                ),
+                "cum_duration": pl.Series(
+                    "cum_duration", cum_durations, dtype=pl.Float64
+                ),
+                "cum_total_duration": pl.Series(
+                    "cum_total_duration", cum_total, dtype=pl.Float64
+                ),
+                "day_total_distance": pl.Series(
+                    "day_total_distance", [total_d] * len(poi_order), dtype=pl.Float64
+                ),
+                "day_total_duration": pl.Series(
+                    "day_total_duration", [total_all] * len(poi_order), dtype=pl.Float64
+                ),
+                "period": pl.Series("period", periods, dtype=pl.Utf8),
+            }
+        )
 
         return df_day[poi_order].with_columns(derived)
 

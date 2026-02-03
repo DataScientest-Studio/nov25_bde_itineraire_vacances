@@ -1,6 +1,12 @@
 import time
-from benchmark_solvers.itinerary.solvers.ga_itinerary_path_solver import GAItinerarySolver
-from benchmark_solvers.itinerary.solvers.nn2opt_itinerary_solver import NN2OptItinerarySolver
+
+from benchmark_solvers.itinerary.solvers.ga_itinerary_path_solver import (
+    GAItinerarySolver,
+)
+from benchmark_solvers.itinerary.solvers.nn2opt_itinerary_solver import (
+    NN2OptItinerarySolver,
+)
+
 from .itinerary_metrics import itinerary_metrics
 
 

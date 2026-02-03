@@ -1,15 +1,11 @@
-from deap import base
-from deap import creator
-from deap import tools
-
 import random
+
 import numpy as np
+from deap import base, creator, tools
 
 
 class GeneticAlgo:
-
     def __init__(self, poi_df, duration_matrix):
-
         # Supprimer les classes si elles existent déjà
         if hasattr(creator, "FitnessItinerary"):
             del creator.FitnessItinerary
@@ -24,8 +20,10 @@ class GeneticAlgo:
 
         # création de la toolbox (conteneur de toutes les opérations):
         self.toolbox = base.Toolbox()
-        self.df = poi_df              # DataFrame pandas local au cluster
-        self.matrix = duration_matrix # matrice locale (np.ndarray, shape (n_local, n_local))
+        self.df = poi_df  # DataFrame pandas local au cluster
+        self.matrix = (
+            duration_matrix  # matrice locale (np.ndarray, shape (n_local, n_local))
+        )
         self.n_local = duration_matrix.shape[0]  # nombre de POIs dans le cluster
 
     # --------------------------------------------------------------------------
@@ -43,7 +41,7 @@ class GeneticAlgo:
         )
         return travel_duration
 
-    def get_itinerary_resto(self, itin, resto_cat=['Restaurants']):
+    def get_itinerary_resto(self, itin, resto_cat=["Restaurants"]):
         """
         itin : liste d'indices LOCAUX
         retourne les poi_id qui sont dans une des sub_categories resto_cat
@@ -53,15 +51,11 @@ class GeneticAlgo:
 
         # On récupère les lignes correspondant aux indices locaux
         df_itin = self.df.iloc[itin]
-        itin_resto = df_itin.loc[df_itin.sub_category.isin(resto_cat), 'poi_id']
+        itin_resto = df_itin.loc[df_itin.sub_category.isin(resto_cat), "poi_id"]
         return itin_resto.tolist()
 
     def get_itinerary_activity_duration(
-        self,
-        itin,
-        lunch_duration=60,
-        activity_duration=45,
-        resto_cat=['Restaurants']
+        self, itin, lunch_duration=60, activity_duration=45, resto_cat=["Restaurants"]
     ):
         """
         itin : indices LOCAUX
@@ -73,7 +67,7 @@ class GeneticAlgo:
 
         # On a besoin des poi_id pour comparer
         df_itin = self.df.iloc[itin]
-        poi_ids = df_itin['poi_id'].tolist()
+        poi_ids = df_itin["poi_id"].tolist()
 
         activities_duration = sum(
             lunch_duration if poi in itin_resto else activity_duration
@@ -86,10 +80,10 @@ class GeneticAlgo:
         Score basé sur la durée totale (trajet + activités)
         """
         itin_duration = (
-            self.get_itinerary_activity_duration(itin) +
-            self.get_itinerary_travel_duration(itin)
+            self.get_itinerary_activity_duration(itin)
+            + self.get_itinerary_travel_duration(itin)
         ) / 60.0
-        itin_duration_score = np.exp(-(itin_duration - duration) ** 2)
+        itin_duration_score = np.exp(-((itin_duration - duration) ** 2))
         return itin_duration_score
 
     def get_lunch_time(self, itin, start_time=9):
@@ -99,14 +93,14 @@ class GeneticAlgo:
         if len(itin) == 0:
             return 0.0
 
-        itin_resto = self.get_itinerary_resto(itin, resto_cat=['Restaurants'])
+        itin_resto = self.get_itinerary_resto(itin, resto_cat=["Restaurants"])
 
         if len(itin_resto) == 0:
             return 0.0
 
         # On récupère les poi_id dans l'ordre de l'itinéraire
         df_itin = self.df.iloc[itin]
-        poi_ids = df_itin['poi_id'].tolist()
+        poi_ids = df_itin["poi_id"].tolist()
 
         # Premier resto dans l'itinéraire
         first_resto_id = itin_resto[0]
@@ -116,18 +110,18 @@ class GeneticAlgo:
         resto_itin_index = poi_ids.index(first_resto_id)
 
         # Durée avant le resto
-        travel_duration = self.get_itinerary_travel_duration(itin[:resto_itin_index + 1]) / 60.0
-        activity_duration = self.get_itinerary_activity_duration(itin[:resto_itin_index]) / 60.0
+        travel_duration = (
+            self.get_itinerary_travel_duration(itin[: resto_itin_index + 1]) / 60.0
+        )
+        activity_duration = (
+            self.get_itinerary_activity_duration(itin[:resto_itin_index]) / 60.0
+        )
 
         lunch_time = start_time + travel_duration + activity_duration
         return lunch_time
 
     def get_itinerary_resto_score(
-        self,
-        itin,
-        resto_cat=['Restaurants'],
-        start_time=9,
-        lunch_time=13
+        self, itin, resto_cat=["Restaurants"], start_time=9, lunch_time=13
     ):
         if len(itin) == 0:
             return 0.0
@@ -143,23 +137,15 @@ class GeneticAlgo:
 
         # Score sur l'heure du déjeuner
         itin_lunch_time = self.get_lunch_time(itin, start_time)
-        lunch_score = np.exp(-(itin_lunch_time - lunch_time) ** 2)
+        lunch_score = np.exp(-((itin_lunch_time - lunch_time) ** 2))
 
         return 0.7 * lunch_score + 0.3 * resto_score
 
     def evaluate_itinerary(
-        self,
-        itin,
-        duration=8,
-        resto_cat=['Restaurants'],
-        start_time=9,
-        lunch_time=13
+        self, itin, duration=8, resto_cat=["Restaurants"], start_time=9, lunch_time=13
     ):
         resto_score = self.get_itinerary_resto_score(
-            itin,
-            resto_cat=resto_cat,
-            start_time=start_time,
-            lunch_time=lunch_time
+            itin, resto_cat=resto_cat, start_time=start_time, lunch_time=lunch_time
         )
         duration_score = self.get_itinerary_duration_score(itin, duration)
 
@@ -217,8 +203,12 @@ class GeneticAlgo:
 
     def setup_toolbox(self, itin_min_poi=5, itin_max_poi=15):
         self.toolbox = base.Toolbox()
-        self.toolbox.register("itinerary", self.generate_random_itinerary, itin_min_poi, itin_max_poi)
-        self.toolbox.register("population", tools.initRepeat, list, self.toolbox.itinerary)
+        self.toolbox.register(
+            "itinerary", self.generate_random_itinerary, itin_min_poi, itin_max_poi
+        )
+        self.toolbox.register(
+            "population", tools.initRepeat, list, self.toolbox.itinerary
+        )
         self.toolbox.register("evaluate", self.evaluate_itinerary)
         self.toolbox.register("mate", self.crossover_itinerary)
         self.toolbox.register("mutate", self.mutate_itinerary)

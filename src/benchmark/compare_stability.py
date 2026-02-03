@@ -1,6 +1,8 @@
-import polars as pl
-import numpy as np
 from typing import Dict, List
+
+import numpy as np
+import polars as pl
+
 from .evaluate_solver import evaluate_solver_on_cluster
 
 
@@ -45,7 +47,6 @@ def compare_stability_on_matrices(
             df_cluster = df_all_pois.sample(size, with_replacement=False)
 
             for run_id in range(runs_per_matrix):
-
                 res = evaluate_solver_on_cluster(
                     solver=solver,
                     df_cluster=df_cluster,

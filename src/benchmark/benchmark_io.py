@@ -1,6 +1,7 @@
-import polars as pl
 from pathlib import Path
 from typing import Dict
+
+import polars as pl
 
 
 def save_benchmark(results: Dict[str, pl.DataFrame], folder: str = "benchmark_results"):

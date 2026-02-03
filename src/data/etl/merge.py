@@ -1,5 +1,6 @@
 import polars as pl
 
+
 def align_schemas(df_list: list[pl.DataFrame]) -> list[pl.DataFrame]:
     # Récupère toutes les colonnes existantes
     all_cols = set().union(*(df.columns for df in df_list))
@@ -12,6 +13,7 @@ def align_schemas(df_list: list[pl.DataFrame]) -> list[pl.DataFrame]:
             df = df.with_columns(pl.lit(None).alias(col))
         aligned.append(df.select(sorted(all_cols)))  # ordre stable
     return aligned
+
 
 def merge_dataframes(df_list: list[pl.DataFrame]) -> pl.DataFrame:
     if not df_list:

@@ -3,14 +3,8 @@ def select_best_ga_config(df_ga_tuning):
 
     summary = (
         pdf.groupby("config")
-        .agg({
-            "runtime_ms": "mean",
-            "fitness": "mean"
-        })
-        .rename(columns={
-            "runtime_ms": "runtime_mean",
-            "fitness": "fitness_mean"
-        })
+        .agg({"runtime_ms": "mean", "fitness": "mean"})
+        .rename(columns={"runtime_ms": "runtime_mean", "fitness": "fitness_mean"})
     )
 
     summary["score"] = summary["fitness_mean"] / summary["runtime_mean"]

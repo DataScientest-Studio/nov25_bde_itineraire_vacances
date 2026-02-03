@@ -1,17 +1,18 @@
 import time
-import numpy as np
 from typing import List, Type
 
+import numpy as np
+
 from benchmark_solvers.tsp.solvers.base_tsp_path_solver import TSPSolverBase
-from benchmark_solvers.tsp.solvers.nn2opt_tsp_path_solver import NN2OptSolver
 from benchmark_solvers.tsp.solvers.ga_tsp_path_solver import GA_TspPathSolver
+from benchmark_solvers.tsp.solvers.nn2opt_tsp_path_solver import NN2OptSolver
 
 from .tsp_metrics import (
     basic_stats,
-    stability_metrics,
-    quality_metrics,
-    structural_metrics,
     pareto_score,
+    quality_metrics,
+    stability_metrics,
+    structural_metrics,
     tsp_rating,
 )
 

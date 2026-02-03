@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def radar_comparison_tourist(df_comp):
@@ -10,9 +10,8 @@ def radar_comparison_tourist(df_comp):
 
     # Normalisation
     for m in metrics:
-        df_tour[m + "_norm"] = (
-            (df_tour[m].fillna(0) - df_tour[m].min()) /
-            (df_tour[m].max() - df_tour[m].min() + 1e-9)
+        df_tour[m + "_norm"] = (df_tour[m].fillna(0) - df_tour[m].min()) / (
+            df_tour[m].max() - df_tour[m].min() + 1e-9
         )
 
     angles = np.linspace(0, 2 * np.pi, len(metrics), endpoint=False)
@@ -60,7 +59,12 @@ def side_by_side_plots(df_tsp, df_iti, matrix_name):
     # Itinéraire
     sub_iti = df_iti[df_iti["matrix"] == matrix_name]
     for _, row in sub_iti.iterrows():
-        axes[1].scatter(row.get("mean_distance", np.nan), row["mean_score"], s=120, label=row["solver"])
+        axes[1].scatter(
+            row.get("mean_distance", np.nan),
+            row["mean_score"],
+            s=120,
+            label=row["solver"],
+        )
     axes[1].set_title("Itinéraire – Score vs Distance")
     axes[1].set_xlabel("Distance")
     axes[1].set_ylabel("Score touristique")

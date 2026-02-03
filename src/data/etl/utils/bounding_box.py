@@ -1,22 +1,24 @@
+from pathlib import Path
+
 import geopandas as gpd
 from shapely.geometry import Point
-from pathlib import Path
 
 DATA_DIR = Path("data")
 REGIONS_PATH = DATA_DIR / "processed" / "regions.parquet"
 DEPARTEMENTS_PATH = DATA_DIR / "processed" / "departements.parquet"
 COMMUNES_PATH = DATA_DIR / "processed" / "communes.parquet"
 
+
 class BoundingBoxResolver:
-    def __init__(self, 
-                 regions_path=REGIONS_PATH,
-                 departements_path=DEPARTEMENTS_PATH,
-                 communes_path=COMMUNES_PATH):
-        
+    def __init__(
+        self,
+        regions_path=REGIONS_PATH,
+        departements_path=DEPARTEMENTS_PATH,
+        communes_path=COMMUNES_PATH,
+    ):
         self.regions = gpd.read_parquet(Path(regions_path))
         self.departements = gpd.read_parquet(Path(departements_path))
         self.communes = gpd.read_parquet(Path(communes_path))
-
 
     # ---------------------------
     # REGION
@@ -31,7 +33,7 @@ class BoundingBoxResolver:
             "lat_min": r.lat_min,
             "lat_max": r.lat_max,
             "lon_min": r.lon_min,
-            "lon_max": r.lon_max
+            "lon_max": r.lon_max,
         }
 
     def get_region_centroid(self, region_name):
@@ -61,7 +63,7 @@ class BoundingBoxResolver:
             "lat_min": r.lat_min,
             "lat_max": r.lat_max,
             "lon_min": r.lon_min,
-            "lon_max": r.lon_max
+            "lon_max": r.lon_max,
         }
 
     def get_city_centroid(self, city_name):
@@ -77,7 +79,7 @@ class BoundingBoxResolver:
             return False
         polygon = row.iloc[0].geometry
         return polygon.contains(Point(longitude, latitude))
-    
+
 
 # test
 if __name__ == "__main__":

@@ -1,10 +1,11 @@
-import geopandas as gpd
 from pathlib import Path
 
+import geopandas as gpd
 
 DATA_DIR = Path("data")
 RAW_DIR = DATA_DIR / "raw"
 OUTPUT_DIR = DATA_DIR / "processed"
+
 
 def process_layer(name, filename):
     print(f"📌 Traitement : {name}")
@@ -29,16 +30,17 @@ def process_layer(name, filename):
 
     print(f"✔️ Sauvegardé : {out_path}")
 
-def main():
 
+def main():
     layers = {
         "regions": RAW_DIR / "regions-100m.geojson",
         "departements": RAW_DIR / "departements-100m.geojson",
-        "communes": RAW_DIR / "communes-100m.geojson"
+        "communes": RAW_DIR / "communes-100m.geojson",
     }
 
     for name, path in layers.items():
         process_layer(name, path)
+
 
 if __name__ == "__main__":
     main()

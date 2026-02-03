@@ -1,16 +1,21 @@
-import polars as pl
 import math
+
+import polars as pl
+
 from etl.utils.bounding_box import BoundingBoxResolver
 
 resolver = BoundingBoxResolver()
+
 
 # ---------------------------------------------------------
 # Distance Haversine (km)
 # ---------------------------------------------------------
 def haversine(latitude1, longitude1, latitude2, longitude2):
     if (
-        latitude1 is None or longitude1 is None or
-        latitude2 is None or longitude2 is None
+        latitude1 is None
+        or longitude1 is None
+        or latitude2 is None
+        or longitude2 is None
     ):
         return None
 
@@ -39,7 +44,9 @@ def haversine(latitude1, longitude1, latitude2, longitude2):
 # ---------------------------------------------------------
 # Module principal
 # ---------------------------------------------------------
-def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float = 5.0) -> pl.LazyFrame:
+def add_proximity(
+    lf: pl.LazyFrame, resolver, level: str = "commune", tau: float = 5.0
+) -> pl.LazyFrame:
     """
     Ajoute :
     - proximity_{level} : distance brute (km)
@@ -54,17 +61,13 @@ def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float
 
     key = level
     centroid_func = (
-        resolver.get_city_centroid if level == "commune"
+        resolver.get_city_centroid
+        if level == "commune"
         else resolver.get_region_centroid
     )
 
     # 1) Extraire les valeurs uniques
-    values = (
-        lf.lazy().select(key)
-        .unique()
-        .collect()[key]
-        .to_list()
-    )
+    values = lf.lazy().select(key).unique().collect()[key].to_list()
 
     # 2) Calculer les centroids valides
     centroids = {}
@@ -75,20 +78,21 @@ def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float
 
     # 3) Aucun centroid → colonnes vides
     if len(centroids) == 0:
-        return lf.with_columns([
-            pl.lit(None).alias(f"proximity_{level}"),
-            pl.lit(None).alias(f"proximity_{level}_norm"),
-        ])
+        return lf.with_columns(
+            [
+                pl.lit(None).alias(f"proximity_{level}"),
+                pl.lit(None).alias(f"proximity_{level}_norm"),
+            ]
+        )
 
     # 4) DataFrame des centroids
-    df_centroids = (
-        pl.DataFrame({
+    df_centroids = pl.DataFrame(
+        {
             key: list(centroids.keys()),
             "centroid_lat": [c[0] for c in centroids.values()],
             "centroid_lon": [c[1] for c in centroids.values()],
-        })
-        .with_columns(pl.col(key).cast(pl.Utf8))
-    )
+        }
+    ).with_columns(pl.col(key).cast(pl.Utf8))
 
     # 5) Join
     lf = lf.join(df_centroids, on=key, how="left")
@@ -103,31 +107,29 @@ def add_proximity(lf: pl.LazyFrame, resolver, level: str = "commune", tau: float
             & pl.col("centroid_lon").is_not_null()
         )
         .then(
-            pl.struct(["latitude", "longitude", "centroid_lat", "centroid_lon"])
-            .map_elements(lambda r: haversine(
-                r["latitude"],
-                r["longitude"],
-                r["centroid_lat"],
-                r["centroid_lon"]
-            ))
+            pl.struct(
+                ["latitude", "longitude", "centroid_lat", "centroid_lon"]
+            ).map_elements(
+                lambda r: haversine(
+                    r["latitude"], r["longitude"], r["centroid_lat"], r["centroid_lon"]
+                )
+            )
         )
         .otherwise(None)
         .alias(dist_col)
     )
 
-
     # 7) Log-scaling pour lisser les outliers
-    lf = lf.with_columns([
-        pl.col(dist_col).log1p().alias(f"{dist_col}_log")
-    ])
+    lf = lf.with_columns([pl.col(dist_col).log1p().alias(f"{dist_col}_log")])
 
     # 8) Normalisation exponentielle sur la distance lissée
-    lf = lf.with_columns([
-        pl.when(pl.col(f"{dist_col}_log").is_not_null())
-        .then(pl.col(f"{dist_col}_log").map_elements(lambda d: math.exp(-d / tau)))
-        .otherwise(None)
-        .alias(f"{dist_col}_norm")
-    ])
-
+    lf = lf.with_columns(
+        [
+            pl.when(pl.col(f"{dist_col}_log").is_not_null())
+            .then(pl.col(f"{dist_col}_log").map_elements(lambda d: math.exp(-d / tau)))
+            .otherwise(None)
+            .alias(f"{dist_col}_norm")
+        ]
+    )
 
     return lf

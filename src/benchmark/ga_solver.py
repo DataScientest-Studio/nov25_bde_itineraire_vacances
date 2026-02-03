@@ -1,7 +1,9 @@
-import polars as pl
+from typing import Optional, Tuple
+
 import numpy as np
-from typing import Tuple, Optional
-from features.optimizer_ga import GeneticAlgo 
+import polars as pl
+
+from features.optimizer_ga import GeneticAlgo
 
 
 def run_ga_on_cluster(

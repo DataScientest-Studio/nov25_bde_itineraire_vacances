@@ -1,5 +1,5 @@
-from typing import List
 import math
+from typing import List
 
 
 class TSPSolver:
@@ -59,7 +59,6 @@ class TSPSolver:
 
             for i in range(1, self.n - 2):
                 for j in range(i + 1, self.n - 1):
-
                     # Coût actuel
                     a, b = path[i - 1], path[i]
                     c, d = path[j], path[j + 1]
@@ -68,7 +67,7 @@ class TSPSolver:
                     swapped = self.matrix[a][c] + self.matrix[b][d]
 
                     if swapped < current:
-                        path[i:j + 1] = reversed(path[i:j + 1])
+                        path[i : j + 1] = reversed(path[i : j + 1])
                         improved = True
 
         return path
