@@ -41,6 +41,23 @@ def get_flattened_data(data, region_name):
         if desc:
             desc = desc.replace("\n", " ").replace("\r", "")
 
+        # Contact
+        contact_mail = ""
+        contact_phone = ""
+        contact_website = ""
+        has_contact = data.get("hasContact")
+        if has_contact and isinstance(has_contact, list) and len(has_contact) > 0:
+            contact_mail = has_contact[0].get("schema:email", [""])[0]
+            contact_phone = has_contact[0].get("schema:telephone", [""])[0]
+            contact_website = has_contact[0].get("foaf:homepage", [""])[0]
+
+        if contact_mail:
+            contact_mail = contact_mail.replace("\n", " ").replace("\r", "")
+        if contact_phone:
+            contact_phone = contact_phone.replace("\n", " ").replace("\r", "")
+        if contact_website:
+            contact_website = contact_website.replace("\n", " ").replace("\r", "")
+
         # 3. Localisation (GPS & Adresse)
         lat, lon, street, cp, city = None, None, "", "", ""
 
@@ -80,7 +97,7 @@ def get_flattened_data(data, region_name):
                             or ""
                         )
 
-        return [data.get("@id", ""), nom, desc, lat, lon, street, cp, city, region_name]
+        return [data.get("@id", ""), nom, desc, lat, lon, street, cp, city, region_name, contact_mail, contact_phone, contact_website]
     except Exception:
         return None
 
@@ -121,6 +138,9 @@ def extract():
                 "addr_cp",
                 "addr_commune",
                 "source_region",
+                "contact_mail",
+                "contact_phone",
+                "contact_website",
             ]
         )
 

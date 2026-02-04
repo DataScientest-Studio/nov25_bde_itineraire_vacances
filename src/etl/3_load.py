@@ -84,6 +84,7 @@ def load():
                         nom_du_poi, latitude, longitude, description,
                         main_category_id, sub_category_id, adresse_id,
                         contacts_du_poi, itineraire,
+                        contact_mail, contact_phone, contact_website,
                         h3_r6, h3_r7, h3_r8, h3_r9,
                         density_commune_norm, diversity_commune_norm, popularity_norm,
                         proximity_commune_norm, category_weight_norm, opening_score_norm, final_score
@@ -91,6 +92,7 @@ def load():
                         :nom, :lat, :lon, :desc,
                         :main, :sub, :aid,
                         :cont, :itin,
+                        :mail, :phone, :web,   
                         :h6, :h7, :h8, :h9,
                         :den, :div, :pop, :prox, :cat_w, :open, :final
                     )
@@ -106,6 +108,9 @@ def load():
                         "aid": addr_id,
                         "cont": row["contacts_du_poi"],
                         "itin": row["itineraire"],
+                        "mail": row["contact_mail"],
+                        "phone": row["contact_phone"],
+                        "web": row["contact_website"],
                         "h6": row["h3_r6"],
                         "h7": row["h3_r7"],
                         "h8": row["h3_r8"],
