@@ -3,8 +3,7 @@ from pathlib import Path
 import geopandas as gpd
 from shapely.geometry import Point
 
-DATA_DIR = Path("../data")
-print("GG",DATA_DIR)
+DATA_DIR = Path("/opt/airflow/data")
 REGIONS_PATH = DATA_DIR / "processed" / "regions.parquet"
 DEPARTEMENTS_PATH = DATA_DIR / "processed" / "departements.parquet"
 COMMUNES_PATH = DATA_DIR / "processed" / "communes.parquet"
