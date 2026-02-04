@@ -51,7 +51,7 @@ CREATE TABLE poi (
     -- Infos complémentaires
     contact_mail VARCHAR(255),
     contact_phone VARCHAR(255),
-    contact_website VARCHAR(255),
+    contact_website TEXT,
     itineraire BOOLEAN,
     
     -- Index Géospatiaux H3

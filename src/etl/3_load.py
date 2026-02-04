@@ -83,7 +83,7 @@ def load():
                     INSERT INTO poi (
                         nom_du_poi, latitude, longitude, description,
                         main_category_id, sub_category_id, adresse_id,
-                        contacts_du_poi, itineraire,
+                        itineraire,
                         contact_mail, contact_phone, contact_website,
                         h3_r6, h3_r7, h3_r8, h3_r9,
                         density_commune_norm, diversity_commune_norm, popularity_norm,
@@ -91,7 +91,7 @@ def load():
                     ) VALUES (
                         :nom, :lat, :lon, :desc,
                         :main, :sub, :aid,
-                        :cont, :itin,
+                        :itin,
                         :mail, :phone, :web,   
                         :h6, :h7, :h8, :h9,
                         :den, :div, :pop, :prox, :cat_w, :open, :final
@@ -106,7 +106,6 @@ def load():
                         "main": row["main_category_id"],
                         "sub": row["sub_category_id"],
                         "aid": addr_id,
-                        "cont": row["contacts_du_poi"],
                         "itin": row["itineraire"],
                         "mail": row["contact_mail"],
                         "phone": row["contact_phone"],
