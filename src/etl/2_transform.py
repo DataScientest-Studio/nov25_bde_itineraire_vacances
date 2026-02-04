@@ -4,6 +4,16 @@ import sys
 import h3
 import numpy as np
 import pandas as pd
+import polars as pl
+
+# import tous les modules pour le scoring
+from scoring.density import add_density
+from scoring.diversity import add_diversity
+from scoring.proximity import add_proximity
+from scoring.category_weight import add_category_weight
+from scoring.final_score import add_final_score
+from scoring.utils.bounding_box import BoundingBoxResolver
+
 
 INPUT_FILE = "/opt/airflow/data/raw_datatourisme.csv"
 OUTPUT_FILE = "/opt/airflow/data/clean_pois.csv"
@@ -200,6 +210,7 @@ def calculate_h3(lat, lon, res):
 
 
 def transform():
+    resolver = BoundingBoxResolver()
     if not os.path.exists(INPUT_FILE):
         print("❌ Pas de fichier source (raw_datatourisme.csv)")
         sys.exit(1)
@@ -233,21 +244,47 @@ def transform():
             lambda x: calculate_h3(x["latitude"], x["longitude"], r), axis=1
         )
 
-    # 4. Initialisation des scores (0.0)
-    scores = [
-        "density_commune_norm",
-        "diversity_commune_norm",
-        "popularity_norm",
-        "proximity_commune_norm",
-        "category_weight_norm",
-        "opening_score_norm",
-        "final_score",
-    ]
-    for s in scores:
-        df[s] = 0.0
+    # 4. Initialisation des scores
+    print("   📊 Initialisation des scores...")
 
-    df["contacts_du_poi"] = ""
-    df["itineraire"] = ""
+    print("   🔄 Conversion Pandas → Polars...")
+    lf = pl.from_pandas(df).lazy()
+
+    print("   📊 Calcul du score de densité...")
+    lf = add_density(lf, level="commune")
+
+    print("   📊 Calcul du score de diversité...")
+    lf = add_diversity(lf)
+    
+    print("   📊 Calcul du score de proximité...")
+    lf = add_proximity(lf, resolver)
+    
+    print("   📊 Calcul du score de catégorie...")
+    lf = add_category_weight(lf)
+
+    print("   📊 Fill columns for popularity, proximity and opening_score with 0")
+    lf = lf.with_columns([
+    pl.lit(0).alias("popularity_norm"),
+    pl.lit(0).alias("opening_score_norm"),
+    ])
+
+    print("   📊 Calcul du score final...")
+    lf = add_final_score(lf)
+
+    print("   📥 Collecte du LazyFrame...")
+    df_polars = lf.collect()
+
+    print("   🔄 Conversion Polars → Pandas...")
+    df = df_polars.to_pandas()
+
+    # Itinéraire (tous les POIs à True sont des itinéraires excepté les catégories ci dessous)
+    list_main_category_id_to_exclude = [1,4,5,7,11,12,14,16,17]
+    df["itineraire"] = np.where(
+                    df["main_category_id"].isin(list_main_category_id_to_exclude),
+                    False,
+                    True
+                        )
+    df["itineraire"] = df["itineraire"].astype(bool)
 
     # 5. Sauvegarde
     df.to_csv(OUTPUT_FILE, index=False)
