@@ -49,8 +49,10 @@ CREATE TABLE poi (
     adresse_id INT,
     
     -- Infos complémentaires
-    contacts_du_poi TEXT,
-    itineraire TEXT,
+    contact_mail VARCHAR(255),
+    contact_phone VARCHAR(255),
+    contact_website TEXT,
+    itineraire BOOLEAN,
     
     -- Index Géospatiaux H3
     h3_r6 VARCHAR(15),

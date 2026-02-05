@@ -6,6 +6,7 @@ RESOLUTION_MAP = {
     "commune": "h3_r8",
 }
 
+
 def add_diversity(lf: pl.LazyFrame, level: str = "commune") -> pl.LazyFrame:
     """
     Ajoute :
@@ -21,18 +22,19 @@ def add_diversity(lf: pl.LazyFrame, level: str = "commune") -> pl.LazyFrame:
     diversity_norm_col = f"{diversity_col}_norm"
 
     # 1) Diversité brute par hexagone
-    diversity = (
-        lf.group_by(h3_col)
-          .agg(pl.col("main_category").n_unique().alias(diversity_col))
+    diversity = lf.group_by(h3_col).agg(
+        pl.col("main_category").n_unique().alias(diversity_col)
     )
 
     # 2) Normalisation min–max
-    diversity = diversity.with_columns([
-        (
-            (pl.col(diversity_col) - pl.col(diversity_col).min()) /
-            (pl.col(diversity_col).max() - pl.col(diversity_col).min())
-        ).alias(diversity_norm_col)
-    ])
+    diversity = diversity.with_columns(
+        [
+            (
+                (pl.col(diversity_col) - pl.col(diversity_col).min())
+                / (pl.col(diversity_col).max() - pl.col(diversity_col).min())
+            ).alias(diversity_norm_col)
+        ]
+    )
 
     # 3) Join sur le LazyFrame original
     return lf.join(diversity, on=h3_col)

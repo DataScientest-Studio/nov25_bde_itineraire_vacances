@@ -1,8 +1,10 @@
 from __future__ import annotations
-import polars as pl
+
 import math
+from typing import Dict, Literal
+
 import numpy as np
-from typing import Literal, Dict
+import polars as pl
 
 from features.osrm import OSRMClientAsync
 
@@ -20,30 +22,41 @@ DEFAULT_MAX_POIS_PER_CLUSTER = 40
 # Nombre cible de restaurants par jour/cluster
 TARGET_RESTAURANTS_PER_CLUSTER = 2
 
+
 # ------------------------------------------
 # haversine en Polars
 # ------------------------------------------
-def haversine_single(latitude1: float, longitude1: float, latitude2: float, longitude2: float) -> float:
+def haversine_single(
+    latitude1: float, longitude1: float, latitude2: float, longitude2: float
+) -> float:
     R = 6371.0  # km
-    latitude1, longitude1, latitude2, longitude2 = map(math.radians, [latitude1, longitude1, latitude2, longitude2])
+    latitude1, longitude1, latitude2, longitude2 = map(
+        math.radians, [latitude1, longitude1, latitude2, longitude2]
+    )
     dlat = latitude2 - latitude1
     dlongitude = longitude2 - longitude1
-    a = math.sin(dlat / 2) ** 2 + math.cos(latitude1) * math.cos(latitude2) * math.sin(dlongitude / 2) ** 2
-    return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-  
-def haversine_expr(latitude1_col: str, longitude1_col: str, latitude2_col: str, longitude2_col: str) -> pl.Expr:
-    return (
-        pl.struct([latitude1_col, longitude1_col, latitude2_col, longitude2_col])
-        .map_elements(
-            lambda s: haversine_single(
-                s[latitude1_col],
-                s[longitude1_col],
-                s[latitude2_col],
-                s[longitude2_col],
-            ),
-            return_dtype=pl.Float64,
-        )
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(latitude1) * math.cos(latitude2) * math.sin(dlongitude / 2) ** 2
     )
+    return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+def haversine_expr(
+    latitude1_col: str, longitude1_col: str, latitude2_col: str, longitude2_col: str
+) -> pl.Expr:
+    return pl.struct(
+        [latitude1_col, longitude1_col, latitude2_col, longitude2_col]
+    ).map_elements(
+        lambda s: haversine_single(
+            s[latitude1_col],
+            s[longitude1_col],
+            s[latitude2_col],
+            s[longitude2_col],
+        ),
+        return_dtype=pl.Float64,
+    )
+
 
 # ------------------------------------------
 # Score filtering
@@ -60,7 +73,7 @@ def filter_by_final_score(
     """
     if df.is_empty():
         return df
-    
+
     # filter poi que pour itinéraire
     if "itineraire" in df.columns:
         df = df.filter(pl.col("itineraire") == True)
@@ -75,25 +88,19 @@ def filter_by_final_score(
     # Tri par cluster
     # 1. Score diversité
     df_sorted = df.with_columns(
-        (
-            pl.col("final_score") * 0.6
-            + pl.col("diversity_commune_norm") * 0.4
-        ).alias("score_diversity")
+        (pl.col("final_score") * 0.6 + pl.col("diversity_commune_norm") * 0.4).alias(
+            "score_diversity"
+        )
     )
 
     # 2. Tri par cluster
-    df_sorted = (
-        df_sorted
-        .sort(["cluster_id", "score_diversity"], descending=[False, True])
+    df_sorted = df_sorted.sort(
+        ["cluster_id", "score_diversity"], descending=[False, True]
     )
-
 
     # Rang dans le cluster
     df_ranked = df_sorted.with_columns(
-        pl.col("poi_id")
-        .cum_count()
-        .over("cluster_id")
-        .alias("rank_in_cluster")
+        pl.col("poi_id").cum_count().over("cluster_id").alias("rank_in_cluster")
     )
 
     # Filtrer sur le rang
@@ -102,8 +109,9 @@ def filter_by_final_score(
     # On peut drop la Colonne de ranking si pas utile ensuite
     return df_filtered.drop("rank_in_cluster")
 
+
 # ------------------------------------------
-# Restaurant filtering          
+# Restaurant filtering
 # ------------------------------------------
 def enforce_restaurant_constraint(
     df_filtered: pl.DataFrame,
@@ -123,10 +131,8 @@ def enforce_restaurant_constraint(
     filtered_restos = df_filtered.filter(pl.col("main_category") == restaurant_category)
 
     # Nombre de restos par cluster après filtrage
-    resto_counts = (
-        filtered_restos
-        .group_by("cluster_id")
-        .agg(pl.len().alias("n_restos_filtered"))
+    resto_counts = filtered_restos.group_by("cluster_id").agg(
+        pl.len().alias("n_restos_filtered")
     )
 
     # Clusters où il manque des restos
@@ -183,12 +189,12 @@ def enforce_restaurant_constraint(
     )
 
     # Union des POIs déjà filtrés + restos ajoutés
-    df_with_restos = (
-        pl.concat([df_filtered, full_restos_candidates])
-        .unique(subset=["poi_id"])  # sécurité contre doublons
-    )
+    df_with_restos = pl.concat([df_filtered, full_restos_candidates]).unique(
+        subset=["poi_id"]
+    )  # sécurité contre doublons
 
     return df_with_restos
+
 
 # ------------------------------------------
 # Transport filtering
@@ -208,14 +214,11 @@ def filter_by_transport_mode(
     max_radius_km = radius_override_km or TRANSPORT_MAX_RADIUS_KM[mode]
 
     # Centroïde par cluster
-    centroids = (
-        df.group_by("cluster_id")
-        .agg(
-            [
-                pl.mean("latitude").alias("cluster_latitude"),
-                pl.mean("longitude").alias("cluster_longitude"),
-            ]
-        )
+    centroids = df.group_by("cluster_id").agg(
+        [
+            pl.mean("latitude").alias("cluster_latitude"),
+            pl.mean("longitude").alias("cluster_longitude"),
+        ]
     )
 
     # Join centroids
@@ -223,9 +226,9 @@ def filter_by_transport_mode(
 
     # Calcul distance POI -> centroïde
     df_with_dist = df_with_centroid.with_columns(
-        haversine_expr("latitude", "longitude", "cluster_latitude", "cluster_longitude").alias(
-            "dist_to_cluster_center_km"
-        )
+        haversine_expr(
+            "latitude", "longitude", "cluster_latitude", "cluster_longitude"
+        ).alias("dist_to_cluster_center_km")
     )
 
     # Filtre sur le rayon
@@ -236,9 +239,10 @@ def filter_by_transport_mode(
     # Optionnel : tu peux drop les colonnes de centroid/distance si pas utiles après
     return df_filtered.drop(["cluster_latitude", "cluster_longitude"])
 
+
 # ------------------------------------------
 # Préparation OSRM
-# ------------------------------------------    
+# ------------------------------------------
 def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
     """
     Prépare un df minimal pour OSRM (nodes à passer à la requête).
@@ -248,24 +252,30 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
         return df
 
     df_nodes = (
-        df
-        .sort(["cluster_id", "final_score"], descending=[False, True])
+        df.sort(["cluster_id", "final_score"], descending=[False, True])
         .with_row_index(name="osrm_index")  # index stable pour matrice
         .select(
             [
-                "osrm_index",   
+                "osrm_index",
                 "poi_id",
                 "cluster_id",
                 "latitude",
                 "longitude",
                 "main_category",
                 "sub_category",
+                "adresse",
+                "code_postal",
+                "commune",
+                "departement",
+                "region",
+                "contacts_du_poi",
                 "final_score",
             ]
         )
     )
 
     return df_nodes
+
 
 # ------------------------------------------
 # Pipeline complet
@@ -319,14 +329,14 @@ def build_osrm_ready_pois(
 
     return df_osrm
 
+
 ##############################
 # OSRM ASYNC
 ##############################
 
+
 async def build_osrm_matrices_async(
-    df_clustered: pl.DataFrame,
-    osrm: OSRMClientAsync,
-    profile: str = "foot"
+    df_clustered: pl.DataFrame, osrm: OSRMClientAsync, profile: str = "foot"
 ):
     """
     Construit les matrices OSRM (distance + durée) en mode async.
@@ -344,11 +354,7 @@ async def build_osrm_matrices_async(
         )
 
     # 3) Appel OSRM
-    result = await osrm.table(
-        coords,
-        annotations="duration,distance",
-        profile=profile
-    )
+    result = await osrm.table(coords, annotations="duration,distance", profile=profile)
 
     # 4) Matrices numpy
     dist_matrix = np.array(result["distances"])

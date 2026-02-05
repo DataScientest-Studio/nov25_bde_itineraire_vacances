@@ -1,13 +1,10 @@
-from deap import base
-from deap import creator
-from deap import tools
-
 import random
+
 import numpy as np
+from deap import base, creator, tools
 
 
 class GeneticAlgo:
-
     def __init__(self, poi_df, duration_matrix):
         """
         GA pour itinéraires touristiques.
@@ -80,12 +77,11 @@ class GeneticAlgo:
         """
         Score basé sur la durée totale de la journée (heures).
         """
-        total_minutes = (
-            self.get_itinerary_activity_duration(itin)
-            + self.get_itinerary_travel_duration(itin)
-        )
+        total_minutes = self.get_itinerary_activity_duration(
+            itin
+        ) + self.get_itinerary_travel_duration(itin)
         itin_duration_hours = total_minutes / 60.0
-        return float(np.exp(-(itin_duration_hours - duration) ** 2))
+        return float(np.exp(-((itin_duration_hours - duration) ** 2)))
 
     def get_lunch_time(self, itin, start_time=9):
         """
@@ -103,9 +99,7 @@ class GeneticAlgo:
         resto_idx = itin.index(first_resto)
 
         travel_before = self.get_itinerary_travel_duration(itin[: resto_idx + 1]) / 60.0
-        activity_before = (
-            self.get_itinerary_activity_duration(itin[:resto_idx]) / 60.0
-        )
+        activity_before = self.get_itinerary_activity_duration(itin[:resto_idx]) / 60.0
 
         return float(start_time + travel_before + activity_before)
 
@@ -132,7 +126,7 @@ class GeneticAlgo:
 
         # Score sur l'heure du déjeuner
         itin_lunch_time = self.get_lunch_time(itin, start_time=start_time)
-        lunch_score = np.exp(-(itin_lunch_time - lunch_time) ** 2)
+        lunch_score = np.exp(-((itin_lunch_time - lunch_time) ** 2))
 
         return float(0.7 * lunch_score + 0.3 * resto_score)
 
@@ -220,7 +214,9 @@ class GeneticAlgo:
             itin_min_poi,
             itin_max_poi,
         )
-        self.toolbox.register("population", tools.initRepeat, list, self.toolbox.itinerary)
+        self.toolbox.register(
+            "population", tools.initRepeat, list, self.toolbox.itinerary
+        )
         self.toolbox.register("evaluate", self.evaluate_itinerary)
         self.toolbox.register("mate", self.crossover_itinerary)
         self.toolbox.register("mutate", self.mutate_itinerary)

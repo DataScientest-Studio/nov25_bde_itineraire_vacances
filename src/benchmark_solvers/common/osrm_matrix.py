@@ -1,5 +1,6 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 
 def load_osrm_matrix_parquet(path: str) -> np.ndarray:
     df = pd.read_parquet(path)

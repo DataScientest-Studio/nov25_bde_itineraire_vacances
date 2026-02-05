@@ -3,24 +3,18 @@ import polars as pl
 
 def build_category_tables(df: pl.DataFrame):
     df_main_category = (
-        df.select("main_category")
-          .unique()
-          .with_row_index("main_category_id")
+        df.select("main_category").unique().with_row_index("main_category_id")
     )
 
     df = df.join(df_main_category, on="main_category", how="left")
 
     df_sub_category = (
         df.select(["sub_category", "main_category_id"])
-          .unique()
-          .with_row_index("sub_category_id")
+        .unique()
+        .with_row_index("sub_category_id")
     )
 
-    df = df.join(
-        df_sub_category,
-        on=["sub_category", "main_category_id"],
-        how="left"
-    )
+    df = df.join(df_sub_category, on=["sub_category", "main_category_id"], how="left")
 
     return df_main_category, df_sub_category, df
 
@@ -40,15 +34,17 @@ def build_adresse_table(df: pl.DataFrame):
 
     # On part du df qui contient déjà poi_id
     df_adresse = (
-        df.select([
-            "poi_id",
-            "adresse",
-            "code_postal",
-            "commune",
-            "departement",
-            "region",
-        ])
-        .unique()                      # au cas où
+        df.select(
+            [
+                "poi_id",
+                "adresse",
+                "code_postal",
+                "commune",
+                "departement",
+                "region",
+            ]
+        )
+        .unique()  # au cas où
         .with_row_index("adresse_id")  # PK adresse
     )
 
@@ -71,19 +67,22 @@ def build_poi_table(df: pl.DataFrame):
         "description",
         "main_category_id",
         "sub_category_id",
-        "adresse_id",        # <-- la clé étrangère vers adresses
-        'contacts_du_poi',
-        'itineraire', 
-        'h3_r6', 'h3_r7',
-        'h3_r8', 'h3_r9', 
-        'density_commune_norm',
-        'diversity_commune_norm',
-        'popularity_norm', 
-        'proximity_commune_norm',
-        'category_weight_norm',
-        'opening_score_norm',
+        "adresse_id",  # <-- la clé étrangère vers adresses
+        "contacts_du_poi",
+        "itineraire",
+        "h3_r6",
+        "h3_r7",
+        "h3_r8",
+        "h3_r9",
+        "density_commune_norm",
+        "diversity_commune_norm",
+        "popularity_norm",
+        "proximity_commune_norm",
+        "category_weight_norm",
+        "opening_score_norm",
         # "embedding",
-        'final_score']
+        "final_score",
+    ]
 
     existing_cols = [c for c in desired_cols if c in df.columns]
 

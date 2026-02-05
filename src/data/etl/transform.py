@@ -1,9 +1,10 @@
-import polars as pl
+import json
 import re
 from pathlib import Path
-import json
 
-ROOT = Path(__file__).parent # parent directory of the script
+import polars as pl
+
+ROOT = Path(__file__).parent  # parent directory of the script
 INPUT_DIR = ROOT / "config"
 input_categories_path = INPUT_DIR / "categories.json"
 input_uri_mapping_path = INPUT_DIR / "classes_fr.csv"
@@ -24,7 +25,7 @@ TYPES_A_IGNORER = [
     "HorseTour",
     "RoadTour",
     "UnderwaterRoute",
-    "WalkingTour"
+    "WalkingTour",
 ]
 
 
@@ -58,10 +59,8 @@ def strip_all_string_columns(df: pl.LazyFrame) -> pl.LazyFrame:
     """
     Applique un strip() sur toutes les colonnes de type Utf8.
     """
-    return df.with_columns([
-        pl.col(pl.Utf8).str.strip_chars()
+    return df.with_columns([pl.col(pl.Utf8).str.strip_chars()])
 
-    ])
 
 # ---------------------------------------------------------
 # 3) Suppression des doublons
@@ -85,13 +84,23 @@ def split_code_postal_commune(df: pl.LazyFrame) -> pl.LazyFrame:
     - commune
     - departement (les 2 premiers chiffres du code postal)
     """
-    return df.with_columns([
-        pl.col("code_postal_et_commune").str.split("#", inclusive=False).alias("tmp_split")
-    ]).with_columns([
-        pl.col("tmp_split").list.get(0).alias("code_postal"),
-        pl.col("tmp_split").list.slice(1).list.join(" ").alias("commune"),
-        pl.col("tmp_split").list.get(0).str.slice(0, 2).alias("departement")
-    ]).drop("tmp_split")
+    return (
+        df.with_columns(
+            [
+                pl.col("code_postal_et_commune")
+                .str.split("#", inclusive=False)
+                .alias("tmp_split")
+            ]
+        )
+        .with_columns(
+            [
+                pl.col("tmp_split").list.get(0).alias("code_postal"),
+                pl.col("tmp_split").list.slice(1).list.join(" ").alias("commune"),
+                pl.col("tmp_split").list.get(0).str.slice(0, 2).alias("departement"),
+            ]
+        )
+        .drop("tmp_split")
+    )
 
 
 # ---------------------------------------------------------
@@ -117,22 +126,13 @@ def load_uri_mapping(path: str = input_uri_mapping_path) -> pl.DataFrame:
             type_clean = uri_clean.split("#")[-1]
 
             # Nettoyage du label
-            label_clean = (
-                label
-                .strip()
-                .strip('"')
-                .replace("<", "")
-                .replace(">", "")
-            )
+            label_clean = label.strip().strip('"').replace("<", "").replace(">", "")
 
             # Supprimer tout ce qui ressemble à un URI dans le label
             if "http" in label_clean:
                 label_clean = label_clean.split("http")[0].rstrip(", ")
 
-            rows.append({
-                "type_clean": type_clean,
-                "Label": label_clean
-            })
+            rows.append({"type_clean": type_clean, "Label": label_clean})
 
     return pl.DataFrame(rows)
 
@@ -150,29 +150,32 @@ def load_category_hierarchy(path: str = input_categories_path) -> pl.DataFrame:
     for main_cat, subcats in data.items():
         for sub_cat, labels in subcats.items():
             for label in labels:
-                rows.append({
-                    "type_principal": label,
-                    "main_category": main_cat,
-                    "sub_category": sub_cat
-                })
+                rows.append(
+                    {
+                        "type_principal": label,
+                        "main_category": main_cat,
+                        "sub_category": sub_cat,
+                    }
+                )
 
     return pl.DataFrame(rows)
 
 
 #  Extraction des types depuis categories_de_poi
 def extract_types(df: pl.LazyFrame) -> pl.LazyFrame:
-    return df.with_columns([
-        pl.col("categories_de_poi")
-        .str.extract_all(r"#([A-Za-z0-9]+)")   # extrait après #
-        .list.eval(
-            pl.element()
-            .str.replace_all(r"[^A-Za-z0-9]", "")  # supprime #, <, >, ', ", espaces
-        )
-        .list.eval(
-            pl.element().filter(~pl.element().is_in(TYPES_A_IGNORER))
-        )
-        .alias("types_list")
-    ])
+    return df.with_columns(
+        [
+            pl.col("categories_de_poi")
+            .str.extract_all(r"#([A-Za-z0-9]+)")  # extrait après #
+            .list.eval(
+                pl.element().str.replace_all(
+                    r"[^A-Za-z0-9]", ""
+                )  # supprime #, <, >, ', ", espaces
+            )
+            .list.eval(pl.element().filter(~pl.element().is_in(TYPES_A_IGNORER)))
+            .alias("types_list")
+        ]
+    )
 
 
 # extraction du type principal
@@ -180,25 +183,19 @@ def extract_type_principal(df: pl.LazyFrame, mapping_df: pl.DataFrame) -> pl.Laz
     exploded = df.explode("types_list")
 
     joined = exploded.join(
-        mapping_df,
-        left_on="types_list",
-        right_on="type_clean",
-        how="left"
+        mapping_df, left_on="types_list", right_on="type_clean", how="left"
     )
 
-    aggregated = joined.group_by(df.columns).agg([
-        pl.col("Label").drop_nulls().first().alias("type_principal")
-    ])
+    aggregated = joined.group_by(df.columns).agg(
+        [pl.col("Label").drop_nulls().first().alias("type_principal")]
+    )
 
     return aggregated
 
+
 # enrichissement avec main_category / sub_category
 def enrich_with_categories(df: pl.LazyFrame, cat_df: pl.DataFrame) -> pl.LazyFrame:
-    return df.join(
-        cat_df,
-        on="type_principal",
-        how="left"
-    )
+    return df.join(cat_df, on="type_principal", how="left")
 
 
 # pipeline complet pour le mapping
@@ -209,11 +206,9 @@ def apply_full_mapping(df: pl.LazyFrame) -> pl.LazyFrame:
     df = extract_types(df)
     df = extract_type_principal(df, mapping_df)
     df = enrich_with_categories(df, cat_df)
-    
+
     # Rajout Colonne itinéraire Tue /False
-    df = df.with_columns([
-        (pl.col("sub_category") != "unknown").alias("itineraire")
-    ])
+    df = df.with_columns([(pl.col("sub_category") != "unknown").alias("itineraire")])
 
     return df
 
@@ -226,24 +221,26 @@ def drop_null_categories(df: pl.LazyFrame) -> pl.LazyFrame:
         ~(pl.col("main_category").is_null() & pl.col("sub_category").is_null())
     )
 
+
 def clean_duplicated(df: pl.LazyFrame) -> pl.LazyFrame:
     df_clean = (
-        df
-        .with_columns(
+        df.with_columns(
             pl.col("latitude").round(5).alias("lat_r"),
             pl.col("longitude").round(5).alias("lon_r"),
         )
         .unique(subset=["nom_du_poi", "lat_r", "lon_r"])
-            .drop(["lat_r", "lon_r"])
+        .drop(["lat_r", "lon_r"])
     )
 
     return df_clean
+
 
 def final_cleanup(df: pl.LazyFrame) -> pl.LazyFrame:
     # Supprimer les lignes où main_category est NULL
     df = df.filter(pl.col("main_category").is_not_null())
 
     return df
+
 
 def safe_rename(df: pl.DataFrame) -> pl.DataFrame:
     rename_map = {
@@ -273,13 +270,13 @@ def transform(df: pl.LazyFrame) -> pl.LazyFrame:
     df = apply_full_mapping(df)
 
     # NETTOYAGE FINAL
-    print('avant drop main et sub', len(df))
+    print("avant drop main et sub", len(df))
     df = drop_null_categories(df)
-    print('apres drop main et sub', len(df))
+    print("apres drop main et sub", len(df))
     df = clean_duplicated(df)
-    print('apres clean duplicated', len(df))
+    print("apres clean duplicated", len(df))
     df = final_cleanup(df)
-    print('apres final cleanup', len(df))
+    print("apres final cleanup", len(df))
     df = safe_rename(df)
 
     return df

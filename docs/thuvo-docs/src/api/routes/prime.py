@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 import uuid
-from fastapi import APIRouter, HTTPException
+
 from domain.prime import compute_prime, compute_safe_ranking
-from ops.quality.quality_gate import prime_quality_gate, get_quality_mode
+from fastapi import APIRouter, HTTPException
+from ops.quality.quality_gate import get_quality_mode, prime_quality_gate
 
 router = APIRouter()
 
@@ -26,7 +28,9 @@ def prime_endpoint(zone: str, limit: int = 50):
                 detail={
                     "message": "PRIME results blocked by quality checks (STRICT mode).",
                     "quality_mode": get_quality_mode(),
-                    "run_id": run_id,},)
+                    "run_id": run_id,
+                },
+            )
         raise
 
     # 3) Réponse API
@@ -35,7 +39,8 @@ def prime_endpoint(zone: str, limit: int = 50):
         "zone": zone,
         "mode_used": mode_used,
         "quality": quality,
-        "results": results[:limit],}
+        "results": results[:limit],
+    }
 
 
 @router.get("/prime_fallback")
@@ -62,7 +67,8 @@ def prime_endpoint_fallback(zone: str, limit: int = 50):
             "status": "BLOCKED",
             "action": "FALLBACK",
             "message": "PRIME blocked by quality gate; fallback ranking used.",
-            "run_id": run_id,}
+            "run_id": run_id,
+        }
         mode_used = "FALLBACK_SAFE"
 
     return {
@@ -70,4 +76,5 @@ def prime_endpoint_fallback(zone: str, limit: int = 50):
         "zone": zone,
         "mode_used": mode_used,
         "quality": quality,
-        "results": results[:limit],}
+        "results": results[:limit],
+    }

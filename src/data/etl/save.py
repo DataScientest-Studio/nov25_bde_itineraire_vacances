@@ -1,16 +1,21 @@
-import polars as pl
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import polars as pl
+
 from .sql.split_tables import split_into_tables
 
 DATA_DIR = Path("data")
-OUTPUT_DIR = DATA_DIR / "processed" 
+OUTPUT_DIR = DATA_DIR / "processed"
 
 # ---------------------------------------------------------
 # 1) Sauvegarde Parquet
 # ---------------------------------------------------------
 
-def save_parquet(df: pl.DataFrame, output_dir: str = OUTPUT_DIR, versioned: bool = True) -> str:
+
+def save_parquet(
+    df: pl.DataFrame, output_dir: str = OUTPUT_DIR, versioned: bool = True
+) -> str:
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     if versioned:
@@ -23,6 +28,7 @@ def save_parquet(df: pl.DataFrame, output_dir: str = OUTPUT_DIR, versioned: bool
     df.write_parquet(output_path)
 
     return str(output_path)
+
 
 # ---------------------------------------------------------
 # 2) Split + Export CSV

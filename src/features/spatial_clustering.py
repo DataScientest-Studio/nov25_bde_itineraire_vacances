@@ -1,9 +1,9 @@
 from typing import Optional
 
-import polars as pl
-import numpy as np
-from sklearn.cluster import KMeans
 import h3
+import numpy as np
+import polars as pl
+from sklearn.cluster import KMeans
 
 
 class SpatialClusterer:
@@ -62,14 +62,12 @@ class SpatialClusterer:
         pour chaque cellule (latitude/longitude moyens).
         On matérialise ici car KMeans travaille sur du numpy en mémoire.
         """
-        cells_lf = (
-            self.lf
-            .group_by("h3_r8")
-            .agg([
+        cells_lf = self.lf.group_by("h3_r8").agg(
+            [
                 pl.count().alias("n_pois"),
                 pl.mean("latitude").alias("latitude_center"),
                 pl.mean("longitude").alias("longitude_center"),
-            ])
+            ]
         )
         cells_df = cells_lf.collect()
         return cells_df
@@ -82,18 +80,22 @@ class SpatialClusterer:
         if self.anchor_lat is None or self.anchor_lon is None:
             return cells_df
 
-        anchor_h3 = h3.latlng_to_cell(self.anchor_lat, self.anchor_lon, self.h3_resolution)
+        anchor_h3 = h3.latlng_to_cell(
+            self.anchor_lat, self.anchor_lon, self.h3_resolution
+        )
 
         # Si l'ancrage est déjà dans une cellule existante, on ne duplique pas
         if anchor_h3 in cells_df["h3_r8"].to_list():
             return cells_df
 
-        anchor_row = pl.DataFrame({
-            "h3_r8": [anchor_h3],
-            "n_pois": [0],  # pas de POI, juste un point d'attraction
-            "latitude_center": [self.anchor_lat],
-            "longitude_center": [self.anchor_lon],
-        })
+        anchor_row = pl.DataFrame(
+            {
+                "h3_r8": [anchor_h3],
+                "n_pois": [0],  # pas de POI, juste un point d'attraction
+                "latitude_center": [self.anchor_lat],
+                "longitude_center": [self.anchor_lon],
+            }
+        )
 
         # harmoniser les types
         anchor_row = anchor_row.cast(cells_df.schema)
@@ -102,7 +104,10 @@ class SpatialClusterer:
 
     def _assign_clusters_to_cells(self, cells_df: pl.DataFrame) -> pl.DataFrame:
         coords = np.vstack(
-            [cells_df["latitude_center"].to_numpy(), cells_df["longitude_center"].to_numpy()]
+            [
+                cells_df["latitude_center"].to_numpy(),
+                cells_df["longitude_center"].to_numpy(),
+            ]
         ).T
 
         kmeans = KMeans(
@@ -112,12 +117,9 @@ class SpatialClusterer:
         )
         labels = kmeans.fit_predict(coords)
 
-        cells_df = cells_df.with_columns(
-            pl.Series("cluster_id", labels).cast(pl.Int64)
-        )
+        cells_df = cells_df.with_columns(pl.Series("cluster_id", labels).cast(pl.Int64))
 
         return cells_df
-
 
     def apply(self) -> pl.LazyFrame:
         """
@@ -138,24 +140,18 @@ class SpatialClusterer:
         cells_df_real = cells_df.filter(pl.col("n_pois") > 0)
 
         # 5. Join sur le LazyFrame initial pour propager 'day' aux POIs
-        cells_lf_with_day = cells_df_real.lazy().select([
-            "h3_r8",
-            pl.col("cluster_id").cast(pl.Int64)
-        ])
+        cells_lf_with_day = cells_df_real.lazy().select(
+            ["h3_r8", pl.col("cluster_id").cast(pl.Int64)]
+        )
 
-        lf_with_day = (
-            self.lf
-            .join(cells_lf_with_day, on="h3_r8", how="left")
-        )
-        lf_with_day = lf_with_day.with_columns(
-            pl.col("cluster_id").cast(pl.Int64)
-        )
+        lf_with_day = self.lf.join(cells_lf_with_day, on="h3_r8", how="left")
+        lf_with_day = lf_with_day.with_columns(pl.col("cluster_id").cast(pl.Int64))
 
         # Ajout de poi_id (LazyFrame)
-        lf_with_day = (
-            lf_with_day
-            .with_row_index(name="poi_id")              # 0,1,2,3,...
-            .with_columns((pl.col("poi_id") + 1))       # 1,2,3,...
-        )
+        lf_with_day = lf_with_day.with_row_index(
+            name="poi_id"
+        ).with_columns(  # 0,1,2,3,...
+            (pl.col("poi_id") + 1)
+        )  # 1,2,3,...
 
         return lf_with_day

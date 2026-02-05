@@ -1,9 +1,8 @@
 # embeddings.py
 
-import polars as pl
 import numpy as np
+import polars as pl
 from sentence_transformers import SentenceTransformer
-
 
 # Charger le modèle une seule fois
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -13,9 +12,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 # 1) Construire une Colonne texte riche pour les embeddings
 # ---------------------------------------------------------
 def build_text_embedding_column(
-    df: pl.DataFrame,
-    columns: list[str] = None,
-    separator: str = " | "
+    df: pl.DataFrame, columns: list[str] = None, separator: str = " | "
 ) -> pl.DataFrame:
     """
     Construit une Colonne 'text_embedding' en concaténant plusieurs colonnes
@@ -30,8 +27,7 @@ def build_text_embedding_column(
         columns = [
             "nom_du_poi",
             "description",
-            "type_principal"
-            "main_category",
+            "type_principal" "main_category",
             "sub_category",
         ]
 
@@ -48,9 +44,7 @@ def build_text_embedding_column(
     # Retirer le dernier séparateur
     exprs = exprs[:-1]
 
-    return df.with_columns(
-        pl.concat_str(exprs).alias("text_embedding")
-    )
+    return df.with_columns(pl.concat_str(exprs).alias("text_embedding"))
 
 
 # ---------------------------------------------------------
@@ -87,6 +81,4 @@ def add_embeddings(
     embeddings_list = embeddings.tolist()
 
     # 4) Ajouter la Colonne dans Polars
-    return df.with_columns(
-        pl.Series("embedding", embeddings_list)
-    )
+    return df.with_columns(pl.Series("embedding", embeddings_list))

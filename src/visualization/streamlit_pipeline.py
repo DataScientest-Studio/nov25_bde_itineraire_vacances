@@ -4,10 +4,11 @@ import os
 import time
 from pathlib import Path
 
+import plotly.express as px
 import polars as pl
 import pydeck as pdk
+
 import streamlit as st
-import plotly.express as px
 
 # -------------------------------------------------------------------
 # CONFIG VISUEL / PAGE
@@ -23,12 +24,11 @@ st.set_page_config(
 # IMPORTS MÉTIER (à adapter à ton projet)
 # -------------------------------------------------------------------
 
-from src.features.pipeline import ItineraryPipeline
-from src.features.osrm import OSRMClientAsync
-from src.features.post_clustering import build_osrm_matrices_async
 from src.features.itinerary_optimizer import ItineraryOptimizer
+from src.features.osrm import OSRMClientAsync
+from src.features.pipeline import ItineraryPipeline
+from src.features.post_clustering import build_osrm_matrices_async
 from src.features.spatial_clustering import SpatialClusterer
-
 
 # -------------------------------------
 # OSRM
@@ -38,25 +38,42 @@ osrm_client = OSRMClientAsync()
 # ---------------------------------------
 # MAIN CATEGROY
 # ---------------------------------------
-MAIN_CATEGORY = ["Culture & Musées","Patrimoine & Monuments",
-                "Gastronomie & Restauration","Bien-être & Santé", "Hébergement","Sports & Loisirs","Santé & Urgences",
-                "Famille & Enfants","Culture & Musées","Transports",
-                "Shopping & Artisanat","Nature & Paysages","Patrimoine & Monuments",
-                "Services & Mobilité","Commerce & Shopping","Camping & Plein Air","Commodités",
-                "Transports touristiques","Loisirs & Clubs","Événements & Traditions","Information Touristique"
-            ]
+MAIN_CATEGORY = [
+    "Culture & Musées",
+    "Patrimoine & Monuments",
+    "Gastronomie & Restauration",
+    "Bien-être & Santé",
+    "Hébergement",
+    "Sports & Loisirs",
+    "Santé & Urgences",
+    "Famille & Enfants",
+    "Culture & Musées",
+    "Transports",
+    "Shopping & Artisanat",
+    "Nature & Paysages",
+    "Patrimoine & Monuments",
+    "Services & Mobilité",
+    "Commerce & Shopping",
+    "Camping & Plein Air",
+    "Commodités",
+    "Transports touristiques",
+    "Loisirs & Clubs",
+    "Événements & Traditions",
+    "Information Touristique",
+]
 
 # ---------------------------------------
 # PARAMETRES PYDECK
 # -------------------------------------
 DAY_COLORS = [
-    [255, 0, 0],      # Jour 0 - rouge
-    [0, 150, 255],    # Jour 1 - bleu
-    [0, 200, 100],    # Jour 2 - vert
-    [255, 165, 0],    # Jour 3 - orange
-    [150, 0, 255],    # Jour 4 - violet
+    [255, 0, 0],  # Jour 0 - rouge
+    [0, 150, 255],  # Jour 1 - bleu
+    [0, 200, 100],  # Jour 2 - vert
+    [255, 165, 0],  # Jour 3 - orange
+    [150, 0, 255],  # Jour 4 - violet
     [255, 105, 180],  # Jour 5 - rose
 ]
+
 
 def get_day_color(day: int) -> list:
     return DAY_COLORS[day % len(DAY_COLORS)]
@@ -86,17 +103,22 @@ if "profiling" not in st.session_state:
 # OUTILS CACHE MÉMOIRE + DISQUE
 # -------------------------------------------------------------------
 
+
 def cache_get(key):
     return st.session_state.cached_data.get(key)
+
 
 def cache_set(key, value):
     st.session_state.cached_data[key] = value
 
+
 def cache_clear(key):
     st.session_state.cached_data.pop(key, None)
 
+
 def disk_cache_path(key, ext="json"):
     return CACHE_DIR / f"{key}.{ext}"
+
 
 def disk_cache_load(key, ext="json"):
     path = disk_cache_path(key, ext)
@@ -108,6 +130,7 @@ def disk_cache_load(key, ext="json"):
         return pl.read_parquet(path)
     return None
 
+
 def disk_cache_save(key, value, ext="json"):
     path = disk_cache_path(key, ext)
     if ext == "json":
@@ -115,12 +138,15 @@ def disk_cache_save(key, value, ext="json"):
     elif ext == "parquet":
         value.write_parquet(path)
 
+
 # -------------------------------------------------------------------
 # PROFILING
 # -------------------------------------------------------------------
 
+
 def profile_step(name):
     """Décorateur pour profiler une fonction de step."""
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             t0 = time.time()
@@ -128,8 +154,11 @@ def profile_step(name):
             dt = time.time() - t0
             st.session_state.profiling[name] = dt
             return result
+
         return wrapper
+
     return decorator
+
 
 def show_profiling_summary():
     if not st.session_state.profiling:
@@ -148,8 +177,11 @@ def show_profiling_summary():
 # LAYERS PYDECK
 # -------------------------------------------------------------------
 
+
 def pydeck_layer_points(df: pl.DataFrame, color=(0, 128, 255)):
-    df_pd = df.select(["longitude", "latitude", "nom_du_poi", "main_category"]).to_pandas()
+    df_pd = df.select(
+        ["longitude", "latitude", "nom_du_poi", "main_category"]
+    ).to_pandas()
     return pdk.Layer(
         "ScatterplotLayer",
         data=df_pd,
@@ -159,8 +191,11 @@ def pydeck_layer_points(df: pl.DataFrame, color=(0, 128, 255)):
         pickable=True,
     )
 
+
 def pydeck_layer_points_by_day(df: pl.DataFrame):
-    df_pd = df.select(["longitude", "latitude", "nom_du_poi", "main_category", "day"]).to_pandas()
+    df_pd = df.select(
+        ["longitude", "latitude", "nom_du_poi", "main_category", "day"]
+    ).to_pandas()
     return pdk.Layer(
         "ScatterplotLayer",
         data=df_pd,
@@ -170,10 +205,9 @@ def pydeck_layer_points_by_day(df: pl.DataFrame):
         pickable=True,
     )
 
+
 def render_premium_map(
-    df_itinerary: pl.DataFrame,
-    routes_geojson: dict,
-    selected_day: int | str = "Tous"
+    df_itinerary: pl.DataFrame, routes_geojson: dict, selected_day: int | str = "Tous"
 ):
     """
     df_itinerary : DataFrame Polars avec au minimum:
@@ -209,10 +243,12 @@ def render_premium_map(
         layers.append(
             pdk.Layer(
                 "PathLayer",
-                data=[{
-                    "path": route_geojson["coordinates"],
-                    "day": day,
-                }],
+                data=[
+                    {
+                        "path": route_geojson["coordinates"],
+                        "day": day,
+                    }
+                ],
                 get_path="path",
                 get_color=color,
                 width_scale=3,
@@ -299,6 +335,7 @@ def render_premium_map(
 
     return deck
 
+
 # -------------------------------------------------------------------
 # INITIALISATION PIPELINE
 # -------------------------------------------------------------------
@@ -346,11 +383,13 @@ st.session_state.current_step = st.sidebar.radio(
     index=st.session_state.current_step,
 )
 
+
 # Auto-refresh : si les paramètres clés changent, on invalide le cache global
 # (tu peux raffiner selongitude tes besoins)
 def clear_all_cache():
     st.session_state.cached_data = {}
     st.session_state.profiling = {}
+
 
 if st.sidebar.button("♻️ Réinitialiser tout le cache"):
     clear_all_cache()
@@ -359,6 +398,7 @@ if st.sidebar.button("♻️ Réinitialiser tout le cache"):
 # -------------------------------------------------------------------
 # FONCTIONS GET_* (avec cache mémoire + disque)
 # -------------------------------------------------------------------
+
 
 @profile_step("0_filtrage")
 def get_filtered(force_recompute=False):
@@ -375,6 +415,7 @@ def get_filtered(force_recompute=False):
     df = lf_filtered.collect()
     cache_set("filtered", df)
     return df
+
 
 @profile_step("1_clustering")
 def get_clustered(force_recompute=False):
@@ -395,6 +436,7 @@ def get_clustered(force_recompute=False):
     cache_set("clustered", df)
     return df
 
+
 @profile_step("2_osrm_ready")
 def get_osrm_ready_pois(force_recompute=False):
     if not force_recompute:
@@ -413,16 +455,19 @@ def get_osrm_ready_pois(force_recompute=False):
     )
 
     df_osrm_ready = df_osrm_ready.join(
-        df_clustered.select([
-            "poi_id",
-            "nom_du_poi",
-        ]),
+        df_clustered.select(
+            [
+                "poi_id",
+                "nom_du_poi",
+            ]
+        ),
         on="poi_id",
-        how="left"
+        how="left",
     )
 
     cache_set("osrm_ready", df_osrm_ready)
     return df_osrm_ready
+
 
 @profile_step("3_osrm_matrices")
 def get_osrm_matrices(force_recompute=False):
@@ -441,7 +486,11 @@ def get_osrm_matrices(force_recompute=False):
     df_osrm_dist = disk_cache_load(f"{key}_dist", ext="parquet")
     df_osrm_dur = disk_cache_load(f"{key}_dur", ext="parquet")
 
-    if df_clustered is not None and df_osrm_dist is not None and df_osrm_dur is not None:
+    if (
+        df_clustered is not None
+        and df_osrm_dist is not None
+        and df_osrm_dur is not None
+    ):
         cache_set("osrm_matrices", (df_clustered, df_osrm_dist, df_osrm_dur))
         return df_clustered, df_osrm_dist, df_osrm_dur
 
@@ -457,6 +506,7 @@ def get_osrm_matrices(force_recompute=False):
 
     cache_set("osrm_matrices", (df_clustered, df_osrm_dist, df_osrm_dur))
     return df_clustered, df_osrm_dist, df_osrm_dur
+
 
 @profile_step("4_itinerary")
 def get_itinerary(force_recompute=False):
@@ -478,6 +528,7 @@ def get_itinerary(force_recompute=False):
     cache_set("optimizer", optimizer)
     cache_set("itinerary", df_itinerary)
     return df_itinerary
+
 
 @profile_step("5_routes_osrm")
 def get_osrm_routes(force_recompute=False):
@@ -503,6 +554,7 @@ def get_osrm_routes(force_recompute=False):
 
     cache_set("osrm_routes", routes_geojson)
     return routes_geojson
+
 
 # -------------------------------------------------------------------
 # UI : BOUTON RECOMPUTE ÉTAPE COURANTE
@@ -539,7 +591,7 @@ with recompute_col2:
 st.markdown("---")
 
 # -------------------------------------------------------------------
-# ÉTAPES 0 & 1 
+# ÉTAPES 0 & 1
 # -------------------------------------------------------------------
 if step == 0:
     st.header("1️⃣ Filtrage des POIs")
@@ -573,8 +625,7 @@ if step == 0:
     if "main_category" in filtered.columns:
         st.subheader("Répartition par catégorie")
         counts = (
-            filtered
-            .group_by("main_category")
+            filtered.group_by("main_category")
             .len()
             .sort("len", descending=True)
             .to_pandas()
@@ -593,7 +644,9 @@ if step == 0:
     ]
     available_scores = [c for c in score_cols if c in filtered.columns]
     for col in available_scores:
-        fig = px.histogram(filtered.to_pandas(), x=col, nbins=30, title=f"Distribution de {col}")
+        fig = px.histogram(
+            filtered.to_pandas(), x=col, nbins=30, title=f"Distribution de {col}"
+        )
         st.plotly_chart(fig, use_container_width=True)
 
 elif step == 1:
@@ -617,7 +670,13 @@ elif step == 1:
                 df_day.select(
                     [
                         c
-                        for c in ["nom_du_poi", "latitude", "longitude", "day", "cluster_id"]
+                        for c in [
+                            "nom_du_poi",
+                            "latitude",
+                            "longitude",
+                            "day",
+                            "cluster_id",
+                        ]
                         if c in df_day.columns
                     ]
                 ).head(100)
@@ -656,7 +715,9 @@ elif step == 2:
     with col_t:
         st.subheader("Table des POIs OSRM-ready")
         st.dataframe(df_osrm_ready)
-        st.caption(f"{df_osrm_ready.height} POIs utilisés pour construire la matrice OSRM")
+        st.caption(
+            f"{df_osrm_ready.height} POIs utilisés pour construire la matrice OSRM"
+        )
 
     with col_m:
         st.subheader("Carte des POIs OSRM-ready")
@@ -705,16 +766,12 @@ elif step == 4:
     st.dataframe(df_itinerary.sort(["cluster_id", "order"]))
 
     st.subheader("Résumé par jour")
-    summary = (
-        df_itinerary
-        .group_by("cluster_id")
-        .agg(
-            [
-                pl.col("cum_cost").max().alias("distance_totale"),
-                #pl.col("cum_duration").max().alias("duree_totale"),
-                pl.len().alias("nb_pois"),
-            ]
-        )
+    summary = df_itinerary.group_by("cluster_id").agg(
+        [
+            pl.col("cum_cost").max().alias("distance_totale"),
+            # pl.col("cum_duration").max().alias("duree_totale"),
+            pl.len().alias("nb_pois"),
+        ]
     )
     st.dataframe(summary)
 
@@ -725,11 +782,10 @@ elif step == 4:
 elif step == 5:
     st.header("6️⃣ Routes OSRM (GeoJSON)")
 
-    #df_itinerary = get_itinerary()
+    # df_itinerary = get_itinerary()
 
     routes_geojson = get_osrm_routes()
     df_itinerary = cache_get("itinerary")
-
 
     # selected_day = st.selectbox(
     #     "Choisir un jour",
@@ -738,11 +794,10 @@ elif step == 5:
 
     # route = routes_geojson[selected_day]
 
-
     # st.subheader("Carte de l’itinéraire")
 
-    #df_day = df_itinerary.filter(pl.col("cluster_id") == selected_day)
-    #df_day_pd = df_day.to_pandas()
+    # df_day = df_itinerary.filter(pl.col("cluster_id") == selected_day)
+    # df_day_pd = df_day.to_pandas()
 
     # poi_layer = pdk.Layer(
     #     "ScatterplotLayer",
@@ -783,13 +838,11 @@ elif step == 5:
     selected_day = st.selectbox(
         "Jour à afficher",
         options,
-        format_func=lambda d: f"Jour {d}" if d != "Tous" else "Tous les jours"
+        format_func=lambda d: f"Jour {d}" if d != "Tous" else "Tous les jours",
     )
-
 
     deck = render_premium_map(df_itinerary, routes_geojson, selected_day)
     st.pydeck_chart(deck)
-
 
     st.subheader("Détails du parcours")
     st.dataframe(df_itinerary.sort("order"))

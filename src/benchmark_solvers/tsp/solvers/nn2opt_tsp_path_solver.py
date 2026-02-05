@@ -1,5 +1,7 @@
-import numpy as np
 from typing import List, Tuple
+
+import numpy as np
+
 from .base_tsp_path_solver import TSPSolverBase
 
 
@@ -37,8 +39,8 @@ class NN2OptSolver(TSPSolverBase):
                 for k in range(i + 1, self.n - 1):
                     new_route = (
                         best_route[:i]
-                        + best_route[i:k+1][::-1]
-                        + best_route[k+1:]
+                        + best_route[i : k + 1][::-1]
+                        + best_route[k + 1 :]
                     )
                     new_cost = self.route_cost(new_route)
 

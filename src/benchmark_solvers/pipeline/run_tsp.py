@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 
 from benchmark_solvers.common.dataset_loader import load_all_datasets
@@ -44,9 +45,16 @@ def run_tsp():
 
     print("\n=== BEST TSP SOLUTIONS ===")
     cols = [
-        "matrix", "size", "solver",
-        "mean_cost", "min_cost", "max_cost",
-        "mean_time", "robustness", "efficiency", "rating"
+        "matrix",
+        "size",
+        "solver",
+        "mean_cost",
+        "min_cost",
+        "max_cost",
+        "mean_time",
+        "robustness",
+        "efficiency",
+        "rating",
     ]
     cols = [c for c in cols if c in df_sorted.columns]
 

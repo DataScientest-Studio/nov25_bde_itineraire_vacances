@@ -10,3 +10,5 @@ numpy
 requests
 boto3
 apache-airflow
+polars
+geopandas
