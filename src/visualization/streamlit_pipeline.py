@@ -398,8 +398,6 @@ if st.sidebar.button("♻️ Réinitialiser tout le cache"):
 # -------------------------------------------------------------------
 # FONCTIONS GET_* (avec cache mémoire + disque)
 # -------------------------------------------------------------------
-
-
 @profile_step("0_filtrage")
 def get_filtered(force_recompute=False):
     if not force_recompute:

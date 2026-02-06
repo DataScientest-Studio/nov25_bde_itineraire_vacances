@@ -22,7 +22,6 @@ app = FastAPI(title="Itinerary API")
 @lru_cache
 def get_db():
     return db.DBManager(
-        "../data/etl_datatourisme_webservice/postgres_postgis/.env"
     )
 
 @app.get("/main_categories")

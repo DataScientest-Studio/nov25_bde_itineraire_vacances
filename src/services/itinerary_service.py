@@ -7,9 +7,9 @@ from pipeline.itinerary_pipeline import ItineraryPipeline
 
 
 class ItineraryService:
-    def __init__(self, osrm_url: str):
+    def __init__(self, osrm_url: str, pois_path: Path):
         self.osrm = OSRMClientAsync(osrm_url)
-        self.pipeline = ItineraryPipeline()
+        self.pipeline = ItineraryPipeline(pois_path)
 
     def compute(self, req, pois_df: pl.DataFrame):
         """

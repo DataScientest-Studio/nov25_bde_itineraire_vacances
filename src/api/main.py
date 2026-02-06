@@ -11,8 +11,7 @@ app = FastAPI()
 
 
 # connexion à la base de données
-dbm = db.DBManager(".env")
-
+dbm = db.DBManager()
 
 @app.get("/main_categories")
 def get_main_catgories():

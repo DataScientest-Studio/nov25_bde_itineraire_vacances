@@ -5,9 +5,8 @@ from psycopg2 import pool
 
 
 class DBManager:
-    def __init__(self, db_env):
-        load_dotenv(db_env)
-
+    def __init__(self):
+        load_dotenv()
         # création d'un pool de connecteurs à la BDD :
         self.pool = pool.SimpleConnectionPool(
             minconn=5,
@@ -18,6 +17,7 @@ class DBManager:
             password=os.getenv("POSTGRES_PASSWORD"),
             port=os.getenv("DB_PORT"),
         )
+        
 
     def get_conn(self):
         # récupérer une connection du pool de connection
@@ -46,6 +46,7 @@ class DBManager:
         main_categories_list = [row[0] for row in result]
         return main_categories_list
 
+
     def get_sub_categories(self, main_categories_list):
         query = """ SELECT DISTINCT(nom_sous_cat)
                     FROM sub_category
@@ -60,7 +61,8 @@ class DBManager:
                     SELECT DISTINCT
                         p.poi_id,
                         p.longitude,
-                        p.latitude, 
+                        p.latitude,
+                        c.nom_cat as main_category,
                         c.sub_category
                     FROM pois AS p
                     LEFT JOIN poi_category as pc USING(poi_id)
@@ -68,7 +70,9 @@ class DBManager:
                     WHERE (ST_DWithin(p.geom, 
                                     ST_SetSRID(ST_Point(%s, %s), 4326),
                                     %s))
-                           AND 
+                           AND
+                           (c.nom_cat IN %s)
+                           AND
                            (c.sub_category IN %s)
                     ;"""
 
@@ -101,3 +105,7 @@ class DBManager:
 
         result = self.execute_query(query, (poi_id,))
         return result[0]
+
+if __name__ == "__main__":
+    dbm = DBManager()
+    print(dbm.test_main_categories())

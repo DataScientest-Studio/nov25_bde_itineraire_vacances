@@ -4,7 +4,7 @@ import folium as flm
 import numpy as np
 import pandas as pd
 from streamlit_folium import st_folium
-from utils import fetch_main_categories, fetch_sub_categories
+from utils import fetch_main_categories, fetch_sub_categories, get_selected_pois, send_payload
 
 import streamlit as st
 
@@ -82,8 +82,8 @@ with st.expander("📍 Quelle est votre destination ?"):
     if locality and radius:
         map, longitude, latitude = create_geo_zone_map(locality, radius)
         st_folium(map, width=600, height=400)
-        st.session_state.payload["start"]["lon"] = longitude
-        st.session_state.payload["start"]["lat"] = latitude
+        st.session_state.payload["longitude"] = longitude
+        st.session_state.payload["latitude"] = latitude
         st.session_state.payload["commune"] = df_localities.loc[
             df_localities["locality"] == locality[0], "locality_name"
         ].values[0]
@@ -125,7 +125,7 @@ with st.expander("📅 Quelle est la durée de votre séjour ?"):
                 st.error("❌ La date de départ doit être après la date d'arrivée")
 
     if num_days:
-        st.session_state.payload["nb_days"] = num_days
+        st.session_state.payload["days"] = num_days
 
 # ---------------------------------------
 ## Moyen de transport/mobilité
@@ -156,8 +156,8 @@ with st.expander("🎪 Qu'est-ce qui vous ferait plaisir ?"):
         sub_cat = st.multiselect("6️⃣ Sous-catégorie(s)", sub_categories, default=[])
 
     if main_cat and sub_cat:
-        st.session_state.payload["main_categories"] = main_cat
-        st.session_state.payload["sub_categories"] = sub_cat
+        st.session_state.payload["main_category"] = main_cat
+        st.session_state.payload["sub_category"] = sub_cat
 
 # ---------------------------------------------------------------------
 ## Validation des paramètres et lancement de la recherche
@@ -167,10 +167,11 @@ if st.button("Proposer des itinéraires"):
     payload = st.session_state.payload
     if (
         (payload["commune"] == "")
-        or (payload["main_categories"] == [])
-        or (payload["sub_categories"] == [])
-        or (payload["nb_days"] == 0)
-        or (payload["start"] == {"lat": 0, "lon": 0})
+        or (payload["main_category"] == [])
+        or (payload["sub_category"] == [])
+        or (payload["days"] == 0)
+        or (payload["latitude"] == 0)
+        or (payload["longitude"] == 0)
         or (payload["osrm_mode"] == "")
         or (payload["radius"] == 0)
     ):
@@ -179,6 +180,26 @@ if st.button("Proposer des itinéraires"):
         st.write(st.session_state.payload)
         st.session_state.redirect = True
 
+
 if st.session_state.get("redirect"):
     if st.button("Confirmer"):
+        payload = st.session_state.payload
+        pois = get_selected_pois(payload)
+
+        # Construction du payload pour /itinerary/compute
+        itinerary_payload = {
+            "pois": pois["pois"],
+            "days": payload.get("days", 1),
+            "transport_mode": payload.get("transport_mode", "walk"),
+            "solver": payload.get("solver", "auto"),
+            "latitude": payload.get("latitude", 48.8566),
+            "longitude": payload.get("longitude", 2.3522),
+        }
+        # Sauvegarde dans la session
+        st.session_state.itinerary_payload = itinerary_payload
+
+        st.subheader("Payload prêt pour /itinerary/compute")
+        st.json(itinerary_payload)
+        
+        # Redirection vers la page "Itinéraire"
         st.switch_page("pages/results.py")
