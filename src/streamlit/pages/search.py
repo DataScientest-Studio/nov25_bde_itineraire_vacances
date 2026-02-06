@@ -202,4 +202,4 @@ if st.session_state.get("redirect"):
         st.json(itinerary_payload)
         
         # Redirection vers la page "Itinéraire"
-        st.switch_page("pages/results.py")
+        #st.switch_page("pages/results.py")

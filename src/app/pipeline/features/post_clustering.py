@@ -17,7 +17,7 @@ TRANSPORT_MAX_RADIUS_KM: Dict[TransportMode, float] = {
 }
 
 # Pour limiter le nombre de POIs avant OSRM
-DEFAULT_MAX_POIS_PER_CLUSTER = 50
+DEFAULT_MAX_POIS_PER_CLUSTER = 100
 
 # Nombre cible de restaurants par jour/cluster
 TARGET_RESTAURANTS_PER_CLUSTER = 2
@@ -88,7 +88,7 @@ def filter_by_final_score(
     # Tri par cluster
     # 1. Score diversité
     df_sorted = df.with_columns(
-        (pl.col("final_score") * 0.6 + pl.col("diversity_commune_norm") * 0.4).alias(
+        (pl.col("final_score") * 0.2 + pl.col("diversity_commune_norm") * 0.8).alias(
             "score_diversity"
         )
     )
@@ -195,6 +195,73 @@ def enforce_restaurant_constraint(
 
     return df_with_restos
 
+def limit_restaurants_to_top_k(
+    df: pl.DataFrame,
+    restaurant_category: str = "Gastronomie & Restauration",
+    k: int = 2,
+) -> pl.DataFrame:
+    if df.is_empty():
+        return df
+
+    # Séparer restos et non-restos
+    restos = df.filter(pl.col("main_category") == restaurant_category)
+    non_restos = df.filter(pl.col("main_category") != restaurant_category)
+
+    if restos.is_empty():
+        return df
+
+    # Trier restos par cluster + final_score décroissant
+    restos_sorted = restos.sort(
+        ["cluster_id", "final_score"], descending=[False, True]
+    )
+
+    # Rank par cluster
+    restos_ranked = restos_sorted.with_columns(
+        pl.col("poi_id").cum_count().over("cluster_id").alias("rank_resto")
+    )
+
+    # Garder seulement les k meilleurs par cluster
+    restos_top_k = restos_ranked.filter(pl.col("rank_resto") < k).drop("rank_resto")
+
+    # Recombiner avec les autres POIs
+    df_final = pl.concat([non_restos, restos_top_k]).unique(subset=["poi_id"])
+
+    return df_final
+
+def split_restaurants_and_others(
+    df: pl.DataFrame,
+    restaurant_subcategories: list[str] = [
+        "Restaurants",
+        "Restauration rapide",
+        "Bars & cafés",
+    ],
+    k_restos: int = 2,
+) -> pl.DataFrame:
+    if df.is_empty():
+        return df
+
+    # Détection fine des restaurants
+    restos = df.filter(pl.col("sub_category").is_in(restaurant_subcategories))
+    others = df.filter(~pl.col("sub_category").is_in(restaurant_subcategories))
+
+    # Trier par cluster puis score
+    restos_sorted = restos.sort(
+        ["cluster_id", "final_score"], descending=[False, True]
+    )
+
+    restos_ranked = restos_sorted.with_columns(
+        pl.col("poi_id").cum_count().over("cluster_id").alias("rank_resto")
+    )
+
+    restos_top_k = restos_ranked.filter(pl.col("rank_resto") < k_restos).drop("rank_resto")
+    print("NB TOTAL POI :", df.height)
+    print("NB RESTOS DETECTES :", restos.height)
+    print("NB OTHERS :", others.height)
+    print("NB RESTOS TOP K :", restos_top_k.height)
+
+    print("SUB_CATEGORY RESTOS :", restos["sub_category"].unique())
+
+    return pl.concat([others, restos_top_k]).unique(subset=["poi_id"])
 
 # ------------------------------------------
 # Transport filtering
@@ -248,6 +315,8 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
     Prépare un df minimal pour OSRM (nodes à passer à la requête).
     On impose un ordre stable par cluster puis par final_score.
     """
+    print(">>> split_restaurants_and_others CALLED")
+
     if df.is_empty():
         return df
 
@@ -296,29 +365,40 @@ def build_osrm_ready_pois(
     if df.is_empty():
         return df
 
-    # 1) Filtre par score
-    df_score_filtered = filter_by_final_score(
-        df,
-        max_pois_per_cluster=max_pois_per_cluster,
-        min_score=min_score,
-    )
+    
 
-    # 2) Contrainte restos
-    df_with_restos = enforce_restaurant_constraint(
-        df_filtered=df_score_filtered,
-        df_full=df,
-        target_restaurants=target_restaurants,
-        restaurant_category=restaurant_category,
-    )
+    # 1) Séparer restos / non-restos et limiter à 2 restos
+    df_filtered = split_restaurants_and_others(df, k_restos=2)
 
-    # 3) Filtre transport
+    # 2) Filtre par score
+    # df_score_filtered = filter_by_final_score(
+    #     df,
+    #     max_pois_per_cluster=max_pois_per_cluster,
+    #     min_score=min_score,
+    # )
+
+    # 3) Ajouter restos si manque (rare)
+    # df_with_restos = enforce_restaurant_constraint(
+    #     df_filtered=df_score_filtered,
+    #     df_full=df,
+    #     target_restaurants=target_restaurants,
+    #     restaurant_category=restaurant_category,
+    # )
+
+    # 4) Filtre transport
+    # df_transport_filtered = filter_by_transport_mode(
+    #     df_with_restos,
+    #     mode=mode,
+    #     radius_override_km=radius_override_km,
+    # )
+
     df_transport_filtered = filter_by_transport_mode(
-        df_with_restos,
+        df_filtered,
         mode=mode,
         radius_override_km=radius_override_km,
     )
 
-    # 4) Préparation pour OSRM
+    # 5) Préparation pour OSRM
     df_osrm = prepare_osrm_nodes(df_transport_filtered)
 
     return df_osrm

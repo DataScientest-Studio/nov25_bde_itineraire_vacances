@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends
 from app.models.itinerary import ItineraryRequest, ItineraryResponse
 from app.dependencies import get_itinerary_service
 from app.services.itinerary_service import ItineraryService
+import logging
+logger = logging.getLogger("uvicorn")
+
 
 router = APIRouter(prefix="/itinerary", tags=["itinerary"])
 

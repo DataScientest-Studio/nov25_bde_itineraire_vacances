@@ -2,7 +2,7 @@ from pathlib import Path
 
 import geopandas as gpd
 
-DATA_DIR = Path("data")
+DATA_DIR = Path("/opt/airflow/data")
 RAW_DIR = DATA_DIR / "raw"
 OUTPUT_DIR = DATA_DIR / "processed"
 

@@ -3,10 +3,11 @@ import polars as pl
 # Poids configurables (normalisés)
 WEIGHTS = {
     "density_commune_norm": 0.20,
-    "diversity_commune_norm": 0.25,
-    #"popularity_norm": 0.30,
-    "proximity_commune_norm": 0.10,
+    "diversity_commune_norm": 0.30,
+    "popularity_norm": 0.15,
+    "proximity_commune_norm": 0.20,
     "category_weight_norm": 0.15,
+    # Optionnel :
     # "opening_score_norm": 0.10,
 }
 
@@ -21,9 +22,9 @@ def add_final_score(lf: pl.LazyFrame) -> pl.LazyFrame:
 
     # Construction du score brut
     for col, weight in WEIGHTS.items():
-        expr = weight * pl.col(col).cast(pl.Float64).fill_null(0.0)
-        score_expr = expr if score_expr is None else score_expr + expr
-
+        if col in lf.columns:
+            expr = weight * pl.col(col)
+            score_expr = expr if score_expr is None else score_expr + expr
 
     # Si aucune métrique n'est disponible → score = 0
     if score_expr is None:

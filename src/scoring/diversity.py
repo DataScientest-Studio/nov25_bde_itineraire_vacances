@@ -3,7 +3,7 @@ import polars as pl
 # Mapping logique → Colonne H3
 RESOLUTION_MAP = {
     "region": "h3_r6",
-    "commune": "h3_r8",
+    "commune": "h3_r9",
 }
 
 

@@ -32,7 +32,6 @@ class ItineraryPipeline:
     # ---------------------------------------------------------
     def _cluster_pois(self, pois_df: pl.DataFrame, nb_days, anchor_lat, anchor_lon):
 
-        print('GGGGGGGGG', pois_df.columns)
         return (
             SpatialClusterer(pois_df.lazy())
             .set_nb_days(nb_days)
@@ -298,11 +297,12 @@ class ItineraryPipeline:
         restaurant_category: str = "Gastronomie & Restauration",
     ):
 
-
+        
         # 1. Clustering
         df_prepared = self._cluster_pois(
             pois_df, nb_days, anchor_lat, anchor_lon
         )
+        
 
         # 2. Préparation OSRM
         df_clustered = self._build_osrm_ready_pois(
@@ -375,6 +375,7 @@ class ItineraryPipeline:
 
         else:
             raise ValueError(f"Solver inconnu : {solver}")
+
 
         if df_itinerary.is_empty() or "cluster_id" not in df_itinerary.columns:
             print("df_itinerary vide ou sans cluster_id")

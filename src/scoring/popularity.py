@@ -17,7 +17,6 @@ def add_popularity(lf: pl.LazyFrame, k: int = 50) -> pl.LazyFrame:
     # ---------------------------------------------------------
     # 1. colonnes par défaut si absentes
     # ---------------------------------------------------------
-    print("GG",lf.collect_schema().names())
     lf = lf.with_columns(
         [
             (
@@ -32,6 +31,7 @@ def add_popularity(lf: pl.LazyFrame, k: int = 50) -> pl.LazyFrame:
             ).alias("review_count"),
         ]
     )
+
     # ---------------------------------------------------------
     # 2. Normalisation de la note (0–1)
     # ---------------------------------------------------------

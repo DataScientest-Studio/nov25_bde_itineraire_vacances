@@ -11,12 +11,12 @@ class POIService:
         return max(1, int(radius_km / 7.8))
 
     def get_filtered_pois(self, db, filters):
-        center_h3 = h3.latlng_to_cell(filters.latitude, filters.longitude, 9)
+        center_h3 = h3.latlng_to_cell(filters.latitude, filters.longitude, 7)
 
         k = self.radius_to_kring(filters.radius)
-        h3_r9 = list(h3.grid_disk(center_h3, k))
+        h3_r7 = list(h3.grid_disk(center_h3, k))
 
-        return self.repository.filter_pois(db, filters, h3_r9)
+        return self.repository.filter_pois(db, filters, h3_r7)
 
 
 

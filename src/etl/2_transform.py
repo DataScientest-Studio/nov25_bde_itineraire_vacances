@@ -271,6 +271,7 @@ def transform():
     print("   📊 Calcul du score final...")
     lf = add_final_score(lf)
 
+
     print("   📥 Collecte du LazyFrame...")
     df_polars = lf.collect()
 
