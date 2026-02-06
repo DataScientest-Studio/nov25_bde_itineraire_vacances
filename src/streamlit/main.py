@@ -27,13 +27,15 @@ st.session_state.dict_mobility = {
 if "payload" not in st.session_state:
     st.session_state.payload = {
         "commune": "",
-        "main_categories": [],
-        "sub_categories": [],
+        "main_category": [],
+        "sub_category": [],
         "min_score": 0.15,
-        "nb_days": 0,
-        "start": {"lat": 0, "lon": 0},
+        "days": 0,
+        "latitude": 0,
+        "longitude": 0,
         "radius": 0,
         "osrm_mode": "",
+        "solver": "auto",
     }
 
 pg.run()

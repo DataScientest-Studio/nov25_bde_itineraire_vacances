@@ -84,6 +84,14 @@ CREATE INDEX idx_poi_main_cat ON poi(main_category_id);
 CREATE INDEX idx_poi_sub_cat ON poi(sub_category_id);
 CREATE INDEX idx_poi_h3_r9 ON poi(h3_r9);
 CREATE INDEX idx_poi_score ON poi(final_score DESC);
+-- indexer les colonnes filtrées
+CREATE INDEX IF NOT EXISTS idx_main_category_nom
+ON main_category(nom_cat);
+CREATE INDEX IF NOT EXISTS idx_sub_category_nom
+ON sub_category(sub_category);
+-- indexer la commune
+CREATE INDEX IF NOT EXISTS idx_poi_commune
+ON poi(commune);
 
 -- 4. INSERTION DES DONNÉES DE RÉFÉRENCE (Généré automatiquement)
 

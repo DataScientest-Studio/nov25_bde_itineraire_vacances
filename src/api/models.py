@@ -1,11 +1,8 @@
-from typing import List
-
 from pydantic import BaseModel, Field
-
+from typing import Optional, List
 
 class CategoriesRequest(BaseModel):
     categories_list: List[str]
-
 
 class StartPoint(BaseModel):
     lat: float = Field(..., ge=-180, le=180)
@@ -22,7 +19,6 @@ class ItineraryRequest(BaseModel):
     start: StartPoint
     transport_mode: str = "walk"
     solver: str = "auto"
-
 
 class POI(BaseModel):
     osrm_index: int

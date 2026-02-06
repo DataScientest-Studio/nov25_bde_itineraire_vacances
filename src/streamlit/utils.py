@@ -21,11 +21,35 @@ def fetch_main_categories():
 def fetch_sub_categories(main_cat):
     sub_cat_url = "http://localhost:8000/sub_categories"
     try:
-        params = {"categories_list": main_cat}
+        params = {"main_categories": main_cat}
         response = requests.post(sub_cat_url, json=params)
         response.raise_for_status()
         data = response.json()
         return data["sub_categories"]
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur lors de la récupération des données: {e}")
+
+
+## renvoie les pois sélectionnés :
+def get_selected_pois(payload):
+    poi_query_url = "http://localhost:8000/poi/query"
+    try:
+        response = requests.post(poi_query_url, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        return data
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur lors de la récupération des données: {e}")
+
+
+## envoyer le payload :
+def send_payload(payload):
+    itinerary_url = "http://localhost:8000/itinerary/compute"
+    try:
+        response = requests.post(itinerary_url, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        return data
     except requests.exceptions.RequestException as e:
         st.error(f"Erreur lors de la récupération des données: {e}")
 
