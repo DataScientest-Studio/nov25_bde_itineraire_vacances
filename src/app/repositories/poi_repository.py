@@ -1,6 +1,6 @@
 class POIRepository:
 
-    def filter_pois(self, db, filters, h3_r9):
+    def filter_pois(self, db, filters, h3_r7):
 
         query = """
             SELECT p.poi_id,
@@ -9,7 +9,7 @@ class POIRepository:
                 p.latitude,
                 mc.nom_cat AS main_category,
                 sc.nom_sous_cat AS sub_category,
-                p.h3_r9,
+                p.h3_r7,
                 p.diversity_commune_norm,
                 p.final_score
             FROM poi AS p
@@ -17,7 +17,7 @@ class POIRepository:
                 ON p.main_category_id = mc.id
             JOIN sub_category AS sc
                 ON p.sub_category_id = sc.id
-            WHERE p.h3_r9 = ANY(%s)  -- pré-filtrage H3
+            WHERE p.h3_r7 = ANY(%s)  -- pré-filtrage H3
             AND ST_DWithin(
                     p.geom,
                     ST_SetSRID(ST_Point(%s, %s), 4326),
@@ -31,7 +31,7 @@ class POIRepository:
             cur.execute(
                 query,
                 (
-                    h3_r9,                   # %s 1
+                    h3_r7,                   # %s 1
                     filters.longitude,       # %s 2
                     filters.latitude,        # %s 3
                     filters.radius,          # %s 4

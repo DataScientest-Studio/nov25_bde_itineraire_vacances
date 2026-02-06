@@ -9,7 +9,7 @@ class POI(BaseModel):
     longitude: float
     main_category: str
     sub_category: str
-    h3_r9: str
+    h3_r7: str
     diversity_commune_norm: float
     final_score: float
 

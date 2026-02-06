@@ -2,7 +2,7 @@ from pathlib import Path
 
 import requests
 
-DATA_DIR = Path("data")
+DATA_DIR = Path("/opt/airflow/data")
 BASE_URL = (
     "https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latest/geojson"
 )

@@ -1,8 +1,10 @@
 import polars as pl
 from typing import List, Dict, Any
-
+import logging
 from app.pipeline.features.osrm import OSRMClientAsync
 from app.pipeline.itinerary_pipeline import ItineraryPipeline
+
+logger = logging.getLogger("uvicorn")
 
 
 class ItineraryService:
@@ -16,6 +18,10 @@ class ItineraryService:
     def __init__(self, osrm_url: str):
         self.osrm = OSRMClientAsync(osrm_url)
         self.pipeline = ItineraryPipeline()
+    
+    def debug_step(self,df, step_name):
+        logger.info(f"=== {step_name} ===")
+        logger.info(f"Total POIs : {df.shape[0]}")
 
     def compute_itinerary(
         self,
@@ -35,8 +41,8 @@ class ItineraryService:
 
         # 1. Convertir la liste de POIs en DataFrame Polars
         pois_df = pl.DataFrame(pois)
+        self.debug_step(pois_df, "1. Chargement initial")
 
-        print("POIS DF COLUMNS:", pois_df.columns)
 
         # 2. Pipeline complet
         df_clustered, df_osrm_dist, df_osrm_dur, df_itinerary, optimizer = (
@@ -50,6 +56,10 @@ class ItineraryService:
                 solver=solver,
             )
         )
+        self.debug_step(df_clustered, "2. Après clustering")
+        self.debug_step(df_osrm_dist, "3. Après OSRM distance")
+        self.debug_step(df_osrm_dur, "4. Après OSRM durée")
+        self.debug_step(df_itinerary, "5. Après solveur")
 
         # 3. Aucun itinéraire trouvé
         if df_itinerary.is_empty():
@@ -60,6 +70,8 @@ class ItineraryService:
                 "optimizer": optimizer,
             }
         
+        self.debug_step(df_itinerary, "6. Formatage final")
+
         # 4. Formatage final pour l’API
         result = []
         for cluster_id in df_itinerary["cluster_id"].unique():

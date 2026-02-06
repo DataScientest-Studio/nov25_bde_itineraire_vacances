@@ -5,7 +5,7 @@ from pathlib import Path
 from bounding_box import BoundingBoxResolver
 from h3_utils import polygon_to_cells
 
-DATA_DIR = Path("data")
+DATA_DIR = Path("/opt/airflow/data")
 GEOJSON_COMMUNES = DATA_DIR / "raw" / "communes-100m.geojson"
 ADMIN_HEXES_PATH = DATA_DIR / "processed" / "admin_hexes.json"
 

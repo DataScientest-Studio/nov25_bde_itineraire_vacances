@@ -24,7 +24,7 @@ class SpatialClusterer:
         self.nb_days: int = 1
         self.anchor_lat: Optional[float] = None
         self.anchor_lon: Optional[float] = None
-        self.h3_resolution: int = 9
+        self.h3_resolution: int = 7
         self.random_state: int = 42
 
     # -----------------------------
@@ -62,7 +62,7 @@ class SpatialClusterer:
         pour chaque cellule (latitude/longitude moyens).
         On matérialise ici car KMeans travaille sur du numpy en mémoire.
         """
-        cells_lf = self.lf.group_by("h3_r9").agg(
+        cells_lf = self.lf.group_by("h3_r7").agg(
             [
                 pl.count().alias("n_pois"),
                 pl.mean("latitude").alias("latitude_center"),
@@ -85,12 +85,12 @@ class SpatialClusterer:
         )
 
         # Si l'ancrage est déjà dans une cellule existante, on ne duplique pas
-        if anchor_h3 in cells_df["h3_r9"].to_list():
+        if anchor_h3 in cells_df["h3_r7"].to_list():
             return cells_df
 
         anchor_row = pl.DataFrame(
             {
-                "h3_r9": [anchor_h3],
+                "h3_r7": [anchor_h3],
                 "n_pois": [0],  # pas de POI, juste un point d'attraction
                 "latitude_center": [self.anchor_lat],
                 "longitude_center": [self.anchor_lon],
@@ -110,8 +110,11 @@ class SpatialClusterer:
             ]
         ).T
 
+        n_cells = coords.shape[0]
+        n_clusters = min(self.nb_days, n_cells)
+
         kmeans = KMeans(
-            n_clusters=self.nb_days,
+            n_clusters=n_clusters,
             random_state=self.random_state,
             n_init="auto",
         )
@@ -141,10 +144,10 @@ class SpatialClusterer:
 
         # 5. Join sur le LazyFrame initial pour propager 'day' aux POIs
         cells_lf_with_day = cells_df_real.lazy().select(
-            ["h3_r9", pl.col("cluster_id").cast(pl.Int64)]
+            ["h3_r7", pl.col("cluster_id").cast(pl.Int64)]
         )
 
-        lf_with_day = self.lf.join(cells_lf_with_day, on="h3_r9", how="left")
+        lf_with_day = self.lf.join(cells_lf_with_day, on="h3_r7", how="left")
         lf_with_day = lf_with_day.with_columns(pl.col("cluster_id").cast(pl.Int64))
 
         return lf_with_day
