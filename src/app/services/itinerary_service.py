@@ -22,6 +22,7 @@ class ItineraryService:
     def debug_step(self,df, step_name):
         logger.info(f"=== {step_name} ===")
         logger.info(f"Total POIs : {df.shape[0]}")
+        logger.info(f"DEBUT Total POIs : {df.columns}")
 
     def compute_itinerary(
         self,
@@ -39,10 +40,45 @@ class ItineraryService:
         - start point (lat/lon) fourni par l’utilisateur
         """
 
-        # 1. Convertir la liste de POIs en DataFrame Polars
-        pois_df = pl.DataFrame(pois)
-        self.debug_step(pois_df, "1. Chargement initial")
+        # 0. Construction des meta données pour séparer
+        # => Les données géométriques / OSRM → DataFrame
+        # =>Les données métier / textuelles → dictionnaire indexé par poi_id
 
+        meta = {
+            poi.poi_id: {
+                "nom_du_poi": poi.nom_du_poi,
+                "description": poi.description,
+                "adresse": poi.adresse,
+                "contact_phone": poi.contact_phone,
+                "contact_mail": poi.contact_mail,
+                "contact_website": poi.contact_website,
+                "itineraire": poi.itineraire,
+                "h3_r7": poi.h3_r7,
+                "diversity_commune_norm": poi.diversity_commune_norm,
+            }
+            for poi in pois
+        }
+
+        # 1. Convertir la liste de POIs en DataFrame Polars
+        pois_df = pl.DataFrame(
+            [
+                {
+                    "poi_id": poi.poi_id,
+                    "nom_du_poi": poi.nom_du_poi,
+                    "latitude": poi.latitude,
+                    "longitude": poi.longitude,
+                    "main_category": poi.main_category,
+                    "sub_category": poi.sub_category,
+                    "h3_r7": poi.h3_r7,
+                    "diversity_commune_norm": poi.diversity_commune_norm,
+                    "final_score": poi.final_score,
+                }
+                for poi in pois
+            ]
+        )
+
+        self.debug_step(pois_df, "1. Chargement initial")
+        logger.info(f"POIs de DEPART GG: {pois_df.columns}")
 
         # 2. Pipeline complet
         df_clustered, df_osrm_dist, df_osrm_dur, df_itinerary, optimizer = (
@@ -56,6 +92,9 @@ class ItineraryService:
                 solver=solver,
             )
         )
+
+        logger.info(f"POIs après clustering  GG: {df_clustered.columns}")
+        
         self.debug_step(df_clustered, "2. Après clustering")
         self.debug_step(df_osrm_dist, "3. Après OSRM distance")
         self.debug_step(df_osrm_dur, "4. Après OSRM durée")
@@ -73,24 +112,67 @@ class ItineraryService:
         self.debug_step(df_itinerary, "6. Formatage final")
 
         # 4. Formatage final pour l’API
-        result = []
-        for cluster_id in df_itinerary["cluster_id"].unique():
-            df_day = df_itinerary.filter(pl.col("cluster_id") == cluster_id)
+        result_days: List[Dict[str, Any]] = []
 
-            result.append(
+        for cluster_id in df_itinerary["cluster_id"].unique():
+            df_day = df_itinerary.filter(pl.col("cluster_id") == cluster_id).sort(
+                "order"
+            )
+
+            pois_for_day: List[Dict[str, Any]] = []
+            day_total_distance_km = float(df_day["day_total_distance_km"][0])
+            day_total_duration_min = float(df_day["day_total_duration_min"][0])
+
+            for row in df_day.to_dicts():
+                m = meta.get(row["poi_id"], {})
+
+                poi_payload = {
+                    # OSRM / pipeline fields
+                    "osrm_index": row["osrm_index"],
+                    "cluster_id": row["cluster_id"],
+                    "poi_id": row["poi_id"],
+                    "latitude": row["latitude"],
+                    "longitude": row["longitude"],
+                    "main_category": row["main_category"],
+                    "sub_category": row.get("sub_category"),
+                    "final_score": row["final_score"],
+                    "order": row["order"],
+                    "solver_used": row["solver_used"],
+                    "distance_from_prev_km": row["distance_from_prev_km"],
+                    "duration_from_prev_min": row["duration_from_prev_min"],
+                    "cumulative_distance_km": row["cumulative_distance_km"],
+                    "cumulative_duration_min": row["cumulative_duration_min"],
+                    "day_total_distance_km": row["day_total_distance_km"],
+                    "day_total_duration_min": row["day_total_duration_min"],
+                    # META fields
+                    "nom_du_poi": m.get("nom_du_poi"),
+                    "description": m.get("description"),
+                    "adresse": m.get("adresse"),
+                    "contact_phone": m.get("contact_phone"),
+                    "contact_mail": m.get("contact_mail"),
+                    "contact_website": m.get("contact_website"),
+                    "itineraire": m.get("itineraire"),
+                }
+                
+                pois_for_day.append(poi_payload)
+                
+            result_days.append(
                 {
                     "day": int(cluster_id),
-                    "pois": df_day.to_dicts(),
-                    "total_distance_km": float(df_day["day_total_distance_km"][0]),
-                    "total_duration_min": float(df_day["day_total_duration_min"][0]),
+                    "pois": pois_for_day,
+                    "total_distance_km": day_total_distance_km,
+                    "total_duration_min": day_total_duration_min,
                 }
             )
 
-        trip_total_distance = sum(day["total_distance_km"] for day in result)
-        trip_total_duration = sum(day["total_duration_min"] for day in result)
+
+
+
+        trip_total_distance = sum(day["total_distance_km"] for day in result_days)
+        trip_total_duration = sum(day["total_duration_min"] for day in result_days)
 
         return {
-            "itinerary": result,
+            "itinerary": result_days,
             "trip_total_distance_km": trip_total_distance,
             "trip_total_duration_min": trip_total_duration,
             "optimizer": optimizer,
