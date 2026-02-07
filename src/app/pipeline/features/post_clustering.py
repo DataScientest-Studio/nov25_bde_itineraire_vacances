@@ -7,6 +7,8 @@ import numpy as np
 import polars as pl
 
 from features.osrm import OSRMClientAsync
+import logging
+logger = logging.getLogger("uvicorn.error")
 
 TransportMode = Literal["walk", "bike", "car"]
 
@@ -263,6 +265,75 @@ def split_restaurants_and_others(
 
     return pl.concat([others, restos_top_k]).unique(subset=["poi_id"])
 
+
+
+
+RESTAURANT_SUBCATEGORIES = [
+    "Restaurants",
+    "Restauration rapide",
+    "Bars & cafés",
+]
+
+def smart_restaurant_sampling(df: pl.DataFrame,
+                              max_per_subcat_per_cell: int = 2) -> pl.DataFrame:
+    restos = (
+        df.filter(pl.col("sub_category").is_in(RESTAURANT_SUBCATEGORIES))
+          .sort("final_score", descending=True)
+          .group_by(["sub_category", "h3_r7"])
+          .head(max_per_subcat_per_cell)
+    )
+
+    others = df.filter(~pl.col("sub_category").is_in(RESTAURANT_SUBCATEGORIES))
+    cols = restos.columns
+    others = others.select(cols)
+
+    logger.info(f"[rebalance] restos kept: {restos.height}, others: {others.height}")
+    return pl.concat([restos, others])
+
+
+def ensure_minimum_per_category(df: pl.DataFrame,
+                                max_per_category: int = 10) -> pl.DataFrame:
+    non_resto = df.filter(~pl.col("sub_category").is_in(RESTAURANT_SUBCATEGORIES))
+
+    grouped = (
+        non_resto.sort("final_score", descending=True)
+                 .group_by("main_category")
+                 .head(max_per_category)
+    )
+
+    restos = df.filter(pl.col("sub_category").is_in(RESTAURANT_SUBCATEGORIES))
+    cols = grouped.columns
+    restos = restos.select(cols)
+
+
+    logger.info(f"[rebalance] non-resto kept: {grouped.height}, restos kept: {restos.height}")
+    return pl.concat([grouped, restos])
+
+
+def limit_density(df: pl.DataFrame,
+                  max_per_cell: int = 5) -> pl.DataFrame:
+    limited = (
+        df.sort("final_score", descending=True)
+          .group_by("h3_r7")
+          .head(max_per_cell)
+    )
+
+    logger.info(f"[rebalance] after density limit: {limited.height} POIs")
+    return limited
+
+
+def rebalance_pois(df: pl.DataFrame) -> pl.DataFrame:
+    logger.info(f"[rebalance] initial POIs: {df.height}")
+
+    df1 = smart_restaurant_sampling(df, max_per_subcat_per_cell=2)
+    df2 = ensure_minimum_per_category(df1, max_per_category=10)
+    df3 = limit_density(df2, max_per_cell=5)
+
+    df3 = df3.unique(subset=["poi_id"])
+    logger.info(f"[rebalance] final POIs: {df3.height}")
+
+    return df3
+
 # ------------------------------------------
 # Transport filtering
 # ------------------------------------------
@@ -365,41 +436,46 @@ def build_osrm_ready_pois(
     if df.is_empty():
         return df
 
-    
+    logger.info("=== 1. Chargement initial ===")
+    logger.info(f"Total POIs : {df.height}")
 
-    # 1) Séparer restos / non-restos et limiter à 2 restos
+    # 1) Rééquilibrage intelligent AVANT tout filtrage
+    df = rebalance_pois(df)
+
+    logger.info("=== 2. Après rééquilibrage ===")
+    logger.info(f"Total POIs : {df.height}")
+
+    # 2) Split restos / non-restos (top K par cluster)
     df_filtered = split_restaurants_and_others(df, k_restos=2)
 
-    # 2) Filtre par score
-    # df_score_filtered = filter_by_final_score(
-    #     df,
-    #     max_pois_per_cluster=max_pois_per_cluster,
-    #     min_score=min_score,
-    # )
+    logger.info("=== 3. Après split restos ===")
+    logger.info(f"Total POIs : {df_filtered.height}")
 
-    # 3) Ajouter restos si manque (rare)
-    # df_with_restos = enforce_restaurant_constraint(
-    #     df_filtered=df_score_filtered,
-    #     df_full=df,
-    #     target_restaurants=target_restaurants,
-    #     restaurant_category=restaurant_category,
-    # )
-
-    # 4) Filtre transport
-    # df_transport_filtered = filter_by_transport_mode(
-    #     df_with_restos,
-    #     mode=mode,
-    #     radius_override_km=radius_override_km,
-    # )
-
+    # 3) Filtre transport
     df_transport_filtered = filter_by_transport_mode(
         df_filtered,
         mode=mode,
         radius_override_km=radius_override_km,
     )
 
+    logger.info("=== 4. Après filtre transport ===")
+    logger.info(f"Total POIs : {df_transport_filtered.height}")
+
+
+    # 4) Filtre par score
+    df_score_filtered = filter_by_final_score(
+        df_transport_filtered,
+        max_pois_per_cluster=max_pois_per_cluster,
+        min_score=min_score,
+    )
+
+    logger.info("=== 5. Après filtre par score ===")
+    logger.info(f"Total POIs : {df_score_filtered.height}")
+
     # 5) Préparation pour OSRM
-    df_osrm = prepare_osrm_nodes(df_transport_filtered)
+    df_osrm = prepare_osrm_nodes(df_score_filtered)
+    logger.info("=== 6. Formatage final ===")
+    logger.info(f"Total POIs : {df_osrm.height}")
 
     return df_osrm
 
