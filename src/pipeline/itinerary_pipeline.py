@@ -276,17 +276,17 @@ class ItineraryPipeline:
 
         df_enriched = df_day.with_columns(
             [
-                pl.Series("distance_from_prev", distance_from_prev).cast(pl.Float64),
-                pl.Series("duration_from_prev", duration_from_prev).cast(pl.Float64),
-                pl.Series("cumulative_distance", cumulative_distance).cast(pl.Float64),
-                pl.Series("cumulative_duration", cumulative_duration).cast(pl.Float64),
+                (pl.Series("distance_from_prev", distance_from_prev).cast(pl.Float64)/1000.0).alias("distance_from_prev_km"),
+                (pl.Series("duration_from_prev", duration_from_prev).cast(pl.Float64)/60.0).alias("duration_from_prev_min"),
+                (pl.Series("cumulative_distance", cumulative_distance).cast(pl.Float64)/1000.0).alias("cumulative_distance_km"),
+                (pl.Series("cumulative_duration", cumulative_duration).cast(pl.Float64)/60.0).alias("cumulative_duration_min"),
             ]
         )
 
         df_enriched = df_enriched.with_columns(
             [
-                pl.lit(float(cumulative_distance[-1])).alias("day_total_distance"),
-                pl.lit(float(cumulative_duration[-1])).alias("day_total_duration"),
+                pl.lit(float(cumulative_distance[-1])/1000.0).alias("day_total_distance_km"),
+                pl.lit(float(cumulative_duration[-1])/60.0).alias("day_total_duration_min"),
             ]
         )
 

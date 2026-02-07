@@ -311,7 +311,7 @@ def ensure_minimum_per_category(df: pl.DataFrame,
 
 
 def limit_density(df: pl.DataFrame,
-                  max_per_cell: int = 5) -> pl.DataFrame:
+                  max_per_cell: int = 10) -> pl.DataFrame:
     limited = (
         df.sort("final_score", descending=True)
           .group_by("h3_r7")
@@ -325,9 +325,9 @@ def limit_density(df: pl.DataFrame,
 def rebalance_pois(df: pl.DataFrame) -> pl.DataFrame:
     logger.info(f"[rebalance] initial POIs: {df.height}")
 
-    df1 = smart_restaurant_sampling(df, max_per_subcat_per_cell=2)
-    df2 = ensure_minimum_per_category(df1, max_per_category=10)
-    df3 = limit_density(df2, max_per_cell=5)
+    df1 = smart_restaurant_sampling(df, max_per_subcat_per_cell=3)
+    df2 = ensure_minimum_per_category(df1, max_per_category=40)
+    df3 = limit_density(df2, max_per_cell=15)
 
     df3 = df3.unique(subset=["poi_id"])
     logger.info(f"[rebalance] final POIs: {df3.height}")
@@ -446,7 +446,7 @@ def build_osrm_ready_pois(
     logger.info(f"Total POIs : {df.height}")
 
     # 2) Split restos / non-restos (top K par cluster)
-    df_filtered = split_restaurants_and_others(df, k_restos=2)
+    df_filtered = split_restaurants_and_others(df, k_restos=3)
 
     logger.info("=== 3. Après split restos ===")
     logger.info(f"Total POIs : {df_filtered.height}")

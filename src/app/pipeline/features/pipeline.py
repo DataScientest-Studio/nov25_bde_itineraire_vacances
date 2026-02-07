@@ -166,23 +166,23 @@ class ItineraryPipeline:
                 "order": pl.Series(
                     "order", list(range(1, len(poi_order) + 1)), dtype=pl.Int64
                 ),
-                "distance_from_prev": pl.Series(
-                    "distance_from_prev", distances, dtype=pl.Float64
+                "distance_from_prev_km": pl.Series(
+                    "distance_from_prev_km", distances, dtype=pl.Float64
                 ),
-                "duration_from_prev": pl.Series(
-                    "duration_from_prev", durations, dtype=pl.Float64
+                "duration_from_prev_min": pl.Series(
+                    "duration_from_prev_min", durations, dtype=pl.Float64
                 ),
                 "visit_time": pl.Series("visit_time", visit_times, dtype=pl.Int64),
-                "step_total_duration": pl.Series(
-                    "step_total_duration", step_total, dtype=pl.Float64
+                "step_total_duration_min": pl.Series(
+                    "step_total_duration_min", step_total, dtype=pl.Float64
                 ),
-                "cum_distance": pl.Series(
-                    "cum_distance", cum_distances, dtype=pl.Float64
+                "cum_distance_km": pl.Series(
+                    "cum_distance_km", cum_distances, dtype=pl.Float64
                 ),
-                "cum_duration": pl.Series(
-                    "cum_duration", cum_durations, dtype=pl.Float64
+                "cum_duration_min": pl.Series(
+                    "cum_duration_min", cum_durations, dtype=pl.Float64
                 ),
-                "cum_total_duration": pl.Series(
+                "cum_total_duration_min": pl.Series(
                     "cum_total_duration", cum_total, dtype=pl.Float64
                 ),
                 "day_total_distance": pl.Series(

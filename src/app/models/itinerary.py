@@ -33,12 +33,12 @@ class ItineraryPOI(BaseModel):
     final_score: float
     order: int
     solver_used: str
-    distance_from_prev: float
-    duration_from_prev: float
-    cumulative_distance: float
-    cumulative_duration: float
-    day_total_distance: float
-    day_total_duration: float
+    distance_from_prev_km: float
+    duration_from_prev_min: float
+    cumulative_distance_km: float
+    cumulative_duration_min: float
+    day_total_distance_km: float
+    day_total_duration_min: float
 
 
 class DayItinerary(BaseModel):
