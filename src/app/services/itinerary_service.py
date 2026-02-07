@@ -22,7 +22,6 @@ class ItineraryService:
     def debug_step(self,df, step_name):
         logger.info(f"=== {step_name} ===")
         logger.info(f"Total POIs : {df.shape[0]}")
-        logger.info(f"DEBUT Total POIs : {df.columns}")
 
     def compute_itinerary(
         self,
@@ -78,7 +77,6 @@ class ItineraryService:
         )
 
         self.debug_step(pois_df, "1. Chargement initial")
-        logger.info(f"POIs de DEPART GG: {pois_df.columns}")
 
         # 2. Pipeline complet
         df_clustered, df_osrm_dist, df_osrm_dur, df_itinerary, optimizer = (
@@ -92,8 +90,6 @@ class ItineraryService:
                 solver=solver,
             )
         )
-
-        logger.info(f"POIs après clustering  GG: {df_clustered.columns}")
         
         self.debug_step(df_clustered, "2. Après clustering")
         self.debug_step(df_osrm_dist, "3. Après OSRM distance")
@@ -164,8 +160,6 @@ class ItineraryService:
                     "total_duration_min": day_total_duration_min,
                 }
             )
-
-
 
 
         trip_total_distance = sum(day["total_distance_km"] for day in result_days)
