@@ -81,8 +81,8 @@ class ItineraryService:
                 {
                     "day": int(cluster_id),
                     "pois": df_day.to_dicts(),
-                    "total_distance_km": float(df_day["day_total_distance"][0]),
-                    "total_duration_min": float(df_day["day_total_duration"][0] / 60),
+                    "total_distance_km": float(df_day["day_total_distance_km"][0]),
+                    "total_duration_min": float(df_day["day_total_duration_min"][0]),
                 }
             )
 
