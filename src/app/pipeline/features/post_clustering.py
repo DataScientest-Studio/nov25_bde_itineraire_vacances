@@ -375,8 +375,6 @@ async def build_osrm_matrices_async(
     coords = [tuple(row) for row in coords]
 
     # 2) Ajouter osrm_index
-    logger.info("=== clustered columns ===")
-    logger.info(df_clustered.columns)
     if "osrm_index" not in df_clustered.columns:
         df_clustered = df_clustered.with_columns(
             pl.Series("osrm_index", list(range(len(df_clustered))))

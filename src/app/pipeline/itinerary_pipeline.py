@@ -12,8 +12,6 @@ from app.pipeline.features.osrm import OSRMClientAsync
 from app.pipeline.features.post_clustering import build_osrm_matrices_async, build_osrm_ready_pois
 from app.pipeline.features.spatial_clustering import SpatialClusterer
 
-import logging
-logger = logging.getLogger("uvicorn.error")
 
 class ItineraryPipeline:
     """
@@ -293,17 +291,10 @@ class ItineraryPipeline:
         osrm_min_score: float = 0.2,
     ):
 
-        logger.info("=== DataFrame départ ===")
-        logger.info(f"Columns : {pois_df.columns}")
-
-
         # 1. Clustering
         df_prepared = self._cluster_pois(
             pois_df, nb_days, anchor_lat, anchor_lon
         )
-
-        logger.info("=== df_prepared initial ===")
-        logger.info(f"Columns : {df_prepared.columns}")
 
         # 2. Préparation OSRM
         df_clustered = self._build_osrm_ready_pois(
@@ -312,9 +303,6 @@ class ItineraryPipeline:
             max_pois_per_cluster=max_pois_per_cluster,
             min_score=osrm_min_score,
         )
-
-        logger.info("=== df_clustered  coluMNS===")
-        logger.info(f"Columns : {df_clustered.columns}")
 
         # 3. OSRM matrices
         df_clustered, df_osrm_dist, df_osrm_dur = self._compute_osrm_matrices(
@@ -387,9 +375,6 @@ class ItineraryPipeline:
 
         for day in df_itinerary["cluster_id"].unique():
             df_day = df_itinerary.filter(pl.col("cluster_id") == day)
-
-            logger.info(f"=== Day {day} ===")
-            logger.info(f"Columns : {df_day.columns}")
 
             # 1. Garder l'ordre local produit par GA ou NN2O
             df_day = df_day.sort("order")
