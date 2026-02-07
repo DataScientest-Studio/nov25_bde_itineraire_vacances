@@ -6,7 +6,7 @@ from typing import Dict, Literal
 import numpy as np
 import polars as pl
 
-from features.osrm import OSRMClientAsync
+from app.pipeline.features.osrm import OSRMClientAsync
 import logging
 logger = logging.getLogger("uvicorn.error")
 
@@ -20,9 +20,6 @@ TRANSPORT_MAX_RADIUS_KM: Dict[TransportMode, float] = {
 
 # Pour limiter le nombre de POIs avant OSRM
 DEFAULT_MAX_POIS_PER_CLUSTER = 100
-
-# Nombre cible de restaurants par jour/cluster
-TARGET_RESTAURANTS_PER_CLUSTER = 2
 
 
 # ------------------------------------------
@@ -115,121 +112,6 @@ def filter_by_final_score(
 # ------------------------------------------
 # Restaurant filtering
 # ------------------------------------------
-def enforce_restaurant_constraint(
-    df_filtered: pl.DataFrame,
-    df_full: pl.DataFrame,
-    target_restaurants: int = TARGET_RESTAURANTS_PER_CLUSTER,
-    restaurant_category: str = "Gastronomie & Restauration",
-) -> pl.DataFrame:
-    """
-    Garantit qu'on a jusqu'à target_restaurants par cluster.
-    - df_filtered : résultat du ScoreFilter (déjà réduit)
-    - df_full : dataframe complet avant filtrage (même clusters)
-    """
-    if df_filtered.is_empty():
-        return df_filtered
-
-    # Restaurants déjà présents dans df_filtered
-    filtered_restos = df_filtered.filter(pl.col("main_category") == restaurant_category)
-
-    # Nombre de restos par cluster après filtrage
-    resto_counts = filtered_restos.group_by("cluster_id").agg(
-        pl.len().alias("n_restos_filtered")
-    )
-
-    # Clusters où il manque des restos
-    clusters_needing_restos = resto_counts.filter(
-        pl.col("n_restos_filtered") < target_restaurants
-    )
-
-    # Si tous les clusters ont déjà assez de restos → rien à faire
-    if clusters_needing_restos.is_empty():
-        return df_filtered
-
-    # On complète cluster par cluster
-    # 1. Préparer un df des restos candidats dans df_full (pas encore retenus)
-    full_restos = df_full.filter(pl.col("main_category") == restaurant_category)
-
-    # Exclure ceux déjà dans df_filtered (sur poi_id)
-    existing_ids = df_filtered.select("poi_id").to_series()
-    full_restos_candidates = full_restos.filter(~pl.col("poi_id").is_in(existing_ids))
-
-    if full_restos_candidates.is_empty():
-        # Aucun resto en plus disponible
-        return df_filtered
-
-    # Trier les restos candidats par final_score décroissant dans chaque cluster
-    full_restos_candidates = full_restos_candidates.sort(
-        ["cluster_id", "final_score"], descending=[False, True]
-    )
-
-    # Joindre le nombre de restos déjà présents
-    full_restos_candidates = full_restos_candidates.join(
-        clusters_needing_restos,
-        on="cluster_id",
-        how="inner",
-    )
-
-    # Calculer combien il en manque par cluster
-    full_restos_candidates = full_restos_candidates.with_columns(
-        (target_restaurants - pl.col("n_restos_filtered")).alias("missing_restos")
-    )
-
-    # Rang des restos dans chaque cluster (candidats)
-    full_restos_candidates = full_restos_candidates.with_columns(
-        pl.col("poi_id").cumcount().over("cluster_id").alias("rank_resto_candidate")
-    )
-
-    # Ne garder que les missing_restos premiers par cluster
-    full_restos_candidates = full_restos_candidates.filter(
-        pl.col("rank_resto_candidate") < pl.col("missing_restos")
-    )
-
-    # On n'a plus besoin des colonnes techniques
-    full_restos_candidates = full_restos_candidates.drop(
-        ["n_restos_filtered", "missing_restos", "rank_resto_candidate"]
-    )
-
-    # Union des POIs déjà filtrés + restos ajoutés
-    df_with_restos = pl.concat([df_filtered, full_restos_candidates]).unique(
-        subset=["poi_id"]
-    )  # sécurité contre doublons
-
-    return df_with_restos
-
-def limit_restaurants_to_top_k(
-    df: pl.DataFrame,
-    restaurant_category: str = "Gastronomie & Restauration",
-    k: int = 2,
-) -> pl.DataFrame:
-    if df.is_empty():
-        return df
-
-    # Séparer restos et non-restos
-    restos = df.filter(pl.col("main_category") == restaurant_category)
-    non_restos = df.filter(pl.col("main_category") != restaurant_category)
-
-    if restos.is_empty():
-        return df
-
-    # Trier restos par cluster + final_score décroissant
-    restos_sorted = restos.sort(
-        ["cluster_id", "final_score"], descending=[False, True]
-    )
-
-    # Rank par cluster
-    restos_ranked = restos_sorted.with_columns(
-        pl.col("poi_id").cum_count().over("cluster_id").alias("rank_resto")
-    )
-
-    # Garder seulement les k meilleurs par cluster
-    restos_top_k = restos_ranked.filter(pl.col("rank_resto") < k).drop("rank_resto")
-
-    # Recombiner avec les autres POIs
-    df_final = pl.concat([non_restos, restos_top_k]).unique(subset=["poi_id"])
-
-    return df_final
-
 def split_restaurants_and_others(
     df: pl.DataFrame,
     restaurant_subcategories: list[str] = [
@@ -264,8 +146,6 @@ def split_restaurants_and_others(
     print("SUB_CATEGORY RESTOS :", restos["sub_category"].unique())
 
     return pl.concat([others, restos_top_k]).unique(subset=["poi_id"])
-
-
 
 
 RESTAURANT_SUBCATEGORIES = [
@@ -386,7 +266,6 @@ def prepare_osrm_nodes(df: pl.DataFrame) -> pl.DataFrame:
     Prépare un df minimal pour OSRM (nodes à passer à la requête).
     On impose un ordre stable par cluster puis par final_score.
     """
-    print(">>> split_restaurants_and_others CALLED")
 
     if df.is_empty():
         return df
@@ -419,8 +298,6 @@ def build_osrm_ready_pois(
     mode: TransportMode,
     max_pois_per_cluster: int = DEFAULT_MAX_POIS_PER_CLUSTER,
     min_score: float | None = None,
-    target_restaurants: int = TARGET_RESTAURANTS_PER_CLUSTER,
-    restaurant_category: str = "Gastronomie & Restauration",
     radius_override_km: float | None = None,
 ) -> pl.DataFrame:
     """
@@ -498,6 +375,8 @@ async def build_osrm_matrices_async(
     coords = [tuple(row) for row in coords]
 
     # 2) Ajouter osrm_index
+    logger.info("=== clustered columns ===")
+    logger.info(df_clustered.columns)
     if "osrm_index" not in df_clustered.columns:
         df_clustered = df_clustered.with_columns(
             pl.Series("osrm_index", list(range(len(df_clustered))))

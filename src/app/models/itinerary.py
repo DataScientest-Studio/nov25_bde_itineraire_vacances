@@ -4,14 +4,21 @@ from typing import List, Optional
 
 class POI(BaseModel):
     poi_id: int
-    nom_du_poi: str
+    nom_du_poi: Optional[str] = None
+    description: Optional[str] = None
+    adresse: Optional[str] = None
     latitude: float
     longitude: float
     main_category: str
     sub_category: str
+    contact_phone: Optional[str] = None
+    contact_mail: Optional[str] = None
+    contact_website: Optional[str] = None
+    itineraire: Optional[bool] = None
     h3_r7: str
     diversity_commune_norm: float
     final_score: float
+
 
 class ItineraryRequest(BaseModel):
     pois: List[POI]
@@ -24,12 +31,19 @@ class ItineraryRequest(BaseModel):
 
 class ItineraryPOI(BaseModel):
     osrm_index: int
-    poi_id: int
     cluster_id: int
+    poi_id: int
+    nom_du_poi: Optional[str] = None
+    description: Optional[str] = None
+    adresse: Optional[str] = None
     latitude: float
     longitude: float
     main_category: str
     sub_category: Optional[str]
+    contact_phone: Optional[str] = None
+    contact_mail: Optional[str] = None
+    contact_website: Optional[str] = None
+    itineraire: Optional[bool] = None
     final_score: float
     order: int
     solver_used: str
