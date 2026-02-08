@@ -115,6 +115,14 @@ class ItineraryService:
             day_total_distance_km = float(df_day["day_total_distance_km"][0])
             day_total_duration_min = float(df_day["day_total_duration_min"][0])
 
+            # appel OSRM pour la géométrie complète du jour
+            coords_day = [
+                (row["longitude"], row["latitude"])
+                for row in df_day.to_dicts()
+            ]
+
+            osrm_route = await self.osrm.route_full(coords_day, profile=transport_mode)
+
             for row in df_day.to_dicts():
                 m = meta.get(row["poi_id"], {})
 
@@ -154,6 +162,7 @@ class ItineraryService:
                     "pois": pois_for_day,
                     "total_distance_km": day_total_distance_km,
                     "total_duration_min": day_total_duration_min,
+                    "geometry": osrm_route["geometry"],
                 }
             )
 

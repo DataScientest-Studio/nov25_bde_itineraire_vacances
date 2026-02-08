@@ -224,6 +224,7 @@ class OSRMClientAsync:
         params = {"overview": "full", "geometries": "geojson"}
 
         logger.info(f"Appel OSRM route: {url} avec params {params}")
+        logger.info(f"[DEBUG] Port attendu : {self.get_osrm_port(profile)}")
 
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as r:
@@ -231,3 +232,41 @@ class OSRMClientAsync:
                 data = await r.json()
 
         return data["routes"][0]["geometry"]
+
+
+    # ---------------------------------------------------------
+    # Route GeoJSON multi-points
+    # ---------------------------------------------------------
+    async def route_full(self, coords, profile="driving"):
+
+        """
+        coords = [(lon, lat), (lon, lat), ...]
+        """
+        await self.detect_backend()
+
+        coord_str = self._coords_to_str(coords)
+        profile = self.normalize_profile(profile)
+
+        url = f"{self.base_url}/route/v1/{profile}/{coord_str}"
+        params = {
+            "overview": "full",
+            "geometries": "geojson",
+            "steps": "false",
+        }
+
+        logger.info(f"Appel OSRM route: {url} avec params {params}")
+        logger.info(f"[DEBUG] Port attendu : {self.get_osrm_port(profile)}")
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as r:
+                r.raise_for_status()
+                data = await r.json()
+
+        route = data["routes"][0]
+
+
+        return {
+            "distance": route["distance"],
+            "duration": route["duration"],
+            "geometry": route["geometry"]
+        }

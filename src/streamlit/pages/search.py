@@ -136,9 +136,9 @@ with st.expander("👣 Comment souhaiteriez-vous vous déplacer ?"):
         "5️⃣ Moyen de mobilité/transport", st.session_state.dict_mobility.keys()
     )
 
-    osrm_mode = st.session_state.dict_mobility[mobility_mean]
-    if osrm_mode:
-        st.session_state.payload["osrm_mode"] = osrm_mode
+    transport_mode = st.session_state.dict_mobility[mobility_mean]
+    if transport_mode:
+        st.session_state.payload["transport_mode"] = transport_mode
 
 # ---------------------------------------
 ## Préférences/activitées souhaitées
@@ -172,7 +172,7 @@ if st.button("Proposer des itinéraires"):
         or (payload["days"] == 0)
         or (payload["latitude"] == 0)
         or (payload["longitude"] == 0)
-        or (payload["osrm_mode"] == "")
+        or (payload["transport_mode"] == "")
         or (payload["radius"] == 0)
     ):
         st.error("❌ Un ou plusieurs paramètres de recherche sont invalides")
@@ -198,8 +198,8 @@ if st.session_state.get("redirect"):
         # Sauvegarde dans la session
         st.session_state.itinerary_payload = itinerary_payload
 
-        st.subheader("Payload prêt pour /itinerary/compute")
-        st.json(itinerary_payload)
+        #st.subheader("Payload prêt pour /itinerary/compute")
+        #st.json(itinerary_payload)
         
         # Redirection vers la page "Itinéraire"
-        #st.switch_page("pages/results.py")
+        st.switch_page("pages/results.py")
