@@ -1,8 +1,8 @@
 from app.core.database import db_manager
-from fastapi import Depends
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from app.pipeline.features.osrm_client import osrm_client
 from app.services.itinerary_service import ItineraryService
+
 
 def get_db():
     try:
@@ -12,7 +12,7 @@ def get_db():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database connection error: {str(e)}"
         )
-        
+
     try:
         yield conn
     finally:
