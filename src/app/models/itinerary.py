@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Literal, Optional
+from typing import List, Optional
 
 
 class POI(BaseModel):
@@ -28,10 +28,6 @@ class ItineraryRequest(BaseModel):
     latitude: float
     longitude: float
 
-
-class Geometry(BaseModel):
-    type: Literal["LineString"]
-    coordinates: List[List[float]]  # [[lon, lat], ...]
 
 class ItineraryPOI(BaseModel):
     osrm_index: int
@@ -64,7 +60,6 @@ class DayItinerary(BaseModel):
     pois: List[ItineraryPOI]
     total_distance_km: float
     total_duration_min: float
-    geometry: Geometry
 
 
 class ItineraryResponse(BaseModel):
