@@ -1,0 +1,36 @@
+services:
+  # Base de données géospatiale
+  postgis:
+    image: postgis/postgis:16-3.4
+    container_name: postgis_container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # username enregistré en var. d'env.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # pwd enregistré en var. d'env.
+      POSTGRES_DB: ${POSTGRES_DB} # DB_name
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    networks:
+      - geo_network
+
+  # Interface web pour gérer la base de données
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: gazzar.meriem@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgis  # Attend que postgis démarre d'abord
+    networks:
+      - geo_network
+
+volumes:
+  postgis_data:
+
+networks:
+  geo_network:
+    driver: bridge

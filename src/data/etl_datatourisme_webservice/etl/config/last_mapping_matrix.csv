@@ -1,0 +1,360 @@
+,to_keep,main_category,sub_category,linked_label
+0,1,Shopping & Artisanat,Commerces,LocalBusiness
+1,1,Famille & Enfants,Parcs & loisirs,AmusementPark
+2,1,Famille & Enfants,Parcs & loisirs,Park
+3,1,Sports & Loisirs,Sports collectifs & stades,StadiumOrArena
+4,1,Gastronomie & Restauration,Vins & spiritueux,Winery
+5,2,Hébergement,Unknown,LodgingBusiness
+6,1,Culture & Musées,Musées & expositions,ExhibitionEvent
+7,1,Culture & Musées,Concerts & musique,MusicEvent
+8,2,Hébergement,Unknown,BedAndBreakfast
+9,2,Hébergement,Unknown,TableHoteGuesthouse
+10,1,Culture & Musées,Cinéma & audiovisuel,MovieTheater
+11,1,Nature & Paysages,Forêts & milieux naturels,Landform
+12,1,Gastronomie & Restauration,Bars & cafés,CafeOrCoffeeShop
+13,1,Famille & Enfants,Zoo & animaux,Aquarium
+14,1,Famille & Enfants,Famille & Enfants,Zoo
+15,2,Hébergement,Unknown,Hostel
+0,1,Culture & Musées,Spectacle vivant,CulturalActivityProvider
+1,1,Sports & Loisirs,Sports collectifs & stades,LeisureSportActivityProvider
+2,2,Hébergement,Unknown,Apartment
+3,2,Hébergement,Unknown,Chalet
+4,2,Hébergement,Unknown,Bed
+5,2,Camping & Plein Air,Unknown,CampingCar
+6,2,Camping & Plein Air,Unknown,CampingPitch
+7,2,Camping & Plein Air,Unknown,Caravan
+8,2,Hébergement,Unknown,CastleAndPrestigeMansion
+9,2,Camping & Plein Air,Unknown,Bubble
+10,2,Camping & Plein Air,Unknown,Bungalow
+11,2,Camping & Plein Air,Unknown,Bungatoile
+12,2,Hébergement,Unknown,HotelSuite
+13,2,Hébergement,Unknown,House
+14,2,Hébergement,Unknown,HouseBoat
+15,2,Hébergement,Unknown,Hut
+16,2,Hébergement,Unknown,Room
+17,2,Hébergement,Unknown,LeisureChalet
+18,2,Camping & Plein Air,Unknown,Tent
+19,2,Camping & Plein Air,Unknown,Tipi
+20,2,Camping & Plein Air,Unknown,TreeHouse
+21,2,Camping & Plein Air,Unknown,Yurt
+22,0,,,Visit
+23,2,Camping & Plein Air,Unknown,CamperVanArea
+24,2,Camping & Plein Air,Unknown,Camping
+25,2,Camping & Plein Air,Unknown,FarmCamping
+26,2,Camping & Plein Air,Unknown,NaturalCampingArea
+27,2,Camping & Plein Air,Unknown,ResidentialLeisurePark
+28,2,Loisirs & Clubs,Unknown,YouthHostelAndInternationalCenter
+29,2,Loisirs & Clubs,Unknown,ClubOrHolidayVillage
+30,2,Loisirs & Clubs,Unknown,HolidayCentre
+31,2,Loisirs & Clubs,Unknown,HolidayResort
+32,2,Loisirs & Clubs,Unknown,ChildrensGite
+33,2,Loisirs & Clubs,Unknown,GroupLodging
+34,2,Hébergement,Unknown,StopOverOrGroupLodge
+35,2,Hébergement,Unknown,CollectiveHostel
+36,2,Hébergement,Unknown,Hotel
+37,2,Hébergement,Unknown,Guesthouse
+38,2,Loisirs & Clubs,Unknown,SelfCateringAccommodation
+39,1,Shopping & Artisanat,Marchés,CoveredMarket
+40,1,Patrimoine & Monuments,Patrimoine rural & agricole,Mill
+41,1,Patrimoine & Monuments,Patrimoine rural & agricole,Mine
+42,1,Patrimoine & Monuments,Patrimoine rural & agricole,Forge
+43,1,Patrimoine & Monuments,Patrimoine rural & agricole,Farm
+44,1,Patrimoine & Monuments,Patrimoine civil,Lighthouse
+45,1,Patrimoine & Monuments,Patrimoine civil,Pier
+46,1,Patrimoine & Monuments,Patrimoine civil,PigeonLoft
+47,1,Patrimoine & Monuments,Patrimoine civil,Stables
+48,1,Patrimoine & Monuments,Patrimoine rural & agricole,IndustrialSite
+49,1,Patrimoine & Monuments,Patrimoine rural & agricole,Orchard
+50,1,Patrimoine & Monuments,Patrimoine rural & agricole,WashHouse
+51,1,Patrimoine & Monuments,Patrimoine civil,Bastide
+52,1,Bien-être & Santé,Thermalisme,SpaResort
+53,1,Patrimoine & Monuments,Patrimoine civil,District
+54,1,Nature & Paysages,Montagne & Relief,MountainResort
+55,1,Patrimoine & Monuments,Antiquité & Vestiges,MegalithDolmenMenhir
+56,1,Patrimoine & Monuments,Antiquité & Vestiges,RomanPath
+57,1,Patrimoine & Monuments,Antiquité & Vestiges,Ruins
+58,1,Patrimoine & Monuments,Religieux,Abbey
+59,1,Patrimoine & Monuments,Religieux,Basilica
+60,1,Patrimoine & Monuments,Religieux,Bishopric
+61,1,Patrimoine & Monuments,Religieux,Cathedral
+62,1,Patrimoine & Monuments,Religieux,Chapel
+63,1,Patrimoine & Monuments,Religieux,BuddhistTemple
+64,1,Patrimoine & Monuments,Religieux,Monastery
+65,1,Patrimoine & Monuments,Religieux,Calvary
+66,1,Patrimoine & Monuments,Religieux,Commanderie
+67,1,Patrimoine & Monuments,Religieux,Convent
+68,1,Patrimoine & Monuments,Religieux,Temple
+69,1,Patrimoine & Monuments,Religieux,Mosque
+70,1,Patrimoine & Monuments,Religieux,Church
+71,1,Patrimoine & Monuments,Religieux,Cloister
+72,1,Patrimoine & Monuments,Religieux,Collegiate
+73,1,Patrimoine & Monuments,Religieux,Synagogue
+74,1,Patrimoine & Monuments,Antiquité & Vestiges,Arena
+75,1,Patrimoine & Monuments,Antiquité & Vestiges,Aqueduct
+76,1,Patrimoine & Monuments,Châteaux & Fortifications,Castle
+77,1,Patrimoine & Monuments,Châteaux & Fortifications,Chartreuse
+78,1,Patrimoine & Monuments,Ouvrages d'art,Bridge
+79,1,Patrimoine & Monuments,Ouvrages d'art,Lock
+80,1,Patrimoine & Monuments,Patrimoine civil,RemarkableHouse
+81,1,Patrimoine & Monuments,Ouvrages d'art,Fountain
+82,1,Patrimoine & Monuments,Ouvrages d'art,LevyOrDike
+83,1,Patrimoine & Monuments,Patrimoine civil,Palace
+84,1,Patrimoine & Monuments,Patrimoine civil,Tower
+85,1,Patrimoine & Monuments,Cimetières & mémoriaux,MilitaryCemetery
+86,1,Patrimoine & Monuments,Cimetières & mémoriaux,CivilCemetery
+87,1,Patrimoine & Monuments,Antiquité & Vestiges,TriumphalArch
+88,1,Patrimoine & Monuments,Châteaux & Fortifications,Dungeon
+89,1,Patrimoine & Monuments,Châteaux & Fortifications,Fort
+90,1,Patrimoine & Monuments,Châteaux & Fortifications,FortifiedCastle
+91,1,Patrimoine & Monuments,Châteaux & Fortifications,FortifiedSet
+92,1,Patrimoine & Monuments,Châteaux & Fortifications,Citadel
+93,1,Culture & Musées,Bibliothèques & médiation,Library
+94,0,,,InterpretationCentre
+95,1,Nature & Paysages,Paysages remarquables,ParkAndGarden
+96,1,Culture & Musées,Musées & expositions,Museum
+97,1,Gastronomie & Restauration,Bars & cafés,BarOrPub
+98,1,Gastronomie & Restauration,Bars & cafés,BistroOrWineBar
+99,1,Gastronomie & Restauration,Vins & spiritueux,Cellar
+100,1,Gastronomie & Restauration,Restauration rapide,Bakery
+101,1,Gastronomie & Restauration,Restaurants,BoatRestaurant
+102,1,Gastronomie & Restauration,Bars & cafés,BrasserieOrTavern
+103,1,Culture & Musées,Spectacle vivant,Cabaret
+104,1,Gastronomie & Restauration,Restaurants,HotelRestaurant
+105,1,Gastronomie & Restauration,Produits locaux,FarmhouseInn
+106,1,Gastronomie & Restauration,Restaurants,SelfServiceCafeteria
+107,1,Gastronomie & Restauration,Restaurants,MountainRestaurant
+108,1,Gastronomie & Restauration,Restaurants,GourmetRestaurant
+109,1,Gastronomie & Restauration,Bars & cafés,CafeOrTeahouse
+110,1,Gastronomie & Restauration,Restauration rapide,FastFoodRestaurant
+111,1,Gastronomie & Restauration,Restauration rapide,IceCreamShop
+112,1,Gastronomie & Restauration,Restauration rapide,StreetFood
+113,1,Culture & Musées,Rencontres & conférences,ArtistSigning
+114,1,Culture & Musées,Jeune public,ChildrensEvent
+115,1,Culture & Musées,Bibliothèques & médiation,Reading
+116,1,Culture & Musées,Concerts & musique,Recital
+117,1,Culture & Musées,Spectacle vivant,DanceEvent
+118,1,Événements & Traditions,Vendanges & récoltes,Harvest
+119,1,Culture & Musées,Musées & expositions,Exhibition
+120,1,Culture & Musées,Festivals & grands événements,Festival
+121,1,Culture & Musées,Festivals & grands événements,Commemoration
+122,1,Culture & Musées,Concerts & musique,Concert
+123,1,Culture & Musées,Rencontres & conférences,Conference
+124,1,Culture & Musées,Cinéma & audiovisuel,ScreeningEvent
+125,1,Culture & Musées,Spectacle vivant,ShowEvent
+126,1,Culture & Musées,Spectacle vivant,TheaterEvent
+127,1,Culture & Musées,Spectacle vivant,Opera
+128,1,Culture & Musées,Spectacle vivant,CircusEvent
+129,1,Culture & Musées,Festivals & grands événements,VisualArtsEvent
+130,1,Sports & Loisirs,Sports collectifs & stades,SportsCompetition
+131,1,Sports & Loisirs,Sports collectifs & stades,SportsDemonstration
+132,1,Sports & Loisirs,Sports outdoor,Rambling
+133,1,Sports & Loisirs,Sports mécaniques,Rally
+134,1,Événements & Traditions,Jeux & concours,Game
+135,1,Shopping & Artisanat,Antiquités & brocante,AntiqueAndSecondhandGoodDealer
+136,2,Commerce & Shopping,Unknown,DepartmentStore
+137,1,Shopping & Artisanat,Artisanat,CraftsmanShop
+138,1,Culture & Musées,Musées & expositions,ArtGalleryOrExhibitionGallery
+139,1,Shopping & Artisanat,Commerces,BoutiqueOrLocalShop
+140,1,Gastronomie & Restauration,Produits locaux,LocalProductsShop
+141,2,Commerce & Shopping,Unknown,HypermarketAndSupermarket
+142,1,Shopping & Artisanat,Commerces,ShoppingCentreAndGallery
+143,1,Gastronomie & Restauration,Producteurs,Cooperative
+144,1,Gastronomie & Restauration,Vins & spiritueux,Brewery
+145,1,Gastronomie & Restauration,Producteurs,Farmer
+146,1,Gastronomie & Restauration,Producteurs,Producer
+147,1,Gastronomie & Restauration,Producteurs,ProducersGroup
+148,1,Gastronomie & Restauration,Producteurs,Trader
+149,1,Gastronomie & Restauration,Vins & spiritueux,WineCellar
+150,0,,,AccompaniedPractice
+151,0,,,DevelopmentCourse
+152,0,,,Course
+153,1,Sports & Loisirs,Sports outdoor,FirstPractice
+154,0,,,FreePractice
+155,1,Sports & Loisirs,Sports outdoor,IntroductionCourse
+156,0,,,Competition
+157,1,Gastronomie & Restauration,Vins & spiritueux,Tasting
+158,1,Sports & Loisirs,Aventure & accrobranche,MultiActivity
+159,1,Sports & Loisirs,Sports outdoor,Traineeship
+160,2,Services & Mobilité,Unknown,EquipmentRental
+161,0,,,NonHousingRealEstateRental
+162,1,Sports & Loisirs,Sports d'hiver,DogSleddingTrail
+163,1,Sports & Loisirs,Sports d'hiver,DownhillSkiResort
+164,1,Sports & Loisirs,Sports d'hiver,DownhillSkiRun
+165,1,Sports & Loisirs,Sports outdoor,EducationalTrail
+166,1,Sports & Loisirs,Sports équestres,EquestrianCenter
+167,1,Culture & Musées,Spectacle vivant,Auditorium
+168,1,Bien-être & Santé,Thalasso & balnéo,BalneotherapyCentre
+169,1,Sports & Loisirs,Sports nautiques,BeachClub
+170,1,Sports & Loisirs,Loisirs indoor,BilliardRoom
+171,1,Sports & Loisirs,Sports d'hiver,CrossCountrySkiResort
+172,1,Sports & Loisirs,Sports d'hiver,CrossCountrySkiTrail
+173,1,Sports & Loisirs,Loisirs indoor,Casino
+174,1,Sports & Loisirs,Loisirs indoor,BoulesPitch
+175,1,Sports & Loisirs,Loisirs indoor,BowlingAlley
+176,1,Sports & Loisirs,Sports collectifs & stades,SportsClub
+177,1,Sports & Loisirs,Sports collectifs & stades,SportsHall
+178,1,Sports & Loisirs,Sports de balle & raquette,SquashCourt
+179,1,Sports & Loisirs,Sports nautiques,Marina
+180,1,Sports & Loisirs,Golf & mini-golf,MiniGolf
+181,1,Sports & Loisirs,Sports nautiques,MooringArea
+182,1,Bien-être & Santé,Soins & bien-être,FitnessCenter
+183,1,Bien-être & Santé,Soins & bien-être,FitnessPath
+184,1,Bien-être & Santé,Soins & bien-être,Hammam
+185,1,Famille & Enfants,Aires & jeux,PlayArea
+186,1,Famille & Enfants,Éducation & apprentissage,SchoolOrTrainingCentre
+187,1,Sports & Loisirs,Sports nautiques,SightseeingBoat
+188,1,Famille & Enfants,Éducation & apprentissage,TeachingFarm
+189,1,Sports & Loisirs,Sports de balle & raquette,TennisComplex
+190,1,Sports & Loisirs,Sports équestres,Racetrack
+191,1,Sports & Loisirs,Sports mécaniques,RacingCircuit
+192,1,Sports & Loisirs,Sports outdoor,RailBike
+193,0,,,LaunchingRamp
+194,1,Famille & Enfants,Parcs & loisirs,LeisureComplex
+195,1,Sports & Loisirs,Loisirs indoor,IceSkatingRink
+196,1,Transports touristiques,Embarcadères,Jetty
+197,1,Famille & Enfants,Aires & jeux,KidsClub
+198,1,Sports & Loisirs,Sports de balle & raquette,FrontonBelotaCourt
+199,1,Sports & Loisirs,Golf & mini-golf,GolfCourse
+200,1,Sports & Loisirs,Sports collectifs & stades,Gymnasium
+201,1,Culture & Musées,Cinéma & audiovisuel,Cinema
+202,1,Culture & Musées,Cinéma & audiovisuel,Cinematheque
+203,1,Nature & Paysages,Géologie & curiosités,CircusPlace
+204,1,Sports & Loisirs,Sports outdoor,ClimbingWall
+205,1,Famille & Enfants,Aires & jeux,MultiPurposeRoomOrCommunityRoom
+206,1,Sports & Loisirs,Sports nautiques,NauticalCentre
+207,1,Culture & Musées,Spectacle vivant,NightClub
+208,1,Sports & Loisirs,Sports d'hiver,TerrainPark
+209,1,Culture & Musées,Spectacle vivant,Theater
+210,1,Famille & Enfants,Parcs & loisirs,ThemePark
+211,1,Sports & Loisirs,Sports d'hiver,TobogganBobsleigh
+212,1,Transports touristiques,Téléphériques & remontées,TourismCableCar
+213,1,Transports touristiques,Trains & bus touristiques,TouristBus
+214,1,Transports touristiques,Téléphériques & remontées,Trampoline
+215,1,Sports & Loisirs,Sports collectifs & stades,Velodrome
+216,1,Sports & Loisirs,Sports outdoor,ViaFerrata
+217,1,Famille & Enfants,Zoo & animaux,VivariumAquarium
+218,1,Sports & Loisirs,Sports collectifs & stades,Stadium
+219,1,Sports & Loisirs,Sports d'hiver,SummerToboggan
+220,1,Sports & Loisirs,Loisirs indoor,SwimmingPool
+221,1,Transports touristiques,Trains & bus touristiques,TouristTrain
+222,1,Sports & Loisirs,Sports outdoor,TrackRollerOrSkateBoard
+223,1,Sports & Loisirs,Sports nautiques,YachtClub
+224,1,Famille & Enfants,Zoo & animaux,ZooAnimalPark
+225,1,Sports & Loisirs,Aventure & accrobranche,AdventurePark
+226,1,Bien-être & Santé,Thermalisme,Spa
+227,1,Bien-être & Santé,Soins & bien-être,HealthcarePlace
+228,2,Santé & Urgences,Unknown,HealthcareProfessional
+229,2,Santé & Urgences,Unknown,Pharmacy
+230,1,Bien-être & Santé,Thalasso & balnéo,ThalassotherapyCentre
+231,1,Nature & Paysages,Montagne & Relief,AlpinePasture
+232,1,Nature & Paysages,Côtes & littoral,Beach
+233,1,Nature & Paysages,Montagne & Relief,Crest
+234,1,Nature & Paysages,Montagne & Relief,Cuesta
+235,1,Culture & Musées,Musées & expositions,Culture
+236,1,Nature & Paysages,Eau & Milieux humides,Canal
+237,1,Nature & Paysages,Géologie & curiosités,Canyon
+238,1,Nature & Paysages,Géologie & curiosités,Causse
+239,1,Nature & Paysages,Géologie & curiosités,CaveSinkholeOrAven
+240,1,Nature & Paysages,Forêts & milieux naturels,ChalkyLawn
+241,1,Nature & Paysages,Eau & Milieux humides,Source
+242,1,Nature & Paysages,Forêts & milieux naturels,Bocage
+243,1,Nature & Paysages,Eau & Milieux humides,Bog
+244,1,Nature & Paysages,Eau & Milieux humides,River
+245,1,Nature & Paysages,Côtes & littoral,Dune
+246,1,Nature & Paysages,Forêts & milieux naturels,Forest
+247,1,Nature & Paysages,Forêts & milieux naturels,HalophilicArea
+248,1,Nature & Paysages,Montagne & Relief,Hillsides
+249,1,Nature & Paysages,Eau & Milieux humides,Pond
+250,1,Nature & Paysages,Eau & Milieux humides,Lake
+251,1,Nature & Paysages,Forêts & milieux naturels,Landes
+252,1,Nature & Paysages,Glace & haute montagne,Icefall
+253,1,Nature & Paysages,Côtes & littoral,IslandPeninsula
+254,1,Nature & Paysages,Glace & haute montagne,Glacier
+255,1,Nature & Paysages,Géologie & curiosités,Gorge
+256,1,Nature & Paysages,Paysages remarquables,Grassland
+257,1,Nature & Paysages,Géologie & curiosités,Cirque
+258,1,Nature & Paysages,Géologie & curiosités,Cliff
+259,1,Nature & Paysages,Côtes & littoral,Coastline
+260,1,Nature & Paysages,Montagne & Relief,Col
+261,1,Nature & Paysages,Montagne & Relief,Peak
+262,1,Nature & Paysages,Paysages remarquables,Plain
+263,1,Nature & Paysages,Montagne & Relief,Plateau
+264,1,Nature & Paysages,Paysages remarquables,PointOfView
+265,1,Nature & Paysages,Montagne & Relief,ConeNeck
+266,1,Nature & Paysages,Montagne & Relief,Mountain
+267,1,Nature & Paysages,Géologie & curiosités,NaturalCuriosity
+268,1,Nature & Paysages,Paysages remarquables,NaturalPark
+269,1,Nature & Paysages,Paysages remarquables,Valley
+270,1,Nature & Paysages,Géologie & curiosités,Stone
+271,1,Nature & Paysages,Eau & Milieux humides,Stream
+272,1,Nature & Paysages,Forêts & milieux naturels,StubbleFields
+273,1,Nature & Paysages,Montagne & Relief,Summit
+274,1,Nature & Paysages,Eau & Milieux humides,Swamp
+275,1,Nature & Paysages,Géologie & curiosités,Volcano
+276,1,Nature & Paysages,Eau vive & cascades,Waterfall
+277,1,Nature & Paysages,Eau & Milieux humides,Wetland
+278,1,Nature & Paysages,Forêts & milieux naturels,OutstandingTree
+279,0,,,BoardMeeting
+280,0,,,ExecutiveBoardMeeting
+281,0,,,Congress
+282,0,,,Seminar
+283,0,,,TrainingWorkshop
+284,0,,,WorkMeeting
+285,0,,,ChamberOfCommerceAndIndustry
+286,0,,,ConventionCentre
+287,0,,,CyclingTour
+288,0,,,FluvialTour
+289,0,,,HorseTour
+290,1,Shopping & Artisanat,Antiquités & brocante,BricABrac
+291,1,Shopping & Artisanat,Marchés,Market
+292,1,Shopping & Artisanat,Foires & salons,FairOrShow
+293,1,Shopping & Artisanat,Antiquités & brocante,GarageSale
+294,1,Shopping & Artisanat,Foires & salons,OpenDay
+295,0,,,RoadTour
+296,2,Services & Mobilité,Unknown,ElectricBycicleChargingPoint
+297,2,Services & Mobilité,Unknown,ElectricVehicleChargingPoint
+298,2,Commodités,Unknown,Cybercafe
+299,2,Services & Mobilité,Unknown,CarOrBikeWash
+300,2,Services & Mobilité,Unknown,ATM
+301,1,Événements & Traditions,Aire de pique-nique,PicnicArea
+302,2,Commodités,Unknown,PublicLavatories
+303,2,Services & Mobilité,Unknown,RVServiceArea
+304,2,Commodités,Unknown,LeftLuggage
+305,2,Services & Mobilité,Unknown,GarageOrAirPump
+306,2,Commodités,Unknown,WaterSource
+307,2,Commodités,Unknown,WifiHotSpot
+308,1,Événements & Traditions,Fêtes & traditions,Carnival
+309,1,Événements & Traditions,Fêtes & traditions,LocalAnimation
+310,1,Événements & Traditions,Religieux,ReligiousEvent
+311,1,Événements & Traditions,Religieux,PilgrimageAndProcession
+312,1,Événements & Traditions,Défilés & parades,Parade
+313,1,Événements & Traditions,Fêtes & traditions,TraditionalCelebration
+314,2,Commodités,Unknown,EquipmentRentalShop
+315,2,Commodités,Unknown,EquipmentRepairShop
+316,2,Transports,Unknown,TaxiCompany
+317,2,Transports,Unknown,Transporter
+318,2,Transports,Unknown,Airfield
+319,2,Transports,Unknown,Airport
+320,2,Services & Mobilité,Unknown,BikeStationOrDepot
+321,2,Services & Mobilité,Unknown,CarpoolArea
+322,2,Services & Mobilité,Unknown,Lock
+323,2,Transports,Unknown,BusStation
+324,2,Transports,Unknown,BusStop
+325,2,Transports,Unknown,CableCarStation
+326,2,Transports,Unknown,Seaport
+327,2,Transports,Unknown,TaxiCompany
+328,2,Transports,Unknown,TaxiStation
+329,2,Services & Mobilité,Unknown,Parking
+330,2,Transports,Unknown,RiverPort
+331,2,Transports,Unknown,TrainStation
+332,0,,,UnderwaterRoute
+333,0,,,DepartementTourismCommittee
+334,2,Information Touristique,Unknown,LocalTouristOffice
+335,0,,,RegionalTourismCommittee
+336,2,Information Touristique,Unknown,TourGuideAgency
+337,2,Information Touristique,Unknown,TourismCentre
+338,2,Commerce & Shopping,Unknown,IncomingTravelAgency
+339,2,Information Touristique,Unknown,ProfessionalTourGuide
+340,0,,,TourOperatorOrTravelAgency
+341,2,Information Touristique,Unknown,VolunteerTourGuideOrGreeter
+342,0,,,WalkingTour
