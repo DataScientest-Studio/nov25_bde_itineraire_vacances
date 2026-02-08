@@ -1,7 +1,7 @@
 from app.core.database import db_manager
 import os
-from fastapi import HTTPException, status, Depends
-from app.pipeline.features.osrm_client import osrm_client
+from fastapi import HTTPException, status
+from app.pipeline.features.osrm import osrm_client
 from app.services.itinerary_service import ItineraryService
 
 

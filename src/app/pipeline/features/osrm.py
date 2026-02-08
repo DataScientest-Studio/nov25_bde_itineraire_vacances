@@ -5,9 +5,6 @@ from typing import List, Tuple
 import aiohttp
 import numpy as np
 
-import logging
-
-logger = logging.getLogger("uvicorn")
 
 class OSRMClientAsync:
     """
@@ -16,22 +13,6 @@ class OSRMClientAsync:
     - support du profil (foot, bike, driving)
     - chunking pour grandes matrices
     """
-
-    PROFILE_MAP = {
-        "car": "driving",
-        "drive": "driving",
-        "driving": "driving",
-
-        "cycle": "cycling",
-        "bike": "cycling",
-        "bicycle": "cycling",
-        "cycling": "cycling",
-
-        "walk": "walking",
-        "foot": "walking",
-        "walking": "walking",
-    }
-
 
     def __init__(
         self,
@@ -45,26 +26,6 @@ class OSRMClientAsync:
         self.base_url = self.public_url
         self.max_chunk_size = max_chunk_size
         self.max_concurrency = max_concurrency
-
-    # ---------------------------------------------------------
-    # Normalisation du profil
-    # ---------------------------------------------------------
-    def normalize_profile(self, profile: str) -> str:
-        if not profile:
-            return "driving"
-        profile = profile.lower().strip()
-        return self.PROFILE_MAP.get(profile, "driving")
-
-    # ---------------------------------------------------------
-    # Port OSRM
-    # ---------------------------------------------------------
-    def get_osrm_port(self, profile: str) -> int:
-        profile = self.normalize_profile(profile)
-        return {
-            "driving": 5000,
-            "walking": 5001,
-            "cycling": 5002,
-        }[profile]
 
     # ---------------------------------------------------------
     # Détection backend
@@ -99,13 +60,8 @@ class OSRMClientAsync:
     # ---------------------------------------------------------
     async def _table_raw(self, coords, annotations="duration,distance", profile="foot"):
         coord_str = self._coords_to_str(coords)
-        profile = self.normalize_profile(profile)
-
         url = f"{self.base_url}/table/v1/{profile}/{coord_str}"
         params = {"annotations": annotations}
-
-        logger.info(f"Appel OSRM simple: {url} avec params {params}")
-        logger.info(f"[DEBUG] Port attendu : {self.get_osrm_port(profile)}")
 
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as r:
@@ -118,7 +74,7 @@ class OSRMClientAsync:
     async def table(self, coords, annotations="duration,distance", profile="foot"):
         """
         coords = [(lon, lat), ...]
-        profile = "walk" | "bike" | "car"
+        profile = "foot" | "bike" | "driving"
         """
         await self.detect_backend()
 
@@ -152,7 +108,6 @@ class OSRMClientAsync:
                 coord_str_src = self._coords_to_str(sub_coords_src)
                 coord_str_dst = self._coords_to_str(sub_coords_dst)
 
-                profile = self.normalize_profile(profile)
                 url = f"{self.base_url}/table/v1/{profile}/{coord_str_src};{coord_str_dst}"
 
                 params = {
@@ -168,9 +123,6 @@ class OSRMClientAsync:
                     ),
                     "annotations": annotations,
                 }
-
-                logger.info(f"Appel OSRM chunké: {url} avec params {params}")
-                logger.info(f"[DEBUG] Port attendu : {self.get_osrm_port(profile)}")
 
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url, params=params) as r:
@@ -210,19 +162,15 @@ class OSRMClientAsync:
     # ---------------------------------------------------------
     # Route GeoJSON
     # ---------------------------------------------------------
-    async def route_geojson(self, start, end, profile="car"):
+    async def route_geojson(self, start, end, profile="driving"):
         """
         start/end = (lon, lat)
         """
         await self.detect_backend()
 
         coord_str = self._coords_to_str([start, end])
-        profile = self.normalize_profile(profile)
-        
         url = f"{self.base_url}/route/v1/{profile}/{coord_str}"
         params = {"overview": "full", "geometries": "geojson"}
-
-        logger.info(f"Appel OSRM route: {url} avec params {params}")
 
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as r:

@@ -1,5 +1,3 @@
-import asyncio
-
 from fastapi import APIRouter, Depends
 from app.models.itinerary import ItineraryRequest, ItineraryResponse
 from app.dependencies import get_itinerary_service
@@ -10,11 +8,11 @@ router = APIRouter(prefix="/itinerary", tags=["itinerary"])
 
 
 @router.post("/compute", response_model=ItineraryResponse)
-async def compute_itinerary(
+def compute_itinerary(
     req: ItineraryRequest,
     service: ItineraryService = Depends(get_itinerary_service)
 ):
-    result = await service.compute_itinerary(
+    result = service.compute_itinerary(
         pois=req.pois,
         days=req.days,
         transport_mode=req.transport_mode,

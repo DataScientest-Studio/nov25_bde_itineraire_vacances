@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # Service API FastAPI
+  api:
+    build:
+      context: ..
+      dockerfile: docker/api/Dockerfile
+    container_name: itinerary-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OSRM_URL=http://osrm-backend:5000
+      - POSTGRES_HOST=postgres-vacances
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=vacances
+      - POSTGRES_USER=vacances_user
+      - POSTGRES_PASSWORD=vacances_password
+    volumes:
+      - ../src:/app/src
+      - ../logs:/app/logs
+    depends_on:
+      - postgres-vacances
+      - osrm-backend
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  # Service OSRM pour le calcul d'itinéraires
+  osrm-backend:
+    image: osrm/osrm-backend:latest
+    container_name: osrm-france
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../osrm_data:/data
+    command: >
+      osrm-routed --algorithm mld /data/france-latest.osrm
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  # Base de données Métier avec PostGIS
+  postgres-vacances:
+    image: postgis/postgis:15-3.3
+    container_name: postgres-vacances
+    environment:
+      POSTGRES_USER: vacances_user
+      POSTGRES_PASSWORD: vacances_password
+      POSTGRES_DB: vacances
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-vacances-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vacances_user -d vacances"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    networks:
+      - vacances-network
+
+  # Service pour télécharger les données OSRM (optionnel)
+  osrm-data:
+    image: osrm/osrm-backend:latest
+    container_name: osrm-data-downloader
+    volumes:
+      - ../osrm_data:/data
+    command: >
+      sh -c "
+        if [ ! -f /data/france-latest.osrm ]; then
+          echo 'Téléchargement des données OSRM France...';
+          wget -O /data/france-latest.osrm.pbf https://download.geofabrik.de/europe/france-latest.osm.pbf;
+          echo 'Extraction des données OSRM...';
+          osrm-extract -p /opt/car.lua /data/france-latest.osrm.pbf;
+          echo 'Partitionnement des données OSRM...';
+          osrm-partition /data/france-latest.osrm;
+          echo 'Customisation des données OSRM...';
+          osrm-customize /data/france-latest.osrm;
+          echo 'Données OSRM prêtes !';
+        else
+          echo 'Données OSRM déjà présentes';
+        fi
+      "
+    networks:
+      - vacances-network
+
+volumes:
+  postgres-vacances-data:
+
+networks:
+  vacances-network:
+    driver: bridge
