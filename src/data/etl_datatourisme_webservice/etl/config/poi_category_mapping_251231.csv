@@ -1,0 +1,344 @@
+index,level_1_label,level_2_label,level_3_label,level_4_label,to_keep,Level_3_4,main_category,sub_category
+22,Produit,Visite,,,0,Visite,,
+94,Lieu,Site culturel,Centre d'interprétation,,0,Centre d'interprétation,,
+150,Produit,Pratique,Accompagnement,,0,Accompagnement,,
+151,Produit,Pratique,Stage de perfectionnement,,0,Stage de perfectionnement,,
+152,Produit,Pratique,Cours,,0,Cours,,
+154,Produit,Pratique,Pratique libre,,0,Pratique libre,,
+156,Produit,Pratique,Compétition,,0,Compétition,,
+161,Produit,Location,Location de salle,,0,Location de salle,,
+193,Lieu,"Site sportif, récréatif et de loisirs",Rampe de mise à l'eau,,0,Rampe de mise à l'eau,,
+279,Fête et manifestation,Evènement professionnel d'entreprise,Conseil d'administration,,0,Conseil d'administration,,
+280,Fête et manifestation,Evènement professionnel d'entreprise,Bureau éxécutif,,0,Bureau éxécutif,,
+281,Fête et manifestation,Evènement professionnel d'entreprise,Congrès,,0,Congrès,,
+282,Fête et manifestation,Evènement professionnel d'entreprise,Séminaire,,0,Séminaire,,
+283,Fête et manifestation,Evènement professionnel d'entreprise,Atelier de formation,,0,Atelier de formation,,
+284,Fête et manifestation,Evènement professionnel d'entreprise,Réunion de travail,,0,Réunion de travail,,
+285,Lieu,Site d'affaires,Chambre de commerce et d'industrie,,0,Chambre de commerce et d'industrie,,
+286,Lieu,Site d'affaires,Centre de congrès,,0,Centre de congrès,,
+287,Itinéraire touristique,Itinéraire cyclable,,,0,Itinéraire cyclable,,
+288,Itinéraire touristique,Itinéraire fluvial ou maritime,,,0,Itinéraire fluvial ou maritime,,
+289,Itinéraire touristique,Itinéraire équestre,,,0,Itinéraire équestre,,
+295,Itinéraire touristique,Itinéraire routier,,,0,Itinéraire routier,,
+332,Itinéraire touristique,Itinéraire sous-marin,,,0,Itinéraire sous-marin,,
+333,Lieu,Service d'information touristique,Comité départemental du tourisme,,0,Comité départemental du tourisme,,
+335,Lieu,Service d'information touristique,Comité régional du tourisme,,0,Comité régional du tourisme,,
+340,Lieu,Service d'information touristique,Voyagiste,,0,Voyagiste,,
+342,Itinéraire touristique,Itinéraire pédestre,,,0,Itinéraire pédestre,,
+0,Lieu,Prestataire d'activité,Prestataire d'activité culturelle,,1,Prestataire d'activité culturelle,Culture & Musées,Spectacle vivant
+1,Lieu,Prestataire d'activité,Prestataire d'activité sportive et de loisir,,1,Prestataire d'activité sportive et de loisir,Sports & Loisirs,Sports collectifs & stades
+39,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique","Halle, marché couvert",1,"Halle, marché couvert",Shopping & Artisanat,Marchés
+40,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Moulin,1,Moulin,Patrimoine & Monuments,Patrimoine rural & agricole
+41,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Mine,1,Mine,Patrimoine & Monuments,Patrimoine rural & agricole
+42,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Forge,1,Forge,Patrimoine & Monuments,Patrimoine rural & agricole
+43,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Ferme,1,Ferme,Patrimoine & Monuments,Patrimoine rural & agricole
+44,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Phare,1,Phare,Patrimoine & Monuments,Patrimoine civil
+45,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Jetée,1,Jetée,Patrimoine & Monuments,Patrimoine civil
+46,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Pigeonnier,1,Pigeonnier,Patrimoine & Monuments,Patrimoine civil
+47,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Haras,1,Haras,Patrimoine & Monuments,Patrimoine civil
+48,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Site industriel,1,Site industriel,Patrimoine & Monuments,Patrimoine rural & agricole
+49,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Verger conservatoire,1,Verger conservatoire,Patrimoine & Monuments,Patrimoine rural & agricole
+50,Lieu,Site culturel,"Patrimoine industriel, artisanal, rural, agricole et technique",Lavoir,1,Lavoir,Patrimoine & Monuments,Patrimoine rural & agricole
+51,Lieu,Site culturel,Ville et village,Bastide,1,Bastide,Patrimoine & Monuments,Patrimoine civil
+52,Lieu,Site culturel,Ville et village,Station thermale,1,Station thermale,Bien-être & Santé,Thermalisme
+53,Lieu,Site culturel,Ville et village,Quartier,1,Quartier,Patrimoine & Monuments,Patrimoine civil
+54,Lieu,Site culturel,Ville et village,Station de montagne,1,Station de montagne,Nature & Paysages,Montagne & Relief
+55,Lieu,Site culturel,Site archéologique,"Mégalithes, menhirs et dolmens",1,"Mégalithes, menhirs et dolmens",Patrimoine & Monuments,Antiquité & Vestiges
+56,Lieu,Site culturel,Site archéologique,Voie romaine,1,Voie romaine,Patrimoine & Monuments,Antiquité & Vestiges
+57,Lieu,Site culturel,Site archéologique,Ruines et vestiges,1,Ruines et vestiges,Patrimoine & Monuments,Antiquité & Vestiges
+58,Lieu,Site culturel,Site religieux,Abbaye,1,Abbaye,Patrimoine & Monuments,Religieux
+59,Lieu,Site culturel,Site religieux,Basilique,1,Basilique,Patrimoine & Monuments,Religieux
+60,Lieu,Site culturel,Site religieux,Evéché,1,Evéché,Patrimoine & Monuments,Religieux
+61,Lieu,Site culturel,Site religieux,Cathédrale,1,Cathédrale,Patrimoine & Monuments,Religieux
+62,Lieu,Site culturel,Site religieux,Chapelle,1,Chapelle,Patrimoine & Monuments,Religieux
+63,Lieu,Site culturel,Site religieux,Temple bouddhique,1,Temple bouddhique,Patrimoine & Monuments,Religieux
+64,Lieu,Site culturel,Site religieux,"Monastère, prieuré",1,"Monastère, prieuré",Patrimoine & Monuments,Religieux
+65,Lieu,Site culturel,Site religieux,Calvaire et enclos paroissiaux,1,Calvaire et enclos paroissiaux,Patrimoine & Monuments,Religieux
+66,Lieu,Site culturel,Site religieux,Commanderie,1,Commanderie,Patrimoine & Monuments,Religieux
+67,Lieu,Site culturel,Site religieux,Couvent,1,Couvent,Patrimoine & Monuments,Religieux
+68,Lieu,Site culturel,Site religieux,Temple,1,Temple,Patrimoine & Monuments,Religieux
+69,Lieu,Site culturel,Site religieux,Mosquée,1,Mosquée,Patrimoine & Monuments,Religieux
+70,Lieu,Site culturel,Site religieux,Eglise,1,Eglise,Patrimoine & Monuments,Religieux
+71,Lieu,Site culturel,Site religieux,Cloître,1,Cloître,Patrimoine & Monuments,Religieux
+72,Lieu,Site culturel,Site religieux,Collégiale,1,Collégiale,Patrimoine & Monuments,Religieux
+73,Lieu,Site culturel,Site religieux,Synagogue,1,Synagogue,Patrimoine & Monuments,Religieux
+74,Lieu,Site culturel,Bâtiment civil remarquable,Arène,1,Arène,Patrimoine & Monuments,Antiquité & Vestiges
+75,Lieu,Site culturel,Bâtiment civil remarquable,Aqueduc,1,Aqueduc,Patrimoine & Monuments,Antiquité & Vestiges
+76,Lieu,Site culturel,Bâtiment civil remarquable,Château,1,Château,Patrimoine & Monuments,Châteaux & Fortifications
+77,Lieu,Site culturel,Bâtiment civil remarquable,Chartreuse,1,Chartreuse,Patrimoine & Monuments,Châteaux & Fortifications
+78,Lieu,Site culturel,Bâtiment civil remarquable,Pont,1,Pont,Patrimoine & Monuments,Ouvrages d'art
+79,Lieu,Site culturel,Bâtiment civil remarquable,Ecluse,1,Ecluse,Patrimoine & Monuments,Ouvrages d'art
+80,Lieu,Site culturel,Bâtiment civil remarquable,Maison remarquable,1,Maison remarquable,Patrimoine & Monuments,Patrimoine civil
+81,Lieu,Site culturel,Bâtiment civil remarquable,Fontaine,1,Fontaine,Patrimoine & Monuments,Ouvrages d'art
+82,Lieu,Site culturel,Bâtiment civil remarquable,"Barrage, digue",1,"Barrage, digue",Patrimoine & Monuments,Ouvrages d'art
+83,Lieu,Site culturel,Bâtiment civil remarquable,Palais,1,Palais,Patrimoine & Monuments,Patrimoine civil
+84,Lieu,Site culturel,Bâtiment civil remarquable,Tour,1,Tour,Patrimoine & Monuments,Patrimoine civil
+85,Lieu,Site culturel,Lieu de mémoire,Cimetière militaire et mémorial,1,Cimetière militaire et mémorial,Patrimoine & Monuments,Cimetières & mémoriaux
+86,Lieu,Site culturel,Lieu de mémoire,Cimetière civil,1,Cimetière civil,Patrimoine & Monuments,Cimetières & mémoriaux
+87,Lieu,Site culturel,Lieu de mémoire,Arc de triomphe,1,Arc de triomphe,Patrimoine & Monuments,Antiquité & Vestiges
+88,Lieu,Site culturel,Site de défense,Donjon,1,Donjon,Patrimoine & Monuments,Châteaux & Fortifications
+89,Lieu,Site culturel,Site de défense,Fort,1,Fort,Patrimoine & Monuments,Châteaux & Fortifications
+90,Lieu,Site culturel,Site de défense,Château fort,1,Château fort,Patrimoine & Monuments,Châteaux & Fortifications
+91,Lieu,Site culturel,Site de défense,Ensemble fortifié,1,Ensemble fortifié,Patrimoine & Monuments,Châteaux & Fortifications
+92,Lieu,Site culturel,Site de défense,Citadelle,1,Citadelle,Patrimoine & Monuments,Châteaux & Fortifications
+93,Lieu,Site culturel,Bibliothèque - Médiathèque,,1,Bibliothèque - Médiathèque,Culture & Musées,Bibliothèques & médiation
+95,Lieu,Site culturel,Parc et jardin,,1,Parc et jardin,Nature & Paysages,Paysages remarquables
+96,Lieu,Site culturel,Musée,,1,Musée,Culture & Musées,Musées & expositions
+97,Lieu,Restauration,"Bar, bar à thème",,1,"Bar, bar à thème",Gastronomie & Restauration,Bars & cafés
+98,Lieu,Restauration,Bistrot - Bar à vin,,1,Bistrot - Bar à vin,Gastronomie & Restauration,Bars & cafés
+99,Lieu,Restauration,Cave ou caveau,,1,Cave ou caveau,Gastronomie & Restauration,Vins & spiritueux
+100,Lieu,Restauration,Boulangerie,,1,Boulangerie,Gastronomie & Restauration,Restauration rapide
+101,Lieu,Restauration,Restaurant,Bateau-restaurant,1,Bateau-restaurant,Gastronomie & Restauration,Restaurants
+102,Lieu,Restauration,Restaurant,Brasserie ou taverne,1,Brasserie ou taverne,Gastronomie & Restauration,Bars & cafés
+103,Lieu,Restauration,Restaurant,Cabaret,1,Cabaret,Culture & Musées,Spectacle vivant
+104,Lieu,Restauration,Restaurant,Hôtel-restaurant,1,Hôtel-restaurant,Gastronomie & Restauration,Restaurants
+105,Lieu,Restauration,Restaurant,Ferme et auberge de campagne,1,Ferme et auberge de campagne,Gastronomie & Restauration,Produits locaux
+106,Lieu,Restauration,Restaurant,Cafétéria - Self,1,Cafétéria - Self,Gastronomie & Restauration,Restaurants
+107,Lieu,Restauration,Restaurant,Restaurant d'altitude / Restaurant d'alpage,1,Restaurant d'altitude / Restaurant d'alpage,Gastronomie & Restauration,Restaurants
+108,Lieu,Restauration,Restaurant,Restaurant gastronomique,1,Restaurant gastronomique,Gastronomie & Restauration,Restaurants
+109,Lieu,Restauration,Café ou salon de thé,,1,Café ou salon de thé,Gastronomie & Restauration,Bars & cafés
+110,Lieu,Restauration,Restauration Rapide,,1,Restauration Rapide,Gastronomie & Restauration,Restauration rapide
+111,Lieu,Restauration,Glacier,,1,Glacier,Gastronomie & Restauration,Restauration rapide
+112,Lieu,Restauration,"Restauration ambulante, Food truck",,1,"Restauration ambulante, Food truck",Gastronomie & Restauration,Restauration rapide
+113,Fête et manifestation,Évènement culturel,Dédicace et rencontre d'artiste,,1,Dédicace et rencontre d'artiste,Culture & Musées,Rencontres & conférences
+114,Fête et manifestation,Évènement culturel,Evènement jeune public,,1,Evènement jeune public,Culture & Musées,Jeune public
+115,Fête et manifestation,Évènement culturel,Lecture,,1,Lecture,Culture & Musées,Bibliothèques & médiation
+116,Fête et manifestation,Évènement culturel,Récital,,1,Récital,Culture & Musées,Concerts & musique
+117,Fête et manifestation,Évènement culturel,Spectacle de danse,,1,Spectacle de danse,Culture & Musées,Spectacle vivant
+118,Fête et manifestation,Évènement culturel,"Vendange, récolte",,1,"Vendange, récolte",Événements & Traditions,Vendanges & récoltes
+119,Fête et manifestation,Évènement culturel,Exposition,,1,Exposition,Culture & Musées,Musées & expositions
+120,Fête et manifestation,Évènement culturel,Festival,,1,Festival,Culture & Musées,Festivals & grands événements
+121,Fête et manifestation,Évènement culturel,Commémoration,,1,Commémoration,Culture & Musées,Festivals & grands événements
+122,Fête et manifestation,Évènement culturel,Concert,,1,Concert,Culture & Musées,Concerts & musique
+123,Fête et manifestation,Évènement culturel,Conférence,,1,Conférence,Culture & Musées,Rencontres & conférences
+124,Fête et manifestation,Évènement culturel,"Projection, cinéma",,1,"Projection, cinéma",Culture & Musées,Cinéma & audiovisuel
+125,Fête et manifestation,Évènement culturel,Spectacle,,1,Spectacle,Culture & Musées,Spectacle vivant
+126,Fête et manifestation,Évènement culturel,Pièce de théâtre,,1,Pièce de théâtre,Culture & Musées,Spectacle vivant
+127,Fête et manifestation,Évènement culturel,Opéra,,1,Opéra,Culture & Musées,Spectacle vivant
+128,Fête et manifestation,Évènement culturel,Spectacle de cirque,,1,Spectacle de cirque,Culture & Musées,Spectacle vivant
+129,Fête et manifestation,Évènement culturel,"Son et lumière, feu d'artifice",,1,"Son et lumière, feu d'artifice",Culture & Musées,Festivals & grands événements
+130,Fête et manifestation,Évènement sports et loisirs,Compétition sportive,,1,Compétition sportive,Sports & Loisirs,Sports collectifs & stades
+131,Fête et manifestation,Évènement sports et loisirs,Démonstration sportive,,1,Démonstration sportive,Sports & Loisirs,Sports collectifs & stades
+132,Fête et manifestation,Évènement sports et loisirs,"Randonnée, balade",,1,"Randonnée, balade",Sports & Loisirs,Sports outdoor
+133,Fête et manifestation,Évènement sports et loisirs,Rallye,,1,Rallye,Sports & Loisirs,Sports mécaniques
+134,Fête et manifestation,Évènement sports et loisirs,"Jeu, concours",,1,"Jeu, concours",Événements & Traditions,Jeux & concours
+135,Lieu,Commerce de détail,Antiquaire et brocanteur,,1,Antiquaire et brocanteur,Shopping & Artisanat,Antiquités & brocante
+137,Lieu,Commerce de détail,Artisan d'art,,1,Artisan d'art,Shopping & Artisanat,Artisanat
+138,Lieu,Commerce de détail,"Galerie d'art, galerie d'exposition",,1,"Galerie d'art, galerie d'exposition",Culture & Musées,Musées & expositions
+139,Lieu,Commerce de détail,"Boutique, commerce de proximité",,1,"Boutique, commerce de proximité",Shopping & Artisanat,Commerces
+140,Lieu,Commerce de détail,"Maison de pays, produits du terroir",,1,"Maison de pays, produits du terroir",Gastronomie & Restauration,Produits locaux
+142,Lieu,Commerce de détail,Centre et galerie commerciale,,1,Centre et galerie commerciale,Shopping & Artisanat,Commerces
+143,Lieu,Fournisseur de dégustation,Coopérative,,1,Coopérative,Gastronomie & Restauration,Producteurs
+144,Lieu,Fournisseur de dégustation,Brasseur,,1,Brasseur,Gastronomie & Restauration,Vins & spiritueux
+145,Lieu,Fournisseur de dégustation,Éleveur,,1,Éleveur,Gastronomie & Restauration,Producteurs
+146,Lieu,Fournisseur de dégustation,Producteur,,1,Producteur,Gastronomie & Restauration,Producteurs
+147,Lieu,Fournisseur de dégustation,Groupement de producteurs,,1,Groupement de producteurs,Gastronomie & Restauration,Producteurs
+148,Lieu,Fournisseur de dégustation,Négociant,,1,Négociant,Gastronomie & Restauration,Producteurs
+149,Lieu,Fournisseur de dégustation,Cave de dégustation,,1,Cave de dégustation,Gastronomie & Restauration,Vins & spiritueux
+153,Produit,Pratique,Baptême sportif,,1,Baptême sportif,Sports & Loisirs,Sports outdoor
+155,Produit,Pratique,Stage d'initiation,,1,Stage d'initiation,Sports & Loisirs,Sports outdoor
+157,Produit,Pratique,Dégustation,,1,Dégustation,Gastronomie & Restauration,Vins & spiritueux
+158,Produit,Pratique,Multiactivités,,1,Multiactivités,Sports & Loisirs,Aventure & accrobranche
+159,Produit,Pratique,"Stage, atelier",,1,"Stage, atelier",Sports & Loisirs,Sports outdoor
+162,Lieu,"Site sportif, récréatif et de loisirs",Piste de chien de traineau,,1,Piste de chien de traineau,Sports & Loisirs,Sports d'hiver
+163,Lieu,"Site sportif, récréatif et de loisirs",Domaine de ski alpin,,1,Domaine de ski alpin,Sports & Loisirs,Sports d'hiver
+164,Lieu,"Site sportif, récréatif et de loisirs",Piste de ski alpin,,1,Piste de ski alpin,Sports & Loisirs,Sports d'hiver
+165,Lieu,"Site sportif, récréatif et de loisirs",Sentier de découverte et d'interprétation,,1,Sentier de découverte et d'interprétation,Sports & Loisirs,Sports outdoor
+166,Lieu,"Site sportif, récréatif et de loisirs",Centre équestre,,1,Centre équestre,Sports & Loisirs,Sports équestres
+167,Lieu,"Site sportif, récréatif et de loisirs",Auditorium,,1,Auditorium,Culture & Musées,Spectacle vivant
+168,Lieu,"Site sportif, récréatif et de loisirs",Centre de balnéothérapie,,1,Centre de balnéothérapie,Bien-être & Santé,Thalasso & balnéo
+169,Lieu,"Site sportif, récréatif et de loisirs",Club de plage,,1,Club de plage,Sports & Loisirs,Sports nautiques
+170,Lieu,"Site sportif, récréatif et de loisirs",Salle de billard,,1,Salle de billard,Sports & Loisirs,Loisirs indoor
+171,Lieu,"Site sportif, récréatif et de loisirs",Domaine de ski nordique,,1,Domaine de ski nordique,Sports & Loisirs,Sports d'hiver
+172,Lieu,"Site sportif, récréatif et de loisirs",Piste de ski de fond,,1,Piste de ski de fond,Sports & Loisirs,Sports d'hiver
+173,Lieu,"Site sportif, récréatif et de loisirs",Casino,,1,Casino,Sports & Loisirs,Loisirs indoor
+174,Lieu,"Site sportif, récréatif et de loisirs",Boulodrome,,1,Boulodrome,Sports & Loisirs,Loisirs indoor
+175,Lieu,"Site sportif, récréatif et de loisirs",Bowling,,1,Bowling,Sports & Loisirs,Loisirs indoor
+176,Lieu,"Site sportif, récréatif et de loisirs",Club de sport,,1,Club de sport,Sports & Loisirs,Sports collectifs & stades
+177,Lieu,"Site sportif, récréatif et de loisirs",Palais des sports,,1,Palais des sports,Sports & Loisirs,Sports collectifs & stades
+178,Lieu,"Site sportif, récréatif et de loisirs",Salle de squash,,1,Salle de squash,Sports & Loisirs,Sports de balle & raquette
+179,Lieu,"Site sportif, récréatif et de loisirs",Port de plaisance,,1,Port de plaisance,Sports & Loisirs,Sports nautiques
+180,Lieu,"Site sportif, récréatif et de loisirs",Mini golf,,1,Mini golf,Sports & Loisirs,Golf & mini-golf
+181,Lieu,"Site sportif, récréatif et de loisirs",Zone ou port de mouillage,,1,Zone ou port de mouillage,Sports & Loisirs,Sports nautiques
+182,Lieu,"Site sportif, récréatif et de loisirs",Centre de remise en forme - fitness,,1,Centre de remise en forme - fitness,Bien-être & Santé,Soins & bien-être
+183,Lieu,"Site sportif, récréatif et de loisirs",Parcours de Santé,,1,Parcours de Santé,Bien-être & Santé,Soins & bien-être
+184,Lieu,"Site sportif, récréatif et de loisirs",Hammam,,1,Hammam,Bien-être & Santé,Soins & bien-être
+185,Lieu,"Site sportif, récréatif et de loisirs",Aire de jeux,,1,Aire de jeux,Famille & Enfants,Aires & jeux
+186,Lieu,"Site sportif, récréatif et de loisirs",Ecole et centre d'apprentissage,,1,Ecole et centre d'apprentissage,Famille & Enfants,Éducation & apprentissage
+187,Lieu,"Site sportif, récréatif et de loisirs",Bateau promenade,,1,Bateau promenade,Sports & Loisirs,Sports nautiques
+188,Lieu,"Site sportif, récréatif et de loisirs",Ferme pédagogique,,1,Ferme pédagogique,Famille & Enfants,Éducation & apprentissage
+189,Lieu,"Site sportif, récréatif et de loisirs",Complèxe ou terrain de tennis,,1,Complèxe ou terrain de tennis,Sports & Loisirs,Sports de balle & raquette
+190,Lieu,"Site sportif, récréatif et de loisirs",Hippodrome,,1,Hippodrome,Sports & Loisirs,Sports équestres
+191,Lieu,"Site sportif, récréatif et de loisirs",Circuit automobile ou moto,,1,Circuit automobile ou moto,Sports & Loisirs,Sports mécaniques
+192,Lieu,"Site sportif, récréatif et de loisirs",Vélorail,,1,Vélorail,Sports & Loisirs,Sports outdoor
+194,Lieu,"Site sportif, récréatif et de loisirs",Complexe de loisirs (loisirs regroupés),,1,Complexe de loisirs (loisirs regroupés),Famille & Enfants,Parcs & loisirs
+195,Lieu,"Site sportif, récréatif et de loisirs",Patinoire,,1,Patinoire,Sports & Loisirs,Loisirs indoor
+196,Lieu,"Site sportif, récréatif et de loisirs",Embarcadère,,1,Embarcadère,Transports touristiques,Embarcadères
+197,Lieu,"Site sportif, récréatif et de loisirs",Club enfants,,1,Club enfants,Famille & Enfants,Aires & jeux
+198,Lieu,"Site sportif, récréatif et de loisirs","Fronton, mur de frappe",,1,"Fronton, mur de frappe",Sports & Loisirs,Sports de balle & raquette
+199,Lieu,"Site sportif, récréatif et de loisirs",Terrain de golf,,1,Terrain de golf,Sports & Loisirs,Golf & mini-golf
+200,Lieu,"Site sportif, récréatif et de loisirs","Salle ou terrain de sport, gymnase",,1,"Salle ou terrain de sport, gymnase",Sports & Loisirs,Sports collectifs & stades
+201,Lieu,"Site sportif, récréatif et de loisirs",Cinéma,,1,Cinéma,Culture & Musées,Cinéma & audiovisuel
+202,Lieu,"Site sportif, récréatif et de loisirs",Cinémathèque,,1,Cinémathèque,Culture & Musées,Cinéma & audiovisuel
+203,Lieu,"Site sportif, récréatif et de loisirs",Cirque,,1,Cirque,Nature & Paysages,Géologie & curiosités
+204,Lieu,"Site sportif, récréatif et de loisirs",Site et mur d'escalade,,1,Site et mur d'escalade,Sports & Loisirs,Sports outdoor
+205,Lieu,"Site sportif, récréatif et de loisirs","Salle polyvalente, salle des fêtes",,1,"Salle polyvalente, salle des fêtes",Famille & Enfants,Aires & jeux
+206,Lieu,"Site sportif, récréatif et de loisirs",Base nautique / centre nautique,,1,Base nautique / centre nautique,Sports & Loisirs,Sports nautiques
+207,Lieu,"Site sportif, récréatif et de loisirs",Discothèque,,1,Discothèque,Culture & Musées,Spectacle vivant
+208,Lieu,"Site sportif, récréatif et de loisirs",Snowpark,,1,Snowpark,Sports & Loisirs,Sports d'hiver
+209,Lieu,"Site sportif, récréatif et de loisirs","Théatre, Salle de spectacle",,1,"Théatre, Salle de spectacle",Culture & Musées,Spectacle vivant
+210,Lieu,"Site sportif, récréatif et de loisirs","Parc de loisirs, parc à thème",,1,"Parc de loisirs, parc à thème",Famille & Enfants,Parcs & loisirs
+211,Lieu,"Site sportif, récréatif et de loisirs",Piste de luge / bobsleigh,,1,Piste de luge / bobsleigh,Sports & Loisirs,Sports d'hiver
+212,Lieu,"Site sportif, récréatif et de loisirs",Téléphérique touristique,,1,Téléphérique touristique,Transports touristiques,Téléphériques & remontées
+213,Lieu,"Site sportif, récréatif et de loisirs",Bus touristique,,1,Bus touristique,Transports touristiques,Trains & bus touristiques
+214,Lieu,"Site sportif, récréatif et de loisirs",Tremplin,,1,Tremplin,Transports touristiques,Téléphériques & remontées
+215,Lieu,"Site sportif, récréatif et de loisirs",Vélodrome,,1,Vélodrome,Sports & Loisirs,Sports collectifs & stades
+216,Lieu,"Site sportif, récréatif et de loisirs",Via ferrata,,1,Via ferrata,Sports & Loisirs,Sports outdoor
+217,Lieu,"Site sportif, récréatif et de loisirs",Vivarium - Aquarium,,1,Vivarium - Aquarium,Famille & Enfants,Zoo & animaux
+218,Lieu,"Site sportif, récréatif et de loisirs",Stade,,1,Stade,Sports & Loisirs,Sports collectifs & stades
+219,Lieu,"Site sportif, récréatif et de loisirs",Piste de luge d'été,,1,Piste de luge d'été,Sports & Loisirs,Sports d'hiver
+220,Lieu,"Site sportif, récréatif et de loisirs",Piscine,,1,Piscine,Sports & Loisirs,Loisirs indoor
+221,Lieu,"Site sportif, récréatif et de loisirs",Train touristique,,1,Train touristique,Transports touristiques,Trains & bus touristiques
+222,Lieu,"Site sportif, récréatif et de loisirs",Piste de roller ou de skate board,,1,Piste de roller ou de skate board,Sports & Loisirs,Sports outdoor
+223,Lieu,"Site sportif, récréatif et de loisirs",Yacht Club,,1,Yacht Club,Sports & Loisirs,Sports nautiques
+224,Lieu,"Site sportif, récréatif et de loisirs",Zoo - parc animalier,,1,Zoo - parc animalier,Famille & Enfants,Zoo & animaux
+225,Lieu,"Site sportif, récréatif et de loisirs",Parc aventure - accrobranche,,1,Parc aventure - accrobranche,Sports & Loisirs,Aventure & accrobranche
+226,Lieu,Lieu de santé,Etablissement thermal,,1,Etablissement thermal,Bien-être & Santé,Thermalisme
+227,Lieu,Lieu de santé,Lieu de soins,,1,Lieu de soins,Bien-être & Santé,Soins & bien-être
+230,Lieu,Lieu de santé,Centre de thalassothérapie,,1,Centre de thalassothérapie,Bien-être & Santé,Thalasso & balnéo
+231,Lieu,Site naturel,Alpage,,1,Alpage,Nature & Paysages,Montagne & Relief
+232,Lieu,Site naturel,Plage,,1,Plage,Nature & Paysages,Côtes & littoral
+233,Lieu,Site naturel,Crête,,1,Crête,Nature & Paysages,Montagne & Relief
+234,Lieu,Site naturel,Cuesta,,1,Cuesta,Nature & Paysages,Montagne & Relief
+235,Lieu,Site naturel,Culture,,1,Culture,Culture & Musées,Musées & expositions
+236,Lieu,Site naturel,Canal,,1,Canal,Nature & Paysages,Eau & Milieux humides
+237,Lieu,Site naturel,Canyon,,1,Canyon,Nature & Paysages,Géologie & curiosités
+238,Lieu,Site naturel,Causse,,1,Causse,Nature & Paysages,Géologie & curiosités
+239,Lieu,Site naturel,"Grotte, gouffre, aven, caverne, carrière",,1,"Grotte, gouffre, aven, caverne, carrière",Nature & Paysages,Géologie & curiosités
+240,Lieu,Site naturel,Pelouse calcaire,,1,Pelouse calcaire,Nature & Paysages,Forêts & milieux naturels
+241,Lieu,Site naturel,Source,,1,Source,Nature & Paysages,Eau & Milieux humides
+242,Lieu,Site naturel,Bocage,,1,Bocage,Nature & Paysages,Forêts & milieux naturels
+243,Lieu,Site naturel,Tourbière,,1,Tourbière,Nature & Paysages,Eau & Milieux humides
+244,Lieu,Site naturel,Rivière ou fleuve,,1,Rivière ou fleuve,Nature & Paysages,Eau & Milieux humides
+245,Lieu,Site naturel,Dune,,1,Dune,Nature & Paysages,Côtes & littoral
+246,Lieu,Site naturel,Forêt,,1,Forêt,Nature & Paysages,Forêts & milieux naturels
+247,Lieu,Site naturel,Zone halophile,,1,Zone halophile,Nature & Paysages,Forêts & milieux naturels
+248,Lieu,Site naturel,Côteau,,1,Côteau,Nature & Paysages,Montagne & Relief
+249,Lieu,Site naturel,Etang,,1,Etang,Nature & Paysages,Eau & Milieux humides
+250,Lieu,Site naturel,Lac,,1,Lac,Nature & Paysages,Eau & Milieux humides
+251,Lieu,Site naturel,Landes,,1,Landes,Nature & Paysages,Forêts & milieux naturels
+252,Lieu,Site naturel,Cascade de glace,,1,Cascade de glace,Nature & Paysages,Glace & haute montagne
+253,Lieu,Site naturel,Ile - presqu'île,,1,Ile - presqu'île,Nature & Paysages,Côtes & littoral
+254,Lieu,Site naturel,Glacier de montagne,,1,Glacier de montagne,Nature & Paysages,Glace & haute montagne
+255,Lieu,Site naturel,Gorge,,1,Gorge,Nature & Paysages,Géologie & curiosités
+256,Lieu,Site naturel,Prairie,,1,Prairie,Nature & Paysages,Paysages remarquables
+257,Lieu,Site naturel,Cirque naturel,,1,Cirque naturel,Nature & Paysages,Géologie & curiosités
+258,Lieu,Site naturel,Falaise,,1,Falaise,Nature & Paysages,Géologie & curiosités
+259,Lieu,Site naturel,"Côte, littoral",,1,"Côte, littoral",Nature & Paysages,Côtes & littoral
+260,Lieu,Site naturel,Col,,1,Col,Nature & Paysages,Montagne & Relief
+261,Lieu,Site naturel,Pic,,1,Pic,Nature & Paysages,Montagne & Relief
+262,Lieu,Site naturel,Plaine,,1,Plaine,Nature & Paysages,Paysages remarquables
+263,Lieu,Site naturel,Plateau,,1,Plateau,Nature & Paysages,Montagne & Relief
+264,Lieu,Site naturel,Point de vue,,1,Point de vue,Nature & Paysages,Paysages remarquables
+265,Lieu,Site naturel,Cône,,1,Cône,Nature & Paysages,Montagne & Relief
+266,Lieu,Site naturel,Montagne,,1,Montagne,Nature & Paysages,Montagne & Relief
+267,Lieu,Site naturel,Curiosité naturelle,,1,Curiosité naturelle,Nature & Paysages,Géologie & curiosités
+268,Lieu,Site naturel,Parc naturel,,1,Parc naturel,Nature & Paysages,Paysages remarquables
+269,Lieu,Site naturel,Vallée,,1,Vallée,Nature & Paysages,Paysages remarquables
+270,Lieu,Site naturel,"Pierre, rocher",,1,"Pierre, rocher",Nature & Paysages,Géologie & curiosités
+271,Lieu,Site naturel,Ruisseau,,1,Ruisseau,Nature & Paysages,Eau & Milieux humides
+272,Lieu,Site naturel,Chaumes,,1,Chaumes,Nature & Paysages,Forêts & milieux naturels
+273,Lieu,Site naturel,Sommet,,1,Sommet,Nature & Paysages,Montagne & Relief
+274,Lieu,Site naturel,Marais,,1,Marais,Nature & Paysages,Eau & Milieux humides
+275,Lieu,Site naturel,Volcan,,1,Volcan,Nature & Paysages,Géologie & curiosités
+276,Lieu,Site naturel,Cascade,,1,Cascade,Nature & Paysages,Eau vive & cascades
+277,Lieu,Site naturel,Zone humide,,1,Zone humide,Nature & Paysages,Eau & Milieux humides
+278,Lieu,Site naturel,Arbre remarquable,,1,Arbre remarquable,Nature & Paysages,Forêts & milieux naturels
+290,Fête et manifestation,Evènement commercial,Brocante,,1,Brocante,Shopping & Artisanat,Antiquités & brocante
+291,Fête et manifestation,Evènement commercial,Marché,,1,Marché,Shopping & Artisanat,Marchés
+292,Fête et manifestation,Evènement commercial,Foire ou salon,,1,Foire ou salon,Shopping & Artisanat,Foires & salons
+293,Fête et manifestation,Evènement commercial,Vide-grenier,,1,Vide-grenier,Shopping & Artisanat,Antiquités & brocante
+294,Fête et manifestation,Evènement commercial,Portes ouvertes,,1,Portes ouvertes,Shopping & Artisanat,Foires & salons
+301,Lieu,Service pratique,Aire de pique-nique,,1,Aire de pique-nique,Événements & Traditions,Aire de pique-nique
+308,Fête et manifestation,Evènement social,Carnaval,,1,Carnaval,Événements & Traditions,Fêtes & traditions
+309,Fête et manifestation,Evènement social,Animation locale,,1,Animation locale,Événements & Traditions,Fêtes & traditions
+310,Fête et manifestation,Evènement social,Évènement religieux,,1,Évènement religieux,Événements & Traditions,Religieux
+311,Fête et manifestation,Evènement social,Pèlerinage et procession,,1,Pèlerinage et procession,Événements & Traditions,Religieux
+312,Fête et manifestation,Evènement social,Défilé Cortège Parade,,1,Défilé Cortège Parade,Événements & Traditions,Défilés & parades
+313,Fête et manifestation,Evènement social,Fête traditionnelle,,1,Fête traditionnelle,Événements & Traditions,Fêtes & traditions
+2,Produit,Produit d'hébergement,Appartement,,2,Appartement,Hébergement,Unknown
+3,Produit,Produit d'hébergement,Chalet,,2,Chalet,Hébergement,Unknown
+4,Produit,Produit d'hébergement,Lit,,2,Lit,Hébergement,Unknown
+5,Produit,Produit d'hébergement,Camping car,,2,Camping car,Camping & Plein Air,Unknown
+6,Produit,Produit d'hébergement,Emplacement de camping,,2,Emplacement de camping,Camping & Plein Air,Unknown
+7,Produit,Produit d'hébergement,Caravane,,2,Caravane,Camping & Plein Air,Unknown
+8,Produit,Produit d'hébergement,Château et demeure de prestige,,2,Château et demeure de prestige,Hébergement,Unknown
+9,Produit,Produit d'hébergement,Bulle,,2,Bulle,Camping & Plein Air,Unknown
+10,Produit,Produit d'hébergement,"Bungalow, Mobil Home",,2,"Bungalow, Mobil Home",Camping & Plein Air,Unknown
+11,Produit,Produit d'hébergement,Bungatoile,,2,Bungatoile,Camping & Plein Air,Unknown
+12,Produit,Produit d'hébergement,Suite,,2,Suite,Hébergement,Unknown
+13,Produit,Produit d'hébergement,Maison,,2,Maison,Hébergement,Unknown
+14,Produit,Produit d'hébergement,Bâteau habitable,,2,Bâteau habitable,Hébergement,Unknown
+15,Produit,Produit d'hébergement,Cabane,,2,Cabane,Hébergement,Unknown
+16,Produit,Produit d'hébergement,Chambre,,2,Chambre,Hébergement,Unknown
+17,Produit,Produit d'hébergement,Chalet résidentiel de loisirs,,2,Chalet résidentiel de loisirs,Hébergement,Unknown
+18,Produit,Produit d'hébergement,Tente,,2,Tente,Camping & Plein Air,Unknown
+19,Produit,Produit d'hébergement,Tipi,,2,Tipi,Camping & Plein Air,Unknown
+20,Produit,Produit d'hébergement,Cabane dans les arbres,,2,Cabane dans les arbres,Camping & Plein Air,Unknown
+21,Produit,Produit d'hébergement,Yourte,,2,Yourte,Camping & Plein Air,Unknown
+23,Lieu,Hébergement,Hôtellerie de plein air,Aire de camping-car,2,Aire de camping-car,Camping & Plein Air,Unknown
+24,Lieu,Hébergement,Hôtellerie de plein air,Camping,2,Camping,Camping & Plein Air,Unknown
+25,Lieu,Hébergement,Hôtellerie de plein air,Camping à la ferme,2,Camping à la ferme,Camping & Plein Air,Unknown
+26,Lieu,Hébergement,Hôtellerie de plein air,Aire naturelle de camping,2,Aire naturelle de camping,Camping & Plein Air,Unknown
+27,Lieu,Hébergement,Hôtellerie de plein air,Parc résidentiel de loisirs,2,Parc résidentiel de loisirs,Camping & Plein Air,Unknown
+28,Lieu,Hébergement,Hébergement collectif,Auberge de jeunesse et centre international de séjour,2,Auberge de jeunesse et centre international de séjour,Loisirs & Clubs,Unknown
+29,Lieu,Hébergement,Hébergement collectif,Club et village vacances,2,Club et village vacances,Loisirs & Clubs,Unknown
+30,Lieu,Hébergement,Hébergement collectif,Centre de vacances et de loisirs,2,Centre de vacances et de loisirs,Loisirs & Clubs,Unknown
+31,Lieu,Hébergement,Hébergement collectif,Résidence de tourisme,2,Résidence de tourisme,Loisirs & Clubs,Unknown
+32,Lieu,Hébergement,Hébergement collectif,Gîte d'enfants,2,Gîte d'enfants,Loisirs & Clubs,Unknown
+33,Lieu,Hébergement,Hébergement collectif,Gîte de groupe,2,Gîte de groupe,Loisirs & Clubs,Unknown
+34,Lieu,Hébergement,Hébergement collectif,Refuge et gîte d'étape,2,Refuge et gîte d'étape,Hébergement,Unknown
+35,Lieu,Hébergement,Hébergement collectif,Auberge collective,2,Auberge collective,Hébergement,Unknown
+36,Lieu,Hébergement,Hôtellerie,Hôtel,2,Hôtel,Hébergement,Unknown
+37,Lieu,Hébergement,Hébergement locatif,Chambre d'hôtes,2,Chambre d'hôtes,Hébergement,Unknown
+38,Lieu,Hébergement,Hébergement locatif,Meublés de tourisme,2,Meublés de tourisme,Loisirs & Clubs,Unknown
+136,Lieu,Commerce de détail,Grand magasin,,2,Grand magasin,Commerce & Shopping,Unknown
+141,Lieu,Commerce de détail,Grande et moyenne surface,,2,Grande et moyenne surface,Commerce & Shopping,Unknown
+160,Produit,Location,Location de matériel,,2,Location de matériel,Services & Mobilité,Unknown
+228,Lieu,Lieu de santé,Professionnel de santé,,2,Professionnel de santé,Santé & Urgences,Unknown
+229,Lieu,Lieu de santé,Pharmacie,,2,Pharmacie,Santé & Urgences,Unknown
+296,Lieu,Service pratique,"Borne de charge électrique pour vélo, vtt",,2,"Borne de charge électrique pour vélo, vtt",Services & Mobilité,Unknown
+297,Lieu,Service pratique,Borne de charge véhicule électrique,,2,Borne de charge véhicule électrique,Services & Mobilité,Unknown
+298,Lieu,Service pratique,Cybercafé,,2,Cybercafé,Commodités,Unknown
+299,Lieu,Service pratique,Station de lavage,,2,Station de lavage,Services & Mobilité,Unknown
+300,Lieu,Service pratique,"Distributeur automatique de billets, DAB",,2,"Distributeur automatique de billets, DAB",Services & Mobilité,Unknown
+302,Lieu,Service pratique,Toilettes publiques,,2,Toilettes publiques,Commodités,Unknown
+303,Lieu,Service pratique,Borne de service camping car,,2,Borne de service camping car,Services & Mobilité,Unknown
+304,Lieu,Service pratique,Consigne à bagages,,2,Consigne à bagages,Commodités,Unknown
+305,Lieu,Service pratique,Borne ou station de réparation - gonflage,,2,Borne ou station de réparation - gonflage,Services & Mobilité,Unknown
+306,Lieu,Service pratique,Point d'eau,,2,Point d'eau,Commodités,Unknown
+307,Lieu,Service pratique,Hotspot Wifi,,2,Hotspot Wifi,Commodités,Unknown
+314,Lieu,Prestataire de service,Loueur de matériel,,2,Loueur de matériel,Commodités,Unknown
+315,Lieu,Prestataire de service,Réparateur de matériel,,2,Réparateur de matériel,Commodités,Unknown
+316,Lieu,Prestataire de service,Compagnie de taxis,,2,Compagnie de taxis,Transports,Unknown
+317,Lieu,Prestataire de service,Transporteur,,2,Transporteur,Transports,Unknown
+318,Lieu,Transport,Aérodrôme,,2,Aérodrôme,Transports,Unknown
+319,Lieu,Transport,Aéroport,,2,Aéroport,Transports,Unknown
+320,Lieu,Transport,Station ou dépôt de vélo,,2,Station ou dépôt de vélo,Services & Mobilité,Unknown
+321,Lieu,Transport,Aire de covoiturage,,2,Aire de covoiturage,Services & Mobilité,Unknown
+322,Lieu,Transport,Ecluse,,2,Ecluse,Services & Mobilité,Unknown
+323,Lieu,Transport,Gare routière,,2,Gare routière,Transports,Unknown
+324,Lieu,Transport,"Arrêt, station de transport en commun",,2,"Arrêt, station de transport en commun",Transports,Unknown
+325,Lieu,Transport,Téléphérique,,2,Téléphérique,Transports,Unknown
+326,Lieu,Transport,Port maritime,,2,Port maritime,Transports,Unknown
+327,Lieu,Transport,Compagnie de taxis,,2,Compagnie de taxis,Transports,Unknown
+328,Lieu,Transport,"Aire, station de taxis",,2,"Aire, station de taxis",Transports,Unknown
+329,Lieu,Transport,Parking,,2,Parking,Services & Mobilité,Unknown
+330,Lieu,Transport,Halte et port fluvial,,2,Halte et port fluvial,Transports,Unknown
+331,Lieu,Transport,Gare ferroviaire,,2,Gare ferroviaire,Transports,Unknown
+334,Lieu,Service d'information touristique,Office de tourisme,,2,Office de tourisme,Information Touristique,Unknown
+336,Lieu,Service d'information touristique,Agence de guides,,2,Agence de guides,Information Touristique,Unknown
+337,Lieu,Service d'information touristique,Maison du tourisme,,2,Maison du tourisme,Information Touristique,Unknown
+338,Lieu,Service d'information touristique,Organisme réceptif,,2,Organisme réceptif,Commerce & Shopping,Unknown
+339,Lieu,Service d'information touristique,Guide professionnel,,2,Guide professionnel,Information Touristique,Unknown
+341,Lieu,Service d'information touristique,"Hôte bénévole, greeter",,2,"Hôte bénévole, greeter",Information Touristique,Unknown

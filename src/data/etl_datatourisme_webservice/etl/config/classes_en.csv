@@ -1,0 +1,440 @@
+"URI"	"Label"	"URIparent"	"LabelParent"
+<https://www.datatourisme.fr/ontology/core#AlpinePasture>,Alpine pasture,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#ActivityProvider>,Activity provider,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#AccompaniedPractice>,Accompanied practice,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#AntiqueAndSecondhandGoodDealer>,Antique and second-hand goods dealer,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#Apartment>,Apartment,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#AccommodationFeatureSpecification>,Accommodation feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product,<https://www.datatourisme.fr/ontology/core#Product>,Product
+<https://www.datatourisme.fr/ontology/core#Abbey>,Abbey,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Aqueduct>,Aqueduct,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#Airfield>,Airfield,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#Airport>,Airport,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#Forest>,Forest,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#FirstPractice>,First practice,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#FreePractice>,Free practice,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#Forge>,Forge,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#FluvialTour>,Fluvial or sea route,<https://www.datatourisme.fr/ontology/core#Tour>,Route
+<https://www.datatourisme.fr/ontology/core#FoodEstablishmentTheme>,Food establishment theme,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#Fort>,Fort,<https://www.datatourisme.fr/ontology/core#DefenceSite>,Defence site
+<https://www.datatourisme.fr/ontology/core#FortifiedCastle>,Fortified castle,<https://www.datatourisme.fr/ontology/core#DefenceSite>,Defence site
+<https://www.datatourisme.fr/ontology/core#FortifiedSet>,Fortified set,<https://www.datatourisme.fr/ontology/core#DefenceSite>,Defence site
+<https://www.datatourisme.fr/ontology/core#Fountain>,Fountain,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#FitnessCenter>,Fitness centre,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#FitnessPath>,Fitness path,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Camping and caravanning,<https://www.datatourisme.fr/ontology/core#Accommodation>,Accommodation
+<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation,<https://www.datatourisme.fr/ontology/core#Accommodation>,Accommodation
+<https://www.datatourisme.fr/ontology/core#ClubOrHolidayVillage>,Club or holiday village,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#CityHeritage>,City and village,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#BarOrPub>,Bar or theme bar,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#BistroOrWineBar>,Bistro - Wine bar,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#Cellar>,Cellar,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#Accommodation>,Accommodation,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#Chalet>,Chalet,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#Arena>,Arena,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#FastFoodRestaurant>,Fast food restaurant,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#EquipmentRental>,Equipment rental,<https://www.datatourisme.fr/ontology/core#Rental>,Rental
+<https://www.datatourisme.fr/ontology/core#FarmhouseInn>,Farmhouse inn,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#Farmer>,Farmer,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#Farm>,Farm,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#ExecutiveBoardMeeting>,Executive board meeting,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event
+<https://www.datatourisme.fr/ontology/core#Exhibition>,Exhibition,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Festival>,Festival,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#FairOrShow>,Fair or show,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Sale event
+<https://www.datatourisme.fr/ontology/core#EquipmentRentalShop>,Equipment rental shop,<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Service provider
+<https://www.datatourisme.fr/ontology/core#EquipmentRepairShop>,Equipment repair shop,<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Service provider
+<https://www.datatourisme.fr/ontology/core#ArcheologicalSite>,Archeological site,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#ArtGalleryOrExhibitionGallery>,"Art gallery, exhibition gallery",<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#ATM>,ATM,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#ArtistSigning>,Artist signing,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#PointOfView>,PointOfView,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Pond>,Pond,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Product>,Product,<https://www.datatourisme.fr/ontology/core#PointOfInterest>,Point of interest
+<https://www.datatourisme.fr/ontology/core#Producer>,Producer,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#ProducersGroup>,Group of producers,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#PublicLavatories>,Public lavatories,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#Racetrack>,Racetrack,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#RacingCircuit>,Racing circuit,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#RailBike>,Rail Bike,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#ProfessionalTourGuide>,Professional tour guide,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#ParkAndGarden>,Park and garden,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#NonHousingRealEstateRental>,Room rental,<https://www.datatourisme.fr/ontology/core#Rental>,Rental
+<https://www.datatourisme.fr/ontology/core#Orchard>,Conservatory orchard,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#Organisation>,Organisation,<https://www.datatourisme.fr/ontology/core#Agent>,Agent
+<https://www.datatourisme.fr/ontology/core#Opera>,Opera,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Palace>,Palace,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#OpenDay>,Open day,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Sale event
+<https://www.datatourisme.fr/ontology/core#Parade>,Parade,<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event
+<https://www.datatourisme.fr/ontology/core#NightClub>,Night club,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Pharmacy>,Pharmacy,<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Medical place
+<https://www.datatourisme.fr/ontology/core#Peak>,Peak,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Plain>,Plain,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Plateau>,Plateau,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Pier>,Pier,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#PigeonLoft>,Pigeon loft,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#Person>,Person,<https://www.datatourisme.fr/ontology/core#Agent>,Agent
+<https://www.datatourisme.fr/ontology/core#PicnicArea>,Picnic area,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#PilgrimageAndProcession>,Pilgrimage and procession,<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event
+<https://www.datatourisme.fr/ontology/core#PlayArea>,Play area,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Parking>,Parking,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event,<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Entertainment and event
+<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Service provider,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#SelfServiceCafeteria>,Self service cafeteria,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#ShoppingCentreAndGallery>,Shopping Centre and gallery,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#Seminar>,Seminar,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event
+<https://www.datatourisme.fr/ontology/core#ScreeningEvent>,Screening event,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#ShowEvent>,Show,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#SchoolOrTrainingCentre>,School or training centre,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SightseeingBoat>,Sightseeing boat,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Seaport>,Seaport,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#LocalProductsShop>,Local products shop,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#Mill>,Mill,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#Mine>,Mine,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#MegalithDolmenMenhir>,"Megalith, dolmen, menhir",<https://www.datatourisme.fr/ontology/core#ArcheologicalSite>,Archeological site
+<https://www.datatourisme.fr/ontology/core#LimitedPeriod>,Limited period,<https://www.datatourisme.fr/ontology/core#Period>,Period
+<https://www.datatourisme.fr/ontology/core#Monastery>,Monastery or priory,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Lock>,Lock,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#MilitaryCemetery>,Military cemetery and memorial,<https://www.datatourisme.fr/ontology/core#RemembranceSite>,Remembrance site
+<https://www.datatourisme.fr/ontology/core#Market>,Market,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Sale event
+<https://www.datatourisme.fr/ontology/core#LocalAnimation>,Local animation,<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event
+<https://www.datatourisme.fr/ontology/core#MiniGolf>,Mini golf,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Auditorium>,Auditorium,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Lock>,Lock,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#HotelTrade>,Hotel trade,<https://www.datatourisme.fr/ontology/core#Accommodation>,Accommodation
+<https://www.datatourisme.fr/ontology/core#HolidayCentre>,Holiday centre,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#HolidayResort>,Holiday resort,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#Hotel>,Hotel,<https://www.datatourisme.fr/ontology/core#HotelTrade>,Hotel trade
+<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Entertainment and event,<https://www.datatourisme.fr/ontology/core#PointOfInterest>,Point of interest
+<https://www.datatourisme.fr/ontology/core#Guesthouse>,Guesthouse,<https://www.datatourisme.fr/ontology/core#RentalAccommodation>,Rental accommodation
+<https://www.datatourisme.fr/ontology/core#StopOverOrGroupLodge>,Refuge or overnight shelter,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#StreetFood>,Street food,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#Stone>,"Stone, rock",<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Stream>,Stream,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#StubbleFields>,Stubble fields,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Summit>,Summit,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Swamp>,Swamp,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Stables>,Stables,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#Synagogue>,Synagogue,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Stadium>,Stadium,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SummerToboggan>,Summer toboggan,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SwimmingPool>,Swimming pool,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Bastide>,Bastide,<https://www.datatourisme.fr/ontology/core#CityHeritage>,City and village
+<https://www.datatourisme.fr/ontology/core#Bakery>,Bakery,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#Beach>,Beach,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#BoatRestaurant>,Boat restaurant,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#Bed>,Bed,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#BoardMeeting>,Board meeting,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event
+<https://www.datatourisme.fr/ontology/core#Basilica>,Basilica,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Bishopric>,Bishopric,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#BalneotherapyCentre>,Balneotherapy centre,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#BeachClub>,Beach club,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#BilliardRoom>,Billiard room,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#BikeStationOrDepot>,Bike station or depot,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#RentalAccommodation>,Rental accommodation,<https://www.datatourisme.fr/ontology/core#Accommodation>,Accommodation
+<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#Store>,Store,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#SelfCateringAccommodation>,Self catering accommodation,<https://www.datatourisme.fr/ontology/core#RentalAccommodation>,Rental accommodation
+<https://www.datatourisme.fr/ontology/core#Rental>,Rental,<https://www.datatourisme.fr/ontology/core#Product>,Product
+<https://www.datatourisme.fr/ontology/core#ScaleRating>,Rating,<https://www.datatourisme.fr/ontology/core#Rating>,Rating
+<https://www.datatourisme.fr/ontology/core#ScaleReviewSystem>,Scale review system,<https://www.datatourisme.fr/ontology/core#ReviewSystem>,Review system
+<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Medical place,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place,<https://www.datatourisme.fr/ontology/core#PointOfInterest>,Point of interest
+<https://www.datatourisme.fr/ontology/core#Practice>,Practice,<https://www.datatourisme.fr/ontology/core#Product>,Product
+<https://www.datatourisme.fr/ontology/core#LabelRating>,Label,<https://www.datatourisme.fr/ontology/core#Rating>,Rating
+<https://www.datatourisme.fr/ontology/core#LabelReviewSystem>,Label review system,<https://www.datatourisme.fr/ontology/core#ReviewSystem>,Review system
+<https://www.datatourisme.fr/ontology/core#Marina>,Marina,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#LocalTouristOffice>,Local tourist office,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#GroupLodging>,Group lodging,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#Glacier>,Glacier,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Gorge>,Gorge,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Grassland>,Grassland,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#GourmetRestaurant>,Gourmet restaurant,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#TypeOfBed>,Type of bed,<https://www.datatourisme.fr/ontology/core#AccommodationAmenity>,Accommodation facilities and service
+<https://www.datatourisme.fr/ontology/core#ParkAndGardenTheme>,Park and garden theme,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#SpatialEnvironmentTheme>,POI's environmental theme,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#SportsTheme>,"Sports, leisure and event theme",<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#InformativeAmenity>,Informative facilities and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#RoomAmenity>,Room amenity,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#NaturalHeritageAmenity>,Natural heritage facilities and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#PeopleAudience>,People audience,<https://www.datatourisme.fr/ontology/core#Audience>,Audience
+<https://www.datatourisme.fr/ontology/core#GarageOrAirPump>,Garage or air pump,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#PedestrianLocomotionMode>,Pedestrian,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#RoadsideLocomotionMode>,Roadside,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#WintersportsLocomotionMode>,Winter sports,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#RentalPricingOffer>,"Rental pricing Offer (without accommodation): bikes, kayak, meeting room",<https://www.datatourisme.fr/ontology/core#PricingOffer>,Pricing offer
+<https://www.datatourisme.fr/ontology/core#MTBRouteTheme>,MTB route name,<https://www.datatourisme.fr/ontology/core#RouteTheme>,Route name
+<https://www.datatourisme.fr/ontology/core#GarageSale>,Garage sale,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Sale event
+<https://www.datatourisme.fr/ontology/core#FrontonBelotaCourt>,"Fronton, belota court",<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#GolfCourse>,Golf course,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Gymnasium>,Gymnasium or sports field,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Game>,"Game, contest",<https://www.datatourisme.fr/ontology/core#SportsEvent>,Sports and recreation event
+<https://www.datatourisme.fr/ontology/core#TableHoteGuesthouse>,Guesthouse with table d’hôte,<https://www.datatourisme.fr/ontology/core#Guesthouse>,Guesthouse
+<https://www.datatourisme.fr/ontology/core#TableHotes>,Table d'hotes,<https://www.datatourisme.fr/ontology/core#Guesthouse>,Guesthouse
+<https://www.datatourisme.fr/ontology/core#Tasting>,Tasting,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#Tent>,Tent,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#TastingFeatureSpecification>,Tasting feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#Temple>,Temple,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#TaxiCompany>,Taxi company,<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Service provider
+<https://www.datatourisme.fr/ontology/core#TeachingFarm>,Teaching farm,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TennisComplex>,Tennis court or compound,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TaxiCompany>,Taxi company,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#TaxiStation>,Taxi station,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#District>,District,<https://www.datatourisme.fr/ontology/core#CityHeritage>,City and village
+<https://www.datatourisme.fr/ontology/core#Dune>,Dune,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#DevelopmentCourse>,Development course,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#DepartmentStore>,Department store,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#ElectricBycicleChargingPoint>,Electric charging station for bicycles and mountain bikes,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#ElectricVehicleChargingPoint>,Electric vehicle charging point,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#Dungeon>,Dungeon,<https://www.datatourisme.fr/ontology/core#DefenceSite>,Defence site
+<https://www.datatourisme.fr/ontology/core#DogSleddingTrail>,Dog sledding trail,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#DownhillSkiResort>,Downhill ski resort,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#DownhillSkiRun>,Downhill ski run,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#EducationalTrail>,Educational trail,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#EquestrianCenter>,Equestrian center,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#DepartementTourismCommittee>,Département tourism committee,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#RemembranceSite>,Remembrance site,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#Reading>,Reading,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Recital>,Recital,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#RecurrentPeriod>,Recurrent period,<https://www.datatourisme.fr/ontology/core#Period>,Period
+<https://www.datatourisme.fr/ontology/core#RemarkableHouse>,Remarkable house,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#ReligiousEvent>,Religious event,<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event
+<https://www.datatourisme.fr/ontology/core#Rally>,Rally,<https://www.datatourisme.fr/ontology/core#SportsEvent>,Sports and recreation event
+<https://www.datatourisme.fr/ontology/core#Rambling>,Hike and walk,<https://www.datatourisme.fr/ontology/core#SportsEvent>,Sports and recreation event
+<https://www.datatourisme.fr/ontology/core#RegionalTourismCommittee>,Regional tourism committee,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#Library>,Library,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#Lake>,Lake,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Landes>,Landes,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Lighthouse>,Lighthouse,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#LeisureChalet>,Leisure chalet,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#LeisureSportActivityProvider>,Leisure and sport activity provider,<https://www.datatourisme.fr/ontology/core#ActivityProvider>,Activity provider
+<https://www.datatourisme.fr/ontology/core#LeftLuggage>,Left luggage,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#LevyOrDike>,Levy or dike,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#LabelReview>,Label review,<https://www.datatourisme.fr/ontology/core#Review>,Review
+<https://www.datatourisme.fr/ontology/core#LaunchingRamp>,Launching ramp,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#LeisureComplex>,Leisure complex,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#CuisineCategory>,Cuisine category,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#CulturalTheme>,Cultural,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#EntertainmentAndEventTheme>,Entertainment and event theme,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#FoodProduct>,Food product,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#HealthTheme>,Health theme,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#CampingAndCaravanningAmenity>,Camping and caravanning facilities and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#CateringAmenity>,Catering facilities and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#CommonAmenity>,Basic facilities and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#CulturalHeritageAmenity>,Cultural heritage facility and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#GeographicReach>,Geographic reach,<https://www.datatourisme.fr/ontology/core#Audience>,Audience
+<https://www.datatourisme.fr/ontology/core#EquestrianLocomotionMode>,Equestrian,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#CateringPricingOffer>,Catering pricing Offer,<https://www.datatourisme.fr/ontology/core#PricingOffer>,Pricing offer
+<https://www.datatourisme.fr/ontology/core#GeneralPricingOffer>,General pricing Offer,<https://www.datatourisme.fr/ontology/core#PricingOffer>,Pricing offer
+<https://www.datatourisme.fr/ontology/core#CycleRouteTheme>,Cycle route name,<https://www.datatourisme.fr/ontology/core#RouteTheme>,Route name
+<https://www.datatourisme.fr/ontology/core#Visit>,Visit,<https://www.datatourisme.fr/ontology/core#Product>,Product
+<https://www.datatourisme.fr/ontology/core#BuddhistTemple>,Buddhist temple,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Bridge>,Bridge,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#BricABrac>,Bric-a-brac,<https://www.datatourisme.fr/ontology/core#SaleEvent>,Sale event
+<https://www.datatourisme.fr/ontology/core#BoulesPitch>,Boules pitch,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#BowlingAlley>,Bowling alley,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#ChildrensGite>,Children gite,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#Causse>,Causse,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#CaveSinkholeOrAven>,"Cave, sinkhole, aven",<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#ChalkyLawn>,Chalky lawn,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#ChamberOfCommerceAndIndustry>,Chamber of commerce and industry,<https://www.datatourisme.fr/ontology/core#BusinessPlace>,Business place
+<https://www.datatourisme.fr/ontology/core#ChildrensEvent>,Children event,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#CateringFeatureSpecification>,Catering feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#Cathedral>,Cathedral,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Chapel>,Chapel,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Church>,Church,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#MountainResort>,Mountain resort,<https://www.datatourisme.fr/ontology/core#CityHeritage>,City and village
+<https://www.datatourisme.fr/ontology/core#Museum>,Museum,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#Mountain>,Mountain,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#NaturalCuriosity>,Natural curiosity,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#NaturalPark>,Natural park,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#MultiActivity>,Multi-activity,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#MountainRestaurant>,Mountain restaurant,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#NaturalHeritageFeatureSpecification>,Natural heritage feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#Mosque>,Mosque,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#MooringArea>,Mooring area,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#MultiPurposeRoomOrCommunityRoom>,"Multi-purpose room, community room",<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#NauticalCentre>,Nautical base / nautical centre,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#IceCreamShop>,Ice cream shop,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#HotelRestaurant>,Hotel restaurant,<https://www.datatourisme.fr/ontology/core#Hotel>,Hotel
+<https://www.datatourisme.fr/ontology/core#HealthcarePlace>,Healthcare place,<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Medical place
+<https://www.datatourisme.fr/ontology/core#HealthcareProfessional>,Healthcare professionnal,<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Medical place
+<https://www.datatourisme.fr/ontology/core#HalophilicArea>,HalophilicArea,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Hillsides>,Hillsides,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#HotelRestaurant>,Hotel restaurant,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#HypermarketAndSupermarket>,Hypermarket and supermarket,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#HorseTour>,Horse route,<https://www.datatourisme.fr/ontology/core#Tour>,Route
+<https://www.datatourisme.fr/ontology/core#HotelSuite>,Suite,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#House>,House,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#HouseBoat>,House boat,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#Hut>,Hut,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#Harvest>,Harvest,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Hammam>,Hammam,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#InterpretationCentre>,Interpretation centre,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#Icefall>,Icefall,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#IslandPeninsula>,Island peninsula,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#IntroductionCourse>,Introduction course,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#IndustrialSite>,Industrial site,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#InformativeFeatureSpecification>,Informative feature specification,<https://www.datatourisme.fr/ontology/core#CommonFeatureSpecification>,Common feature specification
+<https://www.datatourisme.fr/ontology/core#IceSkatingRink>,Ice skating rink,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Jetty>,Jetty,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#KidsClub>,Kid's club,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#IncomingTravelAgency>,Incoming travel agency,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#SaleEvent>,Sale event,<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Entertainment and event
+<https://www.datatourisme.fr/ontology/core#River>,River,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#RoadTour>,Road route,<https://www.datatourisme.fr/ontology/core#Tour>,Route
+<https://www.datatourisme.fr/ontology/core#RouteTheme>,Route name,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#Room>,Room,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#RomanPath>,Roman path,<https://www.datatourisme.fr/ontology/core#ArcheologicalSite>,Archeological site
+<https://www.datatourisme.fr/ontology/core#Ruins>,Ruins and vestiges,<https://www.datatourisme.fr/ontology/core#ArcheologicalSite>,Archeological site
+<https://www.datatourisme.fr/ontology/core#RVServiceArea>,RV service area,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#RoomFeatureSpecification>,Room feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#ScaleReview>,Rating review,<https://www.datatourisme.fr/ontology/core#Review>,Review
+<https://www.datatourisme.fr/ontology/core#RiverPort>,River port,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#ThalassotherapyCentre>,Thalassotherapy centre,<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Medical place
+<https://www.datatourisme.fr/ontology/core#Tipi>,Tipi,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#TheaterEvent>,Theater event,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#TerrainPark>,Snowpark,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Theater>,Theatre,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#ThemePark>,Leisure park and theme park,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TobogganBobsleigh>,Toboggan - bobsleigh,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TourismCableCar>,Tourisl cable car,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TourGuideAgency>,Tour guide agency,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#TourismCentre>,Tourism centre,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#FarmCamping>,Farm Camping,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Camping and caravanning
+<https://www.datatourisme.fr/ontology/core#NaturalCampingArea>,Natural camping area,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Camping and caravanning
+<https://www.datatourisme.fr/ontology/core#ResidentialLeisurePark>,Residential leisure park,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Camping and caravanning
+<https://www.datatourisme.fr/ontology/core#CamperVanArea>,Camper van area,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Camping and caravanning
+<https://www.datatourisme.fr/ontology/core#Camping>,Campsite,<https://www.datatourisme.fr/ontology/core#CampingAndCaravanning>,Camping and caravanning
+<https://www.datatourisme.fr/ontology/core#CollectiveHostel>,Collective hostel,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event,<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Entertainment and event
+<https://www.datatourisme.fr/ontology/core#CafeOrTeahouse>,Coffee or tea house,<https://www.datatourisme.fr/ontology/core#FoodEstablishment>,Food establishment
+<https://www.datatourisme.fr/ontology/core#OutstandingTree>,Outstanding Tree,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Cirque>,Cirque,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Cliff>,Cliff,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Coastline>,Coastline,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Col>,Col,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#BusinessPlace>,Business place,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#Cabaret>,Cabaret,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#Volcano>,Volcano,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Waterfall>,Waterfall,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Wetland>,Wetland,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#WineCellar>,Wine cellar,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#WashHouse>,Wash house,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#WalkingTour>,Walking route,<https://www.datatourisme.fr/ontology/core#Tour>,Route
+<https://www.datatourisme.fr/ontology/core#WorkMeeting>,Work meeting,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event
+<https://www.datatourisme.fr/ontology/core#WaterSource>,Water source,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#WifiHotSpot>,Wi-fi hotSpot,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#VivariumAquarium>,Vivarium - Aquarium,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#YachtClub>,Yacht Club,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#VolunteerTourGuideOrGreeter>,"Volunteer tour guide, greeter",<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#Canal>,Canal,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Canyon>,Canyon,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#CampingCar>,Camping car,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#CampingPitch>,Camping pitch,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#Caravan>,Caravan,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#CastleAndPrestigeMansion>,Castle and prestige mansion,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#CarOrBikeWash>,Car or bike wash,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#Castle>,Castle,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#Carnival>,Carnival,<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event
+<https://www.datatourisme.fr/ontology/core#Casino>,Casino,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#CarpoolArea>,Carpool area,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#BusStation>,Bus station,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#BusStop>,Public transport stop,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#CableCarStation>,Cable car station,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#Traineeship>,Traineeship,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#Trader>,Trader,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#TrainingWorkshop>,Training workshop,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event
+<https://www.datatourisme.fr/ontology/core#Tower>,Tower,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#TraditionalCelebration>,Traditional celebration,<https://www.datatourisme.fr/ontology/core#SocialEvent>,Social event
+<https://www.datatourisme.fr/ontology/core#TouristBus>,Tourist bus,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TouristTrain>,Tourist train,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TrackRollerOrSkateBoard>,Track roller or skate board,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TourOperatorOrTravelAgency>,Tour operator or travel agency,<https://www.datatourisme.fr/ontology/core#TouristInformationCenter>,Tourist information center
+<https://www.datatourisme.fr/ontology/core#Spa>,Spa,<https://www.datatourisme.fr/ontology/core#MedicalPlace>,Medical place
+<https://www.datatourisme.fr/ontology/core#ConeNeck>,Cone / neck,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Source>,Source,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#Competition>,Competition,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#Congress>,Congress,<https://www.datatourisme.fr/ontology/core#BusinessEvent>,Business event
+<https://www.datatourisme.fr/ontology/core#ConventionCentre>,Convention centre,<https://www.datatourisme.fr/ontology/core#BusinessPlace>,Business place
+<https://www.datatourisme.fr/ontology/core#Commemoration>,Commemoration,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Concert>,Concert,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Conference>,Conference,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#CommonFeatureSpecification>,Common feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#Convent>,Convent,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#YouthHostelAndInternationalCenter>,Youth hostel and international center,<https://www.datatourisme.fr/ontology/core#CollectiveAccommodation>,Collective accommodation
+<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage",<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#Bocage>,Bocage,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Bog>,Bog,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Tour>,Route,<https://www.datatourisme.fr/ontology/core#PointOfInterest>,Point of interest
+<https://www.datatourisme.fr/ontology/core#BrasserieOrTavern>,Brasserie or tavern,<https://www.datatourisme.fr/ontology/core#Restaurant>,Restaurant
+<https://www.datatourisme.fr/ontology/core#BoutiqueOrLocalShop>,Boutique or local shop,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#Brewery>,Brewery,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#ArchitecturalStyle>,Architectural style,<https://www.datatourisme.fr/ontology/core#Theme>,Theme
+<https://www.datatourisme.fr/ontology/core#Bubble>,Bubble,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#Bungalow>,Bungalow,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#AccommodationAmenity>,Accommodation facilities and service,<https://www.datatourisme.fr/ontology/core#Amenity>,Facilities and service
+<https://www.datatourisme.fr/ontology/core#AdaptedsportsLocomotionMode>,Adapted sports,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#AquaticLocomotionMode>,Aquatic,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#BicycleLocomotionMode>,Cycling,<https://www.datatourisme.fr/ontology/core#LocomotionMode>,Mode of transport for routes
+<https://www.datatourisme.fr/ontology/core#AccommodationPricingOffer>,Accommodation pricing Offer,<https://www.datatourisme.fr/ontology/core#PricingOffer>,Pricing offer
+<https://www.datatourisme.fr/ontology/core#ActivityPricingOffer>,Activity pricing Offer,<https://www.datatourisme.fr/ontology/core#PricingOffer>,Pricing offer
+<https://www.datatourisme.fr/ontology/core#Yurt>,Yurt,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#Bungatoile>,Bungatoile,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#CircusEvent>,Circus event,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#Citadel>,Citadel,<https://www.datatourisme.fr/ontology/core#DefenceSite>,Defence site
+<https://www.datatourisme.fr/ontology/core#CampingAndCaravanningFeatureSpecification>,Camping and caravanning feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#Cloister>,Cloister,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Collegiate>,Collegiate,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Commanderie>,Commanderie,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#Calvary>,Calvary and parish enclosures,<https://www.datatourisme.fr/ontology/core#ReligiousSite>,Religious site
+<https://www.datatourisme.fr/ontology/core#CivilCemetery>,Civil cemetery,<https://www.datatourisme.fr/ontology/core#RemembranceSite>,Remembrance site
+<https://www.datatourisme.fr/ontology/core#ZooAnimalPark>,Zoo animal park,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#AdventurePark>,Adventure park - tree climbing,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Cinematheque>,Cinematheque,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#CircusPlace>,Circus,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#ClimbingWall>,Climbing wall,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Valley>,Valley,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Transport>,Transport,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#UnderwaterRoute>,Underwater route,<https://www.datatourisme.fr/ontology/core#Tour>,Route
+<https://www.datatourisme.fr/ontology/core#TreeHouse>,Tree house,<https://www.datatourisme.fr/ontology/core#AccommodationProduct>,Accommodation product
+<https://www.datatourisme.fr/ontology/core#VisualArtsEvent>,Visual art event and firework,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#TriumphalArch>,Triumphal arch,<https://www.datatourisme.fr/ontology/core#RemembranceSite>,Remembrance site
+<https://www.datatourisme.fr/ontology/core#Transporter>,Transporter,<https://www.datatourisme.fr/ontology/core#ServiceProvider>,Service provider
+<https://www.datatourisme.fr/ontology/core#Trampoline>,Trampoline,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#Velodrome>,Velodrome,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#ViaFerrata>,Via ferrata,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#TrainStation>,Train station,<https://www.datatourisme.fr/ontology/core#Transport>,Transport
+<https://www.datatourisme.fr/ontology/core#Chartreuse>,Chartreuse,<https://www.datatourisme.fr/ontology/core#RemarkableBuilding>,Remarkable civil building
+<https://www.datatourisme.fr/ontology/core#Cinema>,Cinema,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#DefenceSite>,Defence site,<https://www.datatourisme.fr/ontology/core#CulturalSite>,Cultural site
+<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event,<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Entertainment and event
+<https://www.datatourisme.fr/ontology/core#Crest>,Crest,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Cuesta>,Cuesta,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#Culture>,Culture,<https://www.datatourisme.fr/ontology/core#NaturalHeritage>,Natural heritage
+<https://www.datatourisme.fr/ontology/core#CraftsmanShop>,Craftsman shop,<https://www.datatourisme.fr/ontology/core#Store>,Store
+<https://www.datatourisme.fr/ontology/core#CyclingTour>,Cycling route,<https://www.datatourisme.fr/ontology/core#Tour>,Route
+<https://www.datatourisme.fr/ontology/core#CulturalActivityProvider>,Cultural activity provider,<https://www.datatourisme.fr/ontology/core#ActivityProvider>,Activity provider
+<https://www.datatourisme.fr/ontology/core#Cybercafe>,Cybercafe,<https://www.datatourisme.fr/ontology/core#ConvenientService>,Convenient service
+<https://www.datatourisme.fr/ontology/core#DanceEvent>,Dance event,<https://www.datatourisme.fr/ontology/core#CulturalEvent>,Cultural event
+<https://www.datatourisme.fr/ontology/core#CulturalHeritageFeatureSpecification>,Cultural heritage feature specification,<https://www.datatourisme.fr/ontology/core#FeatureSpecification>,Feature specification
+<https://www.datatourisme.fr/ontology/core#CrossCountrySkiResort>,Cross-country ski resort,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#CrossCountrySkiTrail>,Cross-country ski trail,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SpaResort>,Spa resort,<https://www.datatourisme.fr/ontology/core#CityHeritage>,City and village
+<https://www.datatourisme.fr/ontology/core#SportsEvent>,Sports and recreation event,<https://www.datatourisme.fr/ontology/core#EntertainmentAndEvent>,Entertainment and event
+<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place,<https://www.datatourisme.fr/ontology/core#PlaceOfInterest>,Place
+<https://www.datatourisme.fr/ontology/core#Course>,Course,<https://www.datatourisme.fr/ontology/core#Practice>,Practice
+<https://www.datatourisme.fr/ontology/core#Cooperative>,Cooperative,<https://www.datatourisme.fr/ontology/core#TastingProvider>,Tasting provider
+<https://www.datatourisme.fr/ontology/core#CoveredMarket>,Covered market,<https://www.datatourisme.fr/ontology/core#TechnicalHeritage>,"Industrial, handcraft, rural, agricultural and technical heritage"
+<https://www.datatourisme.fr/ontology/core#SportsClub>,Sports club,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SportsHall>,Sports hall,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SquashCourt>,Squash court,<https://www.datatourisme.fr/ontology/core#SportsAndLeisurePlace>,Sports and leisure place
+<https://www.datatourisme.fr/ontology/core#SportsCompetition>,Sports competition,<https://www.datatourisme.fr/ontology/core#SportsEvent>,Sports and recreation event
+<https://www.datatourisme.fr/ontology/core#SportsDemonstration>,Sports demonstration,<https://www.datatourisme.fr/ontology/core#SportsEvent>,Sports and recreation event
