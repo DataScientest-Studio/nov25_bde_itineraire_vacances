@@ -104,7 +104,7 @@ class OSRMClientAsync:
         url = f"{self.base_url}/table/v1/{profile}/{coord_str}"
         params = {"annotations": annotations}
 
-        logger.info(f"Appel OSRM simple: {url} avec params {params}")
+        logger.info(f"Appel OSRM simple: {url}")
         logger.info(f"[DEBUG] Port attendu : {self.get_osrm_port(profile)}")
 
         async with aiohttp.ClientSession() as session:
@@ -121,6 +121,8 @@ class OSRMClientAsync:
         profile = "walk" | "bike" | "car"
         """
         await self.detect_backend()
+
+        profile = self.normalize_profile(profile)
 
         n = len(coords)
         if n == 0:
@@ -152,7 +154,6 @@ class OSRMClientAsync:
                 coord_str_src = self._coords_to_str(sub_coords_src)
                 coord_str_dst = self._coords_to_str(sub_coords_dst)
 
-                profile = self.normalize_profile(profile)
                 url = f"{self.base_url}/table/v1/{profile}/{coord_str_src};{coord_str_dst}"
 
                 params = {
@@ -169,7 +170,7 @@ class OSRMClientAsync:
                     "annotations": annotations,
                 }
 
-                logger.info(f"Appel OSRM chunké: {url} avec params {params}")
+                logger.info(f"Appel OSRM chunké: {url}")
                 logger.info(f"[DEBUG] Port attendu : {self.get_osrm_port(profile)}")
 
                 async with aiohttp.ClientSession() as session:
@@ -218,7 +219,7 @@ class OSRMClientAsync:
 
         coord_str = self._coords_to_str([start, end])
         profile = self.normalize_profile(profile)
-        
+
         url = f"{self.base_url}/route/v1/{profile}/{coord_str}"
         params = {"overview": "full", "geometries": "geojson"}
 
