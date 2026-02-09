@@ -1,6 +1,7 @@
 import json
 
 import folium as flm
+import folium
 import numpy as np
 import pandas as pd
 from streamlit_folium import st_folium
@@ -56,18 +57,18 @@ with st.sidebar:
 
         """Mise à jour du moyen de transport dans la payload"""
         st.session_state.payload["transport_mode"] = st.session_state.dict_mobility[
-             st.session_state.mobility_mean_widget
+            st.session_state.mobility_mean_widget
         ]
 
     index = list(st.session_state.dict_mobility.values()).index(
-         st.session_state.payload["transport_mode"]
+        st.session_state.payload["transport_mode"]
     )
     mobility_mean = st.selectbox(
-         "Moyen de mobilité/transport",
-         st.session_state.dict_mobility.keys(),
-         index=index,
-         key="mobility_mean_widget",
-         on_change=update_mobility_mean,
+        "Moyen de mobilité/transport",
+        st.session_state.dict_mobility.keys(),
+        index=index,
+        key="mobility_mean_widget",
+        on_change=update_mobility_mean,
     )
 
     # filtre sur les catégories :
@@ -377,6 +378,7 @@ for day in range(0, len(itinerary_list)):
     # récupération de l'itinéraire :
     itinerary = itinerary_list[day]["pois"]
 
+
     # création de la carte pour la journée :
     ## détérmination du point central de la carte par rapport à l'itinéraire :
     central_lt = np.mean([itinerary[i]["latitude"] for i in range(0, len(itinerary))])
@@ -414,6 +416,37 @@ for day in range(0, len(itinerary_list)):
                 icon_color="white",
             ),
         ).add_to(m)
+
+
+    # Géométrie :
+    geometry = itinerary_list[day]["geometry"]  # GeoJSON LineString
+    coords = geometry["coordinates"]
+
+    # Construire un FeatureCollection valide
+    geojson_route = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": {"day": day}
+            }
+        ]
+    }
+
+    layer = flm.FeatureGroup(name=f"Day {day}")
+    ## Ajouter la route OSRM
+    flm.GeoJson(
+        geojson_route,
+        style_function=lambda x, color=COLORS[day % len(COLORS)]: {
+            "color": color,
+            "weight": 4,
+            "opacity": 0.9
+        }
+    ).add_to(layer)
+
+    layer.add_to(m)
+
 
     # Récupération des catégories principales de l'itinéraire, de la durée et distance globales et du nombre de poi :
     sub_cat_itin = list(set([poi["sub_category"] for poi in itinerary]))
@@ -534,3 +567,53 @@ for day in range(0, len(itinerary_list)):
             # Pleine largeur par défaut
             st_folium(m, width=1050, height=400)
             
+
+
+# ## Ajouter un layer par jour
+# for idx, day in enumerate(itinerary_list):
+#     day_num = day["day"]
+#     geometry = day["geometry"]  # GeoJSON LineString
+#     coords = geometry["coordinates"]
+
+#     # Construire un FeatureCollection valide
+#     geojson_route = {
+#         "type": "FeatureCollection",
+#         "features": [
+#             {
+#                 "type": "Feature",
+#                 "geometry": geometry,
+#                 "properties": {"day": day_num}
+#             }
+#         ]
+#     }
+
+#    # Créer un FeatureGroup pour ce jour
+#     layer = folium.FeatureGroup(name=f"Day {day_num}")
+
+#     # Créer la carte
+#     m = folium.Map(location=[day["pois"][0]["latitude"], day["pois"][0]["longitude"]], zoom_start=13)
+
+#     # Ajouter la route OSRM
+#     folium.GeoJson(
+#         geojson_route,
+#         style_function=lambda x, color=COLORS[idx % len(COLORS)]: {
+#             "color": color,
+#             "weight": 4,
+#             "opacity": 0.9
+#         }
+#     ).add_to(layer)
+
+#     # Ajouter les POIs du jour
+#     for poi in day["pois"]:
+#         folium.Marker(
+#             location=[poi["latitude"], poi["longitude"]],
+#             popup=poi["nom_du_poi"],
+#             icon=folium.Icon(color="blue", icon="info-sign")
+#         ).add_to(layer)
+    
+#     # Ajouter le layer à la carte
+#     layer.add_to(m)
+
+#     # Afficher la carte
+#     st_folium(m, width=800, height=600)
+

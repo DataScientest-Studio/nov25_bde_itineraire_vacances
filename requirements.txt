@@ -12,3 +12,7 @@ boto3
 apache-airflow
 polars
 geopandas
+
+# -- API --
+fastapi
+uvicorn

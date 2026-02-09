@@ -1,3 +1,7 @@
+import logging
+logger = logging.getLogger("uvicorn.error")
+
+
 class POIRepository:
 
     def filter_pois(self, db, filters, h3_r7):
@@ -8,11 +12,11 @@ class POIRepository:
                 p.description,
                 p.longitude,
                 p.latitude,
-                CONCAT_WS(
-                    ', ',
-                    TRIM(BOTH '[]''' FROM ad.rue),
-                    CONCAT(ad.code_postal, ' ', ad.commune),
-                    ad.departement,
+                CONCAT(
+                    ad.rue, ', ',
+                    ad.code_postal, ' ',
+                    ad.commune, ', ',
+                    ad.departement, ', ',
                     ad.region
                 ) AS adresse,
                 mc.nom_cat AS main_category,
@@ -58,6 +62,7 @@ class POIRepository:
         # Récupérer les noms de colonnes
         columns = [desc[0] for desc in cur.description]
         
+        logger.info([dict(zip(columns, row)) for row in rows])
 
         # Transformer en liste de dicts
         return [dict(zip(columns, row)) for row in rows]

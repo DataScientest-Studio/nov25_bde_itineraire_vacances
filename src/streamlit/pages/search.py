@@ -145,9 +145,11 @@ with st.expander("👣 **Comment souhaiteriez-vous vous déplacer ?**"):
         "5️⃣ **Moyen de mobilité/transport**", st.session_state.dict_mobility.keys()
     )
 
-    osrm_mode = st.session_state.dict_mobility[mobility_mean]
-    if osrm_mode:
-        st.session_state.payload["transport_mode"] = osrm_mode
+    transport_mode = st.session_state.dict_mobility[mobility_mean]
+    
+    if transport_mode:
+        st.session_state.payload["transport_mode"] = transport_mode
+
 
 # ---------------------------------------
 ## Préférences/activitées souhaitées
@@ -208,8 +210,12 @@ if st.button("Proposer des itinéraires", type="primary"):
         ## DEBUG
         #st.write(payload)
         #st.write(itinerary_payload)
-        
-#if st.button("confirmer"):
+
+        #st.subheader("Payload prêt pour /itinerary/compute")
+        #st.json(itinerary_payload)
+
         # Redirection vers la page "Itinéraire"
+
         st.session_state.current_page = "results"
         st.rerun()
+

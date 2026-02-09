@@ -76,7 +76,7 @@ class ItineraryPipeline:
             return "driving"
         return "foot"
 
-    async def _compute_osrm_matrices(
+    def _compute_osrm_matrices(
         self,
         df_clustered: pl.DataFrame,
         osrm: OSRMClientAsync,
@@ -84,10 +84,9 @@ class ItineraryPipeline:
     ) -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
         profile = self._get_osrm_profile(transport_mode)
 
-        df_clustered, df_osrm_dist, df_osrm_dur = await build_osrm_matrices_async(
-            df_clustered, osrm, profile=profile
+        df_clustered, df_osrm_dist, df_osrm_dur = asyncio.run(
+            build_osrm_matrices_async(df_clustered, osrm, profile=profile)
         )
-
         return df_clustered, df_osrm_dist, df_osrm_dur
 
     # ---------------------------------------------------------
@@ -279,7 +278,7 @@ class ItineraryPipeline:
     # ---------------------------------------------------------
     # PIPELINE COMPLET
     # ---------------------------------------------------------
-    async def run_from_pois_df(
+    def run_from_pois_df(
         self,
         pois_df: pl.DataFrame,
         nb_days: int,
@@ -306,7 +305,7 @@ class ItineraryPipeline:
         )
 
         # 3. OSRM matrices
-        df_clustered, df_osrm_dist, df_osrm_dur = await self._compute_osrm_matrices(
+        df_clustered, df_osrm_dist, df_osrm_dur = self._compute_osrm_matrices(
             df_clustered=df_clustered,
             osrm=osrm,
             transport_mode=transport_mode,
