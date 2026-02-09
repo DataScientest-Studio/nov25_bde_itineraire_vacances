@@ -18,11 +18,14 @@ localities = df_localities["locality"].unique().tolist()
 
 # -----------------------------------------------------------
 
-st.title("✨ Wanderlust ! ✨", text_alignment="center")
+st.title("✨ TripMaNGo ✨", text_alignment="center")
 st.header("Ne planifiez plus vos voyages, profitez-en !")
 st.markdown(
-    "💡 Wanderlust est votre assistante de voyage. En quelques clics, créez un itinéraire personnalisé adapté à vos besoins de voyages"
+    "💡 **TripMaNGo** est votre assistante de voyage. En quelques clics, créez un itinéraire personnalisé adapté à vos besoins de voyages"
 )
+
+st.divider()
+
 st.subheader("🎯 Quels sont vos critères de recherche ? ")
 
 
@@ -30,17 +33,13 @@ st.subheader("🎯 Quels sont vos critères de recherche ? ")
 ## zone géographique
 # ---------------------------------------
 
-with st.expander("📍 Quelle est votre destination ?"):
-    # option recherche avec simple select :
-    # ---------------------------------------
-    # search = st.text_input("1️⃣ Saisissez le nom de la commune ou le code postal")
-    # filtered_localities = [c for c in localities if search.lower() in c.lower()] if search else localities
-    # locality = st.selectbox("2️⃣ Je veux visiter cette destination", filtered_localities, placeholder= "Sélectionner votre destination dans la liste déroulate")
+with st.expander("📍 **Quelle est votre destination ?**"):
+    
 
     locality = st.multiselect(
-        "1️⃣ Je veux visiter cette destination", localities, max_selections=1
+        "1️⃣ **Je veux visiter cette destination**", localities, max_selections=1
     )
-    radius = st.slider("2️⃣ Dans un rayon de (en km)", 1, st.session_state.max_radius)
+    radius = st.slider("2️⃣ **Dans un rayon de** (en km)", 1, st.session_state.max_radius)
 
     @st.cache_data
     def create_geo_zone_map(locality, radius):
@@ -93,15 +92,25 @@ with st.expander("📍 Quelle est votre destination ?"):
 ## durée du séjour
 # ---------------------------------------
 
-with st.expander("📅 Quelle est la durée de votre séjour ?"):
+with st.expander("📅 **Quelle est la durée de votre séjour ?**"):
     options = [
         "saisir un nombre de jours",
         "saisir la date d'arrivée et la date de départ",
     ]
-    choice = st.radio("3️⃣ Je souhaite :", horizontal=True, options=options)
+    choice = st.radio("3️⃣ **Je souhaite** :", horizontal=True, options=options)
 
     if choice == options[0]:
-        num_days = st.slider("Nombre de jours", 1, st.session_state.max_days)
+                    
+        num_days = st.slider(
+            "Nombre de jours", 
+            1, 
+            st.session_state.max_days,
+            value=st.session_state.payload["days"],  
+            key="num_days_slider"
+        )
+        # Mettre à jour immédiatement
+        st.session_state.payload["days"] = num_days
+        
     else:
         col1, col2 = st.columns(2)
         with col1:
@@ -123,37 +132,39 @@ with st.expander("📅 Quelle est la durée de votre séjour ?"):
             st.text(f"Nombre de jours : {num_days}")
             if num_days < 0:
                 st.error("❌ La date de départ doit être après la date d'arrivée")
-
-    if num_days:
-        st.session_state.payload["days"] = num_days
+            else:
+                # Mettre à jour le payload
+                st.session_state.payload["days"] = num_days
 
 # ---------------------------------------
 ## Moyen de transport/mobilité
 # ---------------------------------------
 
-with st.expander("👣 Comment souhaiteriez-vous vous déplacer ?"):
+with st.expander("👣 **Comment souhaiteriez-vous vous déplacer ?**"):
     mobility_mean = st.selectbox(
-        "5️⃣ Moyen de mobilité/transport", st.session_state.dict_mobility.keys()
+        "5️⃣ **Moyen de mobilité/transport**", st.session_state.dict_mobility.keys()
     )
 
     transport_mode = st.session_state.dict_mobility[mobility_mean]
+    
     if transport_mode:
         st.session_state.payload["transport_mode"] = transport_mode
+
 
 # ---------------------------------------
 ## Préférences/activitées souhaitées
 # ---------------------------------------
 
-with st.expander("🎪 Qu'est-ce qui vous ferait plaisir ?"):
+with st.expander("🎪 **Qu'est-ce qui vous ferait plaisir ?**"):
     # catégories principales :
     main_categories = fetch_main_categories()
     main_cat = st.multiselect(
-        "5️⃣ Catégorie(s) principale(s)", main_categories, default=[]
+        "5️⃣ **Catégorie(s) principale(s)**", main_categories, default=[]
     )
 
     if main_cat:
         sub_categories = fetch_sub_categories(main_cat)
-        sub_cat = st.multiselect("6️⃣ Sous-catégorie(s)", sub_categories, default=[])
+        sub_cat = st.multiselect("6️⃣ **Sous-catégorie(s)**", sub_categories, default=[])
 
     if main_cat and sub_cat:
         st.session_state.payload["main_category"] = main_cat
@@ -163,7 +174,7 @@ with st.expander("🎪 Qu'est-ce qui vous ferait plaisir ?"):
 ## Validation des paramètres et lancement de la recherche
 # ---------------------------------------------------------------------
 
-if st.button("Proposer des itinéraires"):
+if st.button("Proposer des itinéraires", type="primary"):
     payload = st.session_state.payload
     if (
         (payload["commune"] == "")
@@ -177,29 +188,34 @@ if st.button("Proposer des itinéraires"):
     ):
         st.error("❌ Un ou plusieurs paramètres de recherche sont invalides")
     else:
-        st.write(st.session_state.payload)
-        st.session_state.redirect = True
-
-
-if st.session_state.get("redirect"):
-    if st.button("Confirmer"):
-        payload = st.session_state.payload
+        
         pois = get_selected_pois(payload)
 
         # Construction du payload pour /itinerary/compute
         itinerary_payload = {
             "pois": pois["pois"],
-            "days": payload.get("days", 1),
-            "transport_mode": payload.get("transport_mode", "walk"),
-            "solver": payload.get("solver", "auto"),
-            "latitude": payload.get("latitude", 48.8566),
-            "longitude": payload.get("longitude", 2.3522),
+            "days": payload["days"] ,
+            "transport_mode": payload["transport_mode"],
+            "solver": "auto",
+            "latitude": payload["latitude"],
+            "longitude": payload["longitude"],
         }
         # Sauvegarde dans la session
         st.session_state.itinerary_payload = itinerary_payload
 
+        # Supprimer le cache de la recherche d'itinéraire s'il existe: 
+        if "itinerary_result" in st.session_state:
+            del st.session_state.itinerary_result
+        
+        ## DEBUG
+        #st.write(payload)
+        #st.write(itinerary_payload)
+
         #st.subheader("Payload prêt pour /itinerary/compute")
         #st.json(itinerary_payload)
-        
+
         # Redirection vers la page "Itinéraire"
-        st.switch_page("pages/results.py")
+
+        st.session_state.current_page = "results"
+        st.rerun()
+

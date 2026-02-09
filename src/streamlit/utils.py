@@ -56,10 +56,7 @@ def send_payload(payload):
 
 @st.cache_data
 def distance_print(d):
-    if d > 1000:
-        d = f"{round(d/1000, 1)} km"
-    else:
-        d = f"{round(d,0)} m"
+    d = f"{round(d,1)} km"
     return d
 
 
@@ -67,11 +64,9 @@ def distance_print(d):
 def time_print(t):
     t = int(t)
     if t < 60:
-        return f"{t}s"
-    elif t < 3600:
-        minutes = t // 60
-        return f"{minutes}min"
+        return f"{t} min"
+    
     else:
-        hours = t // 3600
-        minutes = (t % 3600) // 60
-        return f"{hours}h {minutes}min"
+        hours = t // 60
+        minutes = t % 60
+        return f"{hours} h {minutes} min"
