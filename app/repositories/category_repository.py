@@ -4,8 +4,10 @@ class CategoryRepository:
         with db.cursor() as cur:
             cur.execute("""
                 SELECT DISTINCT(nom_cat)
-                FROM main_category
-                ORDER BY nom_cat;
+                FROM main_category AS m
+                LEFT JOIN sub_category AS s
+                ON m.id = s.main_category_id
+                WHERE nom_sous_cat <> 'unknown';;
             """)
             rows = cur.fetchall()
             main_categories_list = [row[0] for row in rows]

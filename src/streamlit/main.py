@@ -1,12 +1,5 @@
 import streamlit as st
 
-pg = st.navigation(
-    [
-        st.Page("pages/search.py", title="Paramètres de recherche "),
-        st.Page("pages/results.py", title="Consultation des résultats"),
-    ]
-)
-
 # -------------------------------------------------
 # Variables globales :
 # -------------------------------------------------
@@ -17,9 +10,7 @@ st.session_state.dict_mobility = {
     "👟à pied": "walk",
     "🚗Voiture": "car",
     "🚴Vélo": "bike",
-    "🚌Transport en commun": "public_transport",
 }
-
 
 # ------------------------------------------------------------
 # Initialisation du payload de recherche d'itinéraire :
@@ -27,15 +18,77 @@ st.session_state.dict_mobility = {
 if "payload" not in st.session_state:
     st.session_state.payload = {
         "commune": "",
-        "main_category": [],
-        "sub_category": [],
-        "min_score": 0.15,
-        "days": 0,
         "latitude": 0,
         "longitude": 0,
+        "main_category": [],
+        "sub_category": [],
         "radius": 0,
-        "osrm_mode": "",
-        "solver": "auto",
+        "days": 0,
+        "transport_mode": "walk", 
+        "solver": "auto"      
     }
 
-pg.run()
+if "itinerary_payload" not in st.session_state:
+    st.session_state.itinerary_payload = {
+        "pois": [],
+        "days": 0,
+        "transport_mode": "walk",
+        "solver": "auto",
+        "latitude": 0,
+        "longitude": 0,        
+    }
+
+# Initialiser la page par défaut
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "search"
+
+
+# définir le layout selon la page
+if st.session_state.current_page == "results":
+    st.set_page_config(page_title="TripMango", layout="wide")
+else:
+    st.set_page_config(page_title="TripMango", layout="centered")
+
+with st.sidebar:
+    with st.container(horizontal_alignment="center"):
+        st.image("pages/media/tripmango.png", )
+    
+    st.divider()
+
+    current = st.session_state.get("current_page", "search")
+    
+    # Bouton Recherche
+    if st.button(
+        "🔍 Recherche d'itinéraires", 
+        use_container_width=True,
+        type="primary" if st.session_state.current_page == "search" else "secondary"
+    ):
+        st.session_state.current_page = "search"
+        st.rerun()
+    
+    # Bouton Résultats
+    if st.button(
+        "🗺️ Résultats", 
+        use_container_width=True,
+        type="primary" if st.session_state.current_page == "results" else "secondary"
+    ):
+        st.session_state.current_page = "results"
+        st.rerun()
+    
+    st.divider()
+
+
+#  Page à aggicher par défaut :
+if "page" not in st.session_state:
+    st.session_state.page = "search"
+
+# -------------------------------------------------
+# Afficher la page correspondante
+# -------------------------------------------------
+if st.session_state.current_page == "search":
+    exec(open("pages/search.py").read())
+elif st.session_state.current_page == "results":
+    exec(open("pages/results.py").read())
+    
+
+

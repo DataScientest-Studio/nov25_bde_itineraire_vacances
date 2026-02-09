@@ -111,7 +111,7 @@ class SpatialClusterer:
         ).T
 
         n_cells = coords.shape[0]
-        n_clusters = min(self.nb_days, n_cells)
+        n_clusters = self.nb_days #min(self.nb_days, n_cells)
 
         kmeans = KMeans(
             n_clusters=n_clusters,

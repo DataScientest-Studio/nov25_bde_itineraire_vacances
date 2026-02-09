@@ -12,11 +12,11 @@ class POIRepository:
                 p.description,
                 p.longitude,
                 p.latitude,
-                CONCAT(
-                    ad.rue, ', ',
-                    ad.code_postal, ' ',
-                    ad.commune, ', ',
-                    ad.departement, ', ',
+                CONCAT_WS(
+                    ', ',
+                    TRIM(BOTH '[]''' FROM ad.rue),
+                    CONCAT(ad.code_postal, ' ', ad.commune),
+                    ad.departement,
                     ad.region
                 ) AS adresse,
                 mc.nom_cat AS main_category,
