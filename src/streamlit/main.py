@@ -49,6 +49,21 @@ if st.session_state.current_page == "results":
 else:
     st.set_page_config(page_title="TripMango", layout="centered")
 
+
+# Cacher le menu de navigation automatique
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebarNav"] {
+            display: none;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+
 with st.sidebar:
     with st.container(horizontal_alignment="center"):
         st.image("pages/media/tripmango.png", )

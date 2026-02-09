@@ -24,7 +24,7 @@ class SpatialClusterer:
         self.nb_days: int = 1
         self.anchor_lat: Optional[float] = None
         self.anchor_lon: Optional[float] = None
-        self.h3_resolution: int = 7
+        self.h3_resolution: int = 9
         self.random_state: int = 42
 
     # -----------------------------
@@ -111,7 +111,7 @@ class SpatialClusterer:
         ).T
 
         n_cells = coords.shape[0]
-        n_clusters = min(self.nb_days, n_cells)
+        n_clusters = self.nb_days #min(self.nb_days, n_cells)
 
         kmeans = KMeans(
             n_clusters=n_clusters,
