@@ -79,6 +79,7 @@ target/
 
 # exclude data from source control by default
 /data/
+/docker/osrm/scripts/osrm-data/
 benchmark_solvers/data/
 benchmark_solvers/results/
 

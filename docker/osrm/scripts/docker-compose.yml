@@ -1,0 +1,44 @@
+
+services:
+  # Service OSRM pour le profil FOOT
+  osrm-foot:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-foot
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./osrm-data/profiles/foot:/data
+    command: osrm-routed --algorithm mld /data/france-merged.osrm
+    restart: unless-stopped
+    networks:
+      - osrm-network
+
+  # Service OSRM pour le profil BIKE
+  osrm-bike:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-bike
+    ports:
+      - "5002:5000"
+    volumes:
+      - ./osrm-data/profiles/bike:/data
+    command: osrm-routed --algorithm mld /data/france-merged.osrm
+    restart: unless-stopped
+    networks:
+      - osrm-network
+
+  # Service OSRM pour le profil CAR
+  osrm-car:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-car
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./osrm-data/profiles/car:/data
+    command: osrm-routed --algorithm mld /data/france-merged.osrm
+    restart: unless-stopped
+    networks:
+      - osrm-network
+
+networks:
+  osrm-network:
+    driver: bridge
