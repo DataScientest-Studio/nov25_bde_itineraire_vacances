@@ -2,19 +2,10 @@ FROM python:3.11-slim
 
 # Métadonnées
 LABEL maintainer="Gérard Pham"
-LABEL description="API FastAPI pour le calcul d'itinéraires de vacances avec H3 et PostGIS support"
+LABEL description="API FastAPI pour le calcul d'itinéraires de vacances"
 LABEL version="1.0"
 
-# Installation des dépendances système pour les librairies géospatiales
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    libgeos-dev \
-    libproj-dev \
-    gdal-bin \
-    libgdal-dev \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /data
 
 WORKDIR /app
 

@@ -16,7 +16,7 @@ class OSRMClientAsync:
 
     def __init__(
         self,
-        local_url="http://localhost",
+        local_url="http://localhost:5000",
         public_url="https://router.project-osrm.org",
         max_chunk_size: int = 80,
         max_concurrency: int = 20,

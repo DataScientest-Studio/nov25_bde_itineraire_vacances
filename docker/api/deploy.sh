@@ -4,7 +4,7 @@
 echo "🚀 Déploiement de l'API FastAPI..."
 
 # Création des répertoires nécessaires
-mkdir -p ../osrm_data
+mkdir -p ../data
 mkdir -p ../logs
 
 # Arrêt des containers existants

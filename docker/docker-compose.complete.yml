@@ -83,14 +83,14 @@ services:
         condition: service_healthy
     command: >
       sh -c "
-        echo '🧪 Test de l architecture complète...'
+        echo ' Test de l architecture complète...'
         echo '📡 Test API...'
         curl -f http://api:8000/docs || echo '⚠️  API en cours de démarrage'
-        echo '🗺️  Test OSRM...'
+        echo '  Test OSRM...'
         curl -f http://osrm-multi-regions:5000/route/v1/driving/2.35,48.85;2.36,48.86
-        echo '🗄️  Test PostgreSQL...'
-        nc -z postgres-vacances 5432 && echo '✅ PostgreSQL OK' || echo '❌ PostgreSQL KO'
-        echo '🎉 Architecture vérifiée !'
+        echo '  Test PostgreSQL...'
+        nc -z postgres-vacances 5432 && echo ' PostgreSQL OK' || echo '❌ PostgreSQL KO'
+        echo ' Architecture vérifiée !'
       "
     networks:
       - vacances-network
