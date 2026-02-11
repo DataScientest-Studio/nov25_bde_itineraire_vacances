@@ -1,7 +1,7 @@
 import streamlit as st
 
 with st.sidebar:
-    st.image("pages/media/tripmango_reduc.png", output_format='PNG')
+    st.image("pages/media/tripmango_2_reduc.png", output_format='PNG')
 
 pg = st.navigation([
     st.Page("pages/page_de_garde.py", title="1️⃣ Introduction"),

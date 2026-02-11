@@ -11,10 +11,10 @@ with st.container(height=40, border=False) :
 
     with col2 :
         with st.container(horizontal_alignment='right') :
-            st.image("pages/media/tripmango_reduc2.png", output_format="PNG")
+            st.image("pages/media/tripmango_2_picto.png", output_format="PNG")
 
-with st.container(key='body', height=520) :
-    st.markdown('corps de la slide')
+with st.container(key='body', height=520, horizontal_alignment="center", vertical_alignment="center") :
+    st.image("pages/media/demo.png", output_format='PNG')
 
 with st.container(key='bottom') :
     col1, col2, col3, col4, col5 = st.columns(5)

@@ -11,7 +11,7 @@ with st.container(height=40, border=False) :
 
     with col2 :
         with st.container(horizontal_alignment='right') :
-            st.image("pages/media/tripmango_reduc2.png", output_format="PNG")
+            st.image("pages/media/tripmango_2_picto.png", output_format="PNG")
 
 with st.container(key='body', height=520, border= False, horizontal_alignment='center') :
     col1, col2 = st.columns(2)
