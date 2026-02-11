@@ -11,10 +11,10 @@ with st.container(height=40, border=False) :
 
     with col2 :
         with st.container(horizontal_alignment='right') :
-            st.image("pages/media/tripmango_reduc2.png", output_format="PNG")
+            st.image("pages/media/tripmango_2_picto.png", output_format="PNG")
 
-with st.container(key='body', height=520, border=True) :
-    st.image("pages/media/sequence_diagram.svg", output_format="SVG")
+with st.container(key='body', height=520, border=True, horizontal_alignment='center') :
+    st.image("pages/media/api_schema.png", output_format="PNG")
 
 with st.container(key='bottom') :
     col1, col2, col3, col4, col5 = st.columns(5)

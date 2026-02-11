@@ -16,7 +16,7 @@ with st.container(height=100, border=False) :
         st.subheader(f"**{today}**", text_alignment='right')
 
 with st.container(vertical_alignment="center", horizontal_alignment="center", gap=None) : 
-    st.image("pages/media/tripmango.png", output_format="PNG", )
+    st.image("pages/media/tripmango_2_reduc.png", output_format="PNG", )
     st.subheader("Ne planifiez plus vos vacances, profitez-en !", text_alignment="center")
   
 

@@ -11,7 +11,7 @@ with st.container(height=40, border=False) :
 
     with col2 :
         with st.container(horizontal_alignment='right') :
-            st.image("pages/media/tripmango_reduc2.png", output_format="PNG")
+            st.image("pages/media/tripmango_2_picto.png", output_format="PNG")
 
 with st.container(key='body', height=520, border=False) :
     
@@ -23,22 +23,22 @@ with st.container(key='body', height=520, border=False) :
 
     with col2 :
         
-        with st.container(height=50, horizontal_alignment='center', vertical_alignment='center') :
+        with st.container(height=40, horizontal_alignment='center', vertical_alignment='center', border=False) :
             st.markdown(f'''**Expérience utilisateur**''')
 
         st.divider()
 
-        with st.container(height=50, horizontal_alignment='center', vertical_alignment='center') :
+        with st.container(height=40, horizontal_alignment='center', vertical_alignment='center', border=False) :
             st.markdown(f'''**Challenge de la modélisation**''')
 
         st.divider()
 
-        with st.container(height=50, horizontal_alignment='center', vertical_alignment='center') :
+        with st.container(height=40, horizontal_alignment='center', vertical_alignment='center', border=False) :
             st.markdown(f'''**Richesse des données**''')
             
         st.divider()
 
-        with st.container(height=50, horizontal_alignment='center', vertical_alignment='center') :
+        with st.container(height=40, horizontal_alignment='center', vertical_alignment='center', border=False) :
                 st.markdown(f'''**Diversité des outils**''')
 
 with st.container(key='bottom') :
