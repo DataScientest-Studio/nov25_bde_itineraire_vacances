@@ -10,11 +10,11 @@ RUN mkdir -p /data
 WORKDIR /app
 
 # Copie et installation des dépendances Python
-COPY requirements.txt /requirements.txt
+COPY app/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 
 # Copie du code source de l'API
-COPY src/app/ ./app/
+COPY app/ ./app/
 
 # Configuration des variables d'environnement
 ENV PYTHONPATH=/app

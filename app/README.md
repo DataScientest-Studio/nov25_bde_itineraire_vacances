@@ -239,12 +239,31 @@ export LOG_LEVEL=DEBUG
 
 ## Docker
 
+### Déploiement avec Docker Compose
+```bash
+# Depuis le répertoire docker/api/
+cd docker/api/
+./deploy.sh
+```
+
+Ou manuellement :
+```bash
+cd docker/api/
+docker-compose up --build -d
+```
+
+### Services inclus
+- **API FastAPI** : http://localhost:8000
+- **OSRM Backend** : http://localhost:5000  
+- **PostgreSQL** : localhost:5433
+- **Documentation** : http://localhost:8000/docs
+
 ### Dockerfile
 ```dockerfile
 FROM python:3.11-slim
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY app/requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
 COPY app/ ./app/
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
@@ -253,12 +272,14 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```yaml
 services:
   api:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/api/Dockerfile
     ports:
       - "8000:8000"
     environment:
-      - OSRM_URL=http://osrm:5000
-      - POSTGRES_HOST=postgres
+      - OSRM_URL=http://osrm-backend:5000
+      - POSTGRES_HOST=postgres-vacances
 ```
 
 ##  Dépannage
@@ -292,7 +313,6 @@ docker logs osrm-container
 ### Async/Await
 - OSRM client asynchrone pour performances
 - Support des requêtes concurrentes
-- Non-blocking I/O operations
 
 ---
 
