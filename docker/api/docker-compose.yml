@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # Service API FastAPI
@@ -17,7 +16,7 @@ services:
       - POSTGRES_USER=vacances_user
       - POSTGRES_PASSWORD=vacances_password
     volumes:
-      - ../src:/app/src
+      - ../app:/app/app
       - ../logs:/app/logs
     depends_on:
       - postgres-vacances
