@@ -1,0 +1,82 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus lui-même
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # API FastAPI avec métriques intégrées
+  - job_name: 'tripmango-api'
+    static_configs:
+      - targets: ['api:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # PostgreSQL Exporter
+  - job_name: 'postgres-vacances'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+
+  # PostgreSQL Airflow
+  - job_name: 'postgres-airflow'
+    static_configs:
+      - targets: ['postgres-airflow-exporter:9188']
+    scrape_interval: 30s
+
+  # OSRM Exporter
+  - job_name: 'osrm-car'
+    static_configs:
+      - targets: ['osrm-car:5000']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  - job_name: 'osrm-bike'
+    static_configs:
+      - targets: ['osrm-bike:5000']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  - job_name: 'osrm-foot'
+    static_configs:
+      - targets: ['osrm-foot:5000']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # Airflow Webserver
+  - job_name: 'airflow-webserver'
+    static_configs:
+      - targets: ['airflow-webserver:8080']
+    metrics_path: '/admin/metrics'
+    scrape_interval: 30s
+
+  # Node Exporter pour les métriques système
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # cAdvisor pour les métriques des conteneurs Docker
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 30s
+
+# Alerting
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Règles d'alertes
+# rule_files:
+#   - "alert_rules.yml"

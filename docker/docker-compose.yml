@@ -135,65 +135,65 @@ services:
     networks:
       - vacances-network
 
-osrm-bike:
-    image: ghcr.io/project-osrm/osrm-backend
-    container_name: osrm-bike
-    ports:
-      - "5002:5000"
-    volumes:
-      - ./osrm-data/profiles/bike:/data
-    command: osrm-routed --algorithm mld /data/france-merged.osrm
-    restart: unless-stopped
-    networks:
-      - vacances-network
+  osrm-bike:
+      image: ghcr.io/project-osrm/osrm-backend
+      container_name: osrm-bike
+      ports:
+        - "5002:5000"
+      volumes:
+        - ./osrm-data/profiles/bike:/data
+      command: osrm-routed --algorithm mld /data/france-merged.osrm
+      restart: unless-stopped
+      networks:
+        - vacances-network
 
-osrm-car:
-    image: ghcr.io/project-osrm/osrm-backend
-    container_name: osrm-car
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./osrm-data/profiles/car:/data
-    command: osrm-routed --algorithm mld /data/france-merged.osrm
-    restart: unless-stopped
-    networks:
-      - vacances-network
-# --- SERVICES AIRFLOW ---
+  osrm-car:
+      image: ghcr.io/project-osrm/osrm-backend
+      container_name: osrm-car
+      ports:
+        - "5000:5000"
+      volumes:
+        - ./osrm-data/profiles/car:/data
+      command: osrm-routed --algorithm mld /data/france-merged.osrm
+      restart: unless-stopped
+      networks:
+        - vacances-network
+  # --- SERVICES AIRFLOW ---
 
-airflow-webserver:
-    <<: *airflow-common
-    container_name: airflow-webserver
-    command: webserver
-    ports:
-      - "8080:8080"
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+  airflow-webserver:
+      <<: *airflow-common
+      container_name: airflow-webserver
+      command: webserver
+      ports:
+        - "8080:8080"
+      depends_on:
+        <<: *airflow-common-depends-on
+        airflow-init:
+          condition: service_completed_successfully
 
-airflow-scheduler:
-    <<: *airflow-common
-    container_name: airflow-scheduler
-    command: scheduler
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+  airflow-scheduler:
+      <<: *airflow-common
+      container_name: airflow-scheduler
+      command: scheduler
+      depends_on:
+        <<: *airflow-common-depends-on
+        airflow-init:
+          condition: service_completed_successfully
 
-airflow-init:
-    <<: *airflow-common
-    container_name: airflow-init
-    entrypoint: /bin/bash
-    command:
-      - -c
-      - |
-        mkdir -p /sources/logs /sources/dags /sources/plugins [cite: 18]
-        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins} [cite: 18]
-        exec /entrypoint airflow db migrate && \
-        airflow users create --username airflow --firstname Airflow --lastname Admin --role Admin --email airflow@example.com --password airflow [cite: 18, 19]
-    user: "0:0"
-    volumes:
-      - .:/sources
+  airflow-init:
+      <<: *airflow-common
+      container_name: airflow-init
+      entrypoint: /bin/bash
+      command:
+        - -c
+        - |
+          mkdir -p /sources/logs /sources/dags /sources/plugins [cite: 18]
+          chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins} [cite: 18]
+          exec /entrypoint airflow db migrate && \
+          airflow users create --username airflow --firstname Airflow --lastname Admin --role Admin --email airflow@example.com --password airflow [cite: 18, 19]
+      user: "0:0"
+      volumes:
+        - .:/sources
 
 volumes:
   postgres-airflow-data:
@@ -203,3 +203,14 @@ volumes:
 networks:
   vacances-network:
     driver: bridge
+
+# --- MONITORING ---
+# Pour activer le monitoring, lancer:
+# docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+#
+# Services de monitoring disponibles:
+# - Prometheus: http://localhost:9090
+# - Grafana: http://localhost:3000 (admin/admin123)
+# - AlertManager: http://localhost:9093
+# - Node Exporter: http://localhost:9100/metrics
+# - cAdvisor: http://localhost:8080

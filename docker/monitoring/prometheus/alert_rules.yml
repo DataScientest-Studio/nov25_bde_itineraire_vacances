@@ -1,0 +1,106 @@
+groups:
+  - name: tripmango_alerts
+    rules:
+      # Alertes API
+      - alert: APIHighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on API"
+          description: "95th percentile latency is {{ $value }}s"
+
+      - alert: APIHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on API"
+          description: "Error rate is {{ $value }} requests/second"
+
+      # Alertes Base de données
+      - alert: PostgreSQLDown
+        expr: up{job="postgres-vacances"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "PostgreSQL vacances database has been down for more than 1 minute"
+
+      - alert: PostgreSQLHighConnections
+        expr: pg_stat_activity_count > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of PostgreSQL connections"
+          description: "{{ $value }} active connections"
+
+      # Alertes OSRM
+      - alert: OSRMDown
+        expr: up{job=~"osrm-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "OSRM service is down"
+          description: "OSRM {{ $labels.job }} service has been down for more than 1 minute"
+
+      - alert: OSRMHighLatency
+        expr: histogram_quantile(0.95, rate(osrm_request_duration_seconds_bucket[5m])) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on OSRM"
+          description: "95th percentile OSRM latency is {{ $value }}s"
+
+      # Alertes Système
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}%"
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space"
+          description: "Disk usage is {{ $value }}%"
+
+      # Alertes Airflow
+      - alert: AirflowDAGProcessingLag
+        expr: airflow_scheduler_heartbeat_time < time() - 300
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Airflow scheduler lag"
+          description: "Airflow scheduler hasn't sent heartbeat for 5 minutes"
+
+      - alert: AirflowTaskFailures
+        expr: increase(airflow_task_failures_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Airflow task failure rate"
+          description: "{{ $value }} task failures in the last 5 minutes"
