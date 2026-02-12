@@ -3,8 +3,8 @@ services:
   # Prometheus - Collecteur de métriques
   prometheus:
     build:
-      context: ..
-      dockerfile: docker/monitoring/prometheus/Dockerfile
+      context: ./monitoring/prometheus
+      dockerfile: Dockerfile
     container_name: prometheus
     ports:
       - "9090:9090"
@@ -84,7 +84,7 @@ services:
     ports:
       - "9187:9187"
     environment:
-      DATA_SOURCE_NAME: "postgresql://${POSTGRES_VACANCES_USER}:${POSTGRES_VACANCES_PASSWORD}@postgres-vacances:${POSTGRES_VACANCES_PORT}/${POSTGRES_VACANCES_DB}?sslmode=disable"
+      DATA_SOURCE_NAME: "postgresql://vacances_user:vacances_password@postgres-vacances:5432/vacances?sslmode=disable"
     restart: unless-stopped
     networks:
       - vacances-network
@@ -98,7 +98,7 @@ services:
     ports:
       - "9188:9187"
     environment:
-      DATA_SOURCE_NAME: "postgresql://${POSTGRES_AIRFLOW_USER}:${POSTGRES_AIRFLOW_PASSWORD}@postgres-airflow:5432/${POSTGRES_AIRFLOW_DB}?sslmode=disable"
+      DATA_SOURCE_NAME: "postgresql://airflow:airflow@postgres-airflow:5432/airflow?sslmode=disable"
     restart: unless-stopped
     networks:
       - vacances-network
@@ -128,4 +128,5 @@ volumes:
 
 networks:
   vacances-network:
+    name: docker_vacances-network
     external: true

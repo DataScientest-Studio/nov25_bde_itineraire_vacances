@@ -1,0 +1,18 @@
+
+
+# --- DATA ENGINEERING (Airflow & ETL) ---
+apache-airflow-providers-postgres
+psycopg2-binary
+sqlalchemy
+h3
+pandas
+numpy
+requests
+boto3
+apache-airflow
+polars
+geopandas
+
+# -- API --
+fastapi
+uvicorn

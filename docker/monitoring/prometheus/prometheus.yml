@@ -3,8 +3,7 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+  - "alert_rules.yml"
 
 scrape_configs:
   # Prometheus lui-même
@@ -20,6 +19,13 @@ scrape_configs:
     scrape_interval: 10s
     scrape_timeout: 5s
 
+  # OSRM Exporter
+  - job_name: 'osrm-exporter'
+    static_configs:
+      - targets: ['osrm-exporter:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
   # PostgreSQL Exporter
   - job_name: 'postgres-vacances'
     static_configs:
@@ -31,25 +37,6 @@ scrape_configs:
     static_configs:
       - targets: ['postgres-airflow-exporter:9188']
     scrape_interval: 30s
-
-  # OSRM Exporter
-  - job_name: 'osrm-car'
-    static_configs:
-      - targets: ['osrm-car:5000']
-    metrics_path: '/metrics'
-    scrape_interval: 15s
-
-  - job_name: 'osrm-bike'
-    static_configs:
-      - targets: ['osrm-bike:5000']
-    metrics_path: '/metrics'
-    scrape_interval: 15s
-
-  - job_name: 'osrm-foot'
-    static_configs:
-      - targets: ['osrm-foot:5000']
-    metrics_path: '/metrics'
-    scrape_interval: 15s
 
   # Airflow Webserver
   - job_name: 'airflow-webserver'
@@ -76,7 +63,3 @@ alerting:
     - static_configs:
         - targets:
           # - alertmanager:9093
-
-# Règles d'alertes
-# rule_files:
-#   - "alert_rules.yml"

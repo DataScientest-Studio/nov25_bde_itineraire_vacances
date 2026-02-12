@@ -1,6 +1,6 @@
 
 x-airflow-common: &airflow-common
-  build: ./docker/airflow 
+  build: ./airflow 
   dns: 8.8.8.8
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
