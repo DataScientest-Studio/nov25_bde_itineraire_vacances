@@ -8,11 +8,11 @@ class DBManager:
         self.pool = pool.SimpleConnectionPool(
             minconn=5,
             maxconn=10,
-            database=os.getenv("POSTGRES_DB"),
-            host=os.getenv("DB_HOST"),
-            user=os.getenv("POSTGRES_USER"),
-            password=os.getenv("POSTGRES_PASSWORD"),
-            port=os.getenv("DB_PORT"),
+            database=os.getenv("POSTGRES_DB", "vacances"),
+            host=os.getenv("DB_HOST", "postgres-vacances"),
+            user=os.getenv("POSTGRES_USER", "vacances_user"),
+            password=os.getenv("POSTGRES_PASSWORD", "vacances_password"),
+            port=int(os.getenv("DB_PORT", "5432")),
         )
 
     def get_conn(self):

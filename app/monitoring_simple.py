@@ -1,11 +1,10 @@
 """
-Monitoring Prometheus pour l'API TripMaNGo
+Monitoring Prometheus simplifié pour l'API TripMaNGo
 """
 import time
-from functools import wraps
 from typing import Dict, Any
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-from fastapi import Request, Response
+from fastapi import Response, Request
 from fastapi.responses import PlainTextResponse
 
 # Métriques de l'API
@@ -44,61 +43,6 @@ ITINERARY_POIS_PROCESSED = Histogram(
     ['days']
 )
 
-def track_requests(func):
-    """Décorateur pour suivre les requêtes HTTP"""
-    @wraps(func)
-    async def wrapper(*args, **kwargs):
-        start_time = time.time()
-        
-        # Pour FastAPI, le premier argument est souvent Request
-        request = None
-        for arg in args:
-            if isinstance(arg, Request):
-                request = arg
-                break
-        
-        try:
-            # Incrémenter les connexions actives
-            ACTIVE_CONNECTIONS.inc()
-            
-            # Exécuter la fonction
-            result = await func(*args, **kwargs) if hasattr(func, '__call__') and hasattr(func.__call__, '__await__') else func(*args, **kwargs)
-            
-            # Calculer la durée
-            duration = time.time() - start_time
-            
-            # Extraire les informations de la requête
-            if request:
-                method = request.method
-                endpoint = request.url.path
-                status_code = "200"  # Par défaut, à ajuster selon la réponse
-                
-                # Enregistrer les métriques
-                REQUEST_COUNT.labels(method=method, endpoint=endpoint, status_code=status_code).inc()
-                REQUEST_DURATION.labels(method=method, endpoint=endpoint).observe(duration)
-            
-            return result
-            
-        except Exception as e:
-            # En cas d'erreur
-            duration = time.time() - start_time
-            if request:
-                REQUEST_COUNT.labels(
-                    method=request.method, 
-                    endpoint=request.url.path, 
-                    status_code="500"
-                ).inc()
-                REQUEST_DURATION.labels(
-                    method=request.method, 
-                    endpoint=request.url.path
-                ).observe(duration)
-            raise e
-        finally:
-            # Décrémenter les connexions actives
-            ACTIVE_CONNECTIONS.dec()
-    
-    return wrapper
-
 def track_itinerary_request(transport_mode: str, solver: str, days: int, pois_count: int, duration: float):
     """Enregistrer les métriques de calcul d'itinéraire"""
     ITINERARY_REQUESTS.labels(
@@ -114,7 +58,7 @@ def track_itinerary_request(transport_mode: str, solver: str, days: int, pois_co
     
     ITINERARY_POIS_PROCESSED.labels(days=str(days)).observe(pois_count)
 
-async def metrics_endpoint():
+async def metrics_endpoint(request: Request = None):
     """Endpoint pour exposer les métriques Prometheus"""
     return PlainTextResponse(
         generate_latest(),

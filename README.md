@@ -46,7 +46,7 @@ Les distances et durées dépendent du mode de transport.
 | `dags/` | **Airflow** | Orchestration des pipelines de données | [Lire la Doc Data](./dags/README.md) |
 | `reports/streamlit_prez` | **Streamlit** | Présentation de le la soutenance | [Lire la Doc Prez](./reports/streamlit_prez/pages/media/) |
 | `src/streamlit` | **Streamlit** | Front end de l'application | [Lire la Doc Streamlit](./src/streamlit/README.md) |
-| `docker/` | **Ops** | Configuration des services (OSRM, DB, etc.) | - |
+| `docker/` | **Ops** | Configuration des services (OSRM, DB, etc.) | [Lire la Doc Docker](./docker/README.md) |
 | `src/` | **Legacy** | Anciennes sources et utilitaires | - |
 
 ---
@@ -62,7 +62,9 @@ Les distances et durées dépendent du mode de transport.
 │   ├── osrm/              # Service OSRM
 │   ├── airflow/           # Service Airflow
 │   ├── streamlit/         # Service Streamlit
-│   └── docker-compose.yml
+│   ├── monitoring/        # Service Monitoring
+│   ├── docker-compose.yml # Compose principal
+│   └── docker-compose.monitoring-simple.yml # Compose monitoring
 ├── data/                   # Données
 ├── dags/                   # Airflow DAGs
 ├── reports/               # Streamlit
@@ -97,6 +99,7 @@ Les distances et durées dépendent du mode de transport.
 - **Polars** : DataFrames
 - **H3** : Indexation géospatiale
 - **Streamlit** : Front End
+- **Prometheus** + **Grafana** : Monitoring
 
 
 ## Démarrage Rapide (A METTRE A JOUR)
