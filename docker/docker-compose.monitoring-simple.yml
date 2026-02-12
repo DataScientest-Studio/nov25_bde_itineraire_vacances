@@ -1,0 +1,74 @@
+services:
+  # Prometheus - Collecteur de métriques
+  prometheus:
+    build:
+      context: ./monitoring/prometheus
+      dockerfile: Dockerfile
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  # Grafana - Visualisation des métriques
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/tripmango-overview.json
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    restart: unless-stopped
+    networks:
+      - vacances-network
+    depends_on:
+      - prometheus
+
+  # OSRM Exporter - Métriques OSRM
+  osrm-exporter:
+    build:
+      context: ./monitoring/osrm-exporter
+      dockerfile: Dockerfile
+    container_name: osrm-exporter
+    ports:
+      - "8001:8001"
+    environment:
+      - OSRM_CAR_URL=http://osrm-car:5000
+      - OSRM_BIKE_URL=http://osrm-bike:5000
+      - OSRM_FOOT_URL=http://osrm-foot:5000
+    restart: unless-stopped
+    networks:
+      - vacances-network
+    depends_on:
+      - osrm-car
+      - osrm-bike
+      - osrm-foot
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  vacances-network:
+    name: docker_vacances-network
+    external: true

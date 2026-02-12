@@ -4,9 +4,6 @@ FROM prom/prometheus:latest
 COPY prometheus.yml /etc/prometheus/
 COPY alert_rules.yml /etc/prometheus/
 
-# Définir les permissions
-RUN chmod 644 /etc/prometheus/prometheus.yml /etc/prometheus/alert_rules.yml
-
 # Arguments de démarrage
 CMD ["--config.file=/etc/prometheus/prometheus.yml", \
      "--storage.tsdb.path=/prometheus", \
