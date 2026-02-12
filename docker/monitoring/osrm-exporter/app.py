@@ -1,12 +1,12 @@
 """
 Exporter Prometheus pour OSRM (Open Source Routing Machine)
 """
+import asyncio
 import time
 import logging
 from typing import Dict, Any
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import PlainTextResponse
 import httpx
 
 # Configuration du logging

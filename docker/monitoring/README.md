@@ -1,35 +1,38 @@
 # Monitoring TripMaNGo - Guide de Déploiement
 
-Infrastructure complète de monitoring pour l'API TripMaNGo avec Prometheus et Grafana.
+Infrastructure de monitoring pour l'API TripMaNGo avec Prometheus et Grafana.
 
 ---
 
-## 🎯 Architecture du Monitoring
+## Architecture du Monitoring
 
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   API FastAPI  │───▶│   Prometheus    │───▶│    Grafana     │
-│   :8000/metrics│    │   :9090        │    │   :3000        │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   API FastAPI   │ ──▶ │   Prometheus     │ ──▶│    Grafana      │
+│   :8000/metrics │     │   :9090          │     │   :3000         │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   OSRM Exporter│    │ PostgreSQL Exporter│    │  AlertManager  │
-│   :8001/metrics│    │   :9187/metrics │    │   :9093        │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+┌─────────────────┐     ┌─────────────────────┐     ┌─────────────────┐
+│   OSRM Exporter │     │ PostgreSQL Exporter │     │  Visualisation  │
+│   :8001/metrics │     │   :9187/metrics     │     │   Dashboards    │
+└─────────────────┘     └─────────────────────┘     └─────────────────┘
 ```
 
 ---
 
-## 🚀 Déploiement Rapide
+## Déploiement Rapide
 
 ### 1. Démarrer l'Infrastructure Principale
+
+Si vous n'avez pas au préalable démarrer l'infrastruture principale.
+
 ```bash
 cd docker/
 docker-compose up -d
 ```
 
-### 2. Démarrer le Monitoring Complet
+### 2. Démarrer le Monitoring
 ```bash
 docker-compose -f docker-compose.monitoring-simple.yml up -d
 ```
@@ -48,7 +51,7 @@ curl http://localhost:9090/api/v1/targets
 
 ---
 
-## 📊 Accès aux Services
+## Accès aux Services
 
 | Service | URL | Login | Description |
 |---------|------|--------|-------------|
@@ -56,11 +59,10 @@ curl http://localhost:9090/api/v1/targets
 | **Prometheus** | http://localhost:9090 | - |
 | **API Metrics** | http://localhost:8000/metrics | - |
 | **OSRM Exporter** | http://localhost:8001/metrics | - |
-| **AlertManager** | http://localhost:9093 | - |
 
 ---
 
-## 📈 Métriques Disponibles
+## Métriques Disponibles
 
 ### API FastAPI
 - `http_requests_total` : Nombre total de requêtes HTTP
@@ -82,7 +84,7 @@ curl http://localhost:9090/api/v1/targets
 
 ---
 
-## 🎨 Dashboards Grafana
+## Dashboards Grafana
 
 ### Dashboard Principal : TripMaNGo Overview
 - **Panneaux** : 8 graphiques temps réel
@@ -93,29 +95,15 @@ curl http://localhost:9090/api/v1/targets
 1. Taux de requêtes API (par endpoint)
 2. Temps de réponse API (50th/95th percentile)
 3. Connexions actives
-4. Taux d'erreur API
-5. Requêtes d'itinéraire (par transport/solveur)
-6. Temps de calcul d'itinéraire
-7. Connexions PostgreSQL
-8. Taille base de données
+4. Requêtes d'itinéraire (par transport/solveur)
+5. Temps de calcul d'itinéraire
+6. Connexions PostgreSQL
+7. Taille base de données
+8. Métriques système
 
 ---
 
-## 🚨 Alertes Configurées
-
-### Alertes API
-- **Latence élevée** : 95th percentile > 2s (warning)
-- **Taux d'erreur** : Erreurs 5xx > 10% (critical)
-
-### Alertes Infrastructure
-- **Service down** : Any service unavailable (critical)
-- **CPU élevé** : > 80% (warning)
-- **Mémoire élevée** : > 85% (warning)
-- **Disque plein** : > 90% (critical)
-
----
-
-## 🔧 Configuration
+## Configuration
 
 ### Variables d'Environnement
 ```bash
@@ -131,13 +119,12 @@ GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
 
 ### Fichiers de Configuration
 - `prometheus/prometheus.yml` : Configuration scrape Prometheus
-- `prometheus/alert_rules.yml` : Règles d'alertes
 - `grafana/provisioning/datasources/` : Sources de données auto-configurées
 - `grafana/dashboards/` : Dashboards auto-provisionnés
 
 ---
 
-## 🛠️ Maintenance
+## Maintenance
 
 ### Redémarrer les Services
 ```bash
@@ -172,7 +159,7 @@ docker-compose -f docker-compose.monitoring-simple.yml down -v
 
 ---
 
-## 📊 Personnalisation
+## Personnalisation
 
 ### Ajouter des Métriques API
 1. Importer `prometheus_client` dans votre code
@@ -180,57 +167,45 @@ docker-compose -f docker-compose.monitoring-simple.yml down -v
 3. Exposer via endpoint `/metrics`
 4. Ajouter le scraping dans `prometheus.yml`
 
-### Créer des Dashboards Grafana
-1. Se connecter à Grafana (admin/admin123)
-2. Importer un dashboard JSON
-3. Personnaliser les requêtes PromQL
-4. Configurer les alertes
-
-### Ajouter des Alertes
-1. Éditer `prometheus/alert_rules.yml`
-2. Définir les conditions avec PromQL
-3. Configurer les canaux de notification
-4. Redémarrer Prometheus
 
 ---
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Problèmes Courants
 
-**Prometheus ne scrape pas l'API**
+**Services non accessibles**
 ```bash
-# Vérifier l'endpoint
-curl http://localhost:8000/metrics
+# Vérifier les conteneurs
+docker ps --format "table {{.Names}}\t{{.Status}}"
 
-# Vérifier la configuration
-docker exec prometheus cat /etc/prometheus/prometheus.yml
-
-# Vérifier les targets
-curl http://localhost:9090/api/v1/targets
+# Vérifier les logs
+docker logs prometheus
+docker logs grafana
 ```
 
-**Grafana ne se connecte pas à Prometheus**
+**Métriques non collectées**
+```bash
+# Vérifier les targets Prometheus
+curl http://localhost:9090/api/v1/targets
+
+# Tester les endpoints de métriques
+curl http://localhost:8000/metrics
+curl http://localhost:8001/metrics
+```
+
+**Dashboard Grafana vide**
 ```bash
 # Vérifier la datasource
 curl -u admin:admin123 http://localhost:3000/api/datasources
 
-# Vérifier le réseau
-docker network inspect docker_vacances-network
-```
-
-**OSRM Exporter ne fonctionne pas**
-```bash
-# Vérifier la connectivité OSRM
-docker exec osrm-exporter curl http://osrm-car:5000/health
-
-# Vérifier les logs
-docker logs osrm-exporter
+# Recharger la configuration Prometheus
+curl -X POST http://localhost:9090/-/reload
 ```
 
 ---
 
-## 📚 Documentation Complémentaire
+## Documentation Complémentaire
 
 - **Prometheus** : https://prometheus.io/docs/
 - **Grafana** : https://grafana.com/docs/
@@ -239,4 +214,4 @@ docker logs osrm-exporter
 
 ---
 
-*Monitoring TripMaNGo - Surveillance complète et proactive de votre infrastructure*
+*Monitoring TripMaNGo - Surveillance complète de votre infrastructure*

@@ -5,7 +5,7 @@ x-airflow-common: &airflow-common
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     # Utilisation des variables du .env
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_AIRFLOW_USER}:${POSTGRES_AIRFLOW_PASSWORD}@postgres-airflow:5432/${POSTGRES_AIRFLOW_DB}
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
@@ -107,6 +107,8 @@ services:
       - POSTGRES_DB=${POSTGRES_VACANCES_DB}
       - POSTGRES_USER=${POSTGRES_VACANCES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_VACANCES_PASSWORD}
+      - DB_HOST=${POSTGRES_VACANCES_HOST}
+      - DB_PORT=${POSTGRES_VACANCES_PORT}
     volumes:
       - ../app:/app/app
       - ../logs:/app/logs
@@ -187,10 +189,10 @@ services:
       command:
         - -c
         - |
-          mkdir -p /sources/logs /sources/dags /sources/plugins [cite: 18]
-          chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins} [cite: 18]
+          mkdir -p /sources/logs /sources/dags /sources/plugins
+          chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
           exec /entrypoint airflow db migrate && \
-          airflow users create --username airflow --firstname Airflow --lastname Admin --role Admin --email airflow@example.com --password airflow [cite: 18, 19]
+          airflow users create --username airflow --firstname Airflow --lastname Admin --role Admin --email airflow@example.com --password airflow
       user: "0:0"
       volumes:
         - .:/sources
@@ -203,14 +205,3 @@ volumes:
 networks:
   vacances-network:
     driver: bridge
-
-# --- MONITORING ---
-# Pour activer le monitoring, lancer:
-# docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
-#
-# Services de monitoring disponibles:
-# - Prometheus: http://localhost:9090
-# - Grafana: http://localhost:3000 (admin/admin123)
-# - AlertManager: http://localhost:9093
-# - Node Exporter: http://localhost:9100/metrics
-# - cAdvisor: http://localhost:8080

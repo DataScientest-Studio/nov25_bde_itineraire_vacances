@@ -29,4 +29,4 @@ ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-vacances_password}
 EXPOSE 8000
 
 # Commande de démarrage avec rechargement pour le développement
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

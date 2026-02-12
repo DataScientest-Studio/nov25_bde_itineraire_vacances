@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from app.models.itinerary import ItineraryRequest, ItineraryResponse
 from app.dependencies import get_itinerary_service
 from app.services.itinerary_service import ItineraryService
-from app.monitoring import track_itinerary_request
+from app.monitoring_simple import track_itinerary_request
 
 
 router = APIRouter(prefix="/itinerary", tags=["itinerary"])
