@@ -1,0 +1,236 @@
+
+x-airflow-common: &airflow-common
+  build: ./airflow 
+  dns: 8.8.8.8
+  environment: &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    # Utilisation des variables du .env
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    # Configuration de la base de données Vacances via .env
+    POSTGRES_VACANCES_HOST: ${POSTGRES_VACANCES_HOST}
+    POSTGRES_VACANCES_PORT: ${POSTGRES_VACANCES_PORT}
+    POSTGRES_VACANCES_DB: ${POSTGRES_VACANCES_DB}
+    POSTGRES_VACANCES_USER: ${POSTGRES_VACANCES_USER}
+    POSTGRES_VACANCES_PASSWORD: ${POSTGRES_VACANCES_PASSWORD}
+    SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
+  volumes:
+    - ../dags:/opt/airflow/dags
+    - ../logs:/opt/airflow/logs
+    - ../plugins:/opt/airflow/plugins
+    - ../src:/opt/airflow/src
+    - ../data:/opt/airflow/data
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on: &airflow-common-depends-on
+    postgres-airflow:
+      condition: service_healthy
+    postgres-vacances:
+      condition: service_healthy
+  networks:
+    - vacances-network
+
+services:
+  # --- INFRASTRUCTURE DATA & BDD ---
+  # 2. Base de données Métier avec PostGIS
+  postgres-vacances:
+    image: postgis/postgis:15-3.3
+    container_name: postgres-vacances
+    environment:
+      POSTGRES_USER: ${POSTGRES_VACANCES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_VACANCES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_VACANCES_DB}
+    ports:
+      - "${POSTGRES_VACANCES_EXTERNAL_PORT}:5432"
+    volumes:
+      - postgres-vacances-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vacances_user -d vacances"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    networks:
+      - vacances-network
+
+  postgres-airflow:
+    image: postgres:15
+    container_name: postgres-airflow
+    environment:
+      POSTGRES_USER: ${POSTGRES_AIRFLOW_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_AIRFLOW_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_AIRFLOW_DB}
+    volumes:
+      - postgres-airflow-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    networks:
+      - vacances-network
+
+  # 3. Interface d'administration BDD
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-amadouadjanouhoun@gmail.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres-vacances
+    networks:
+      - vacances-network
+
+  # --- SERVICE API ---
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/api/Dockerfile
+    container_name: itinerary-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OSRM_URL_CAR=http://osrm-car:5000
+      - OSRM_URL_BIKE=http://osrm-bike:5000
+      - OSRM_URL_FOOT=http://osrm-foot:5000
+      - POSTGRES_HOST=${POSTGRES_VACANCES_HOST}
+      - POSTGRES_PORT=${POSTGRES_VACANCES_PORT}
+      - POSTGRES_DB=${POSTGRES_VACANCES_DB}
+      - POSTGRES_USER=${POSTGRES_VACANCES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_VACANCES_PASSWORD}
+    volumes:
+      - ../app:/app/app
+      - ../logs:/app/logs
+    depends_on:
+      postgres-vacances:
+        condition: service_healthy
+      osrm-car:
+        condition: service_started
+      osrm-bike:
+        condition: service_started
+      osrm-foot:
+        condition: service_started
+    networks:
+      - vacances-network
+
+  # --- SERVICES OSRM (PROFILS) ---
+  osrm-foot:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-foot
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./osrm-data/profiles/foot:/data
+    command: osrm-routed --algorithm mld /data/france-merged.osrm
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  osrm-bike:
+      image: ghcr.io/project-osrm/osrm-backend
+      container_name: osrm-bike
+      ports:
+        - "5002:5000"
+      volumes:
+        - ./osrm-data/profiles/bike:/data
+      command: osrm-routed --algorithm mld /data/france-merged.osrm
+      restart: unless-stopped
+      networks:
+        - vacances-network
+
+  osrm-car:
+      image: ghcr.io/project-osrm/osrm-backend
+      container_name: osrm-car
+      ports:
+        - "5000:5000"
+      volumes:
+        - ./osrm-data/profiles/car:/data
+      command: osrm-routed --algorithm mld /data/france-merged.osrm
+      restart: unless-stopped
+      networks:
+        - vacances-network
+
+  # --- SERVICES STREAMLIT ---
+
+  streamlit:
+    build:
+      context: ..
+      dockerfile: docker/streamlit/Dockerfile
+    container_name: streamlit_app
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - API_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+        - vacances-network
+    
+  
+  # --- SERVICES AIRFLOW ---
+
+  airflow-webserver:
+      <<: *airflow-common
+      container_name: airflow-webserver
+      command: webserver
+      ports:
+        - "8080:8080"
+      depends_on:
+        <<: *airflow-common-depends-on
+        airflow-init:
+          condition: service_completed_successfully
+
+  airflow-scheduler:
+      <<: *airflow-common
+      container_name: airflow-scheduler
+      command: scheduler
+      depends_on:
+        <<: *airflow-common-depends-on
+        airflow-init:
+          condition: service_completed_successfully
+
+  airflow-init:
+      <<: *airflow-common
+      container_name: airflow-init
+      entrypoint: /bin/bash
+      command:
+        - -c
+        - |
+          mkdir -p /sources/logs /sources/dags /sources/plugins
+          chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins} 
+          exec /entrypoint airflow db migrate && \
+          airflow users create --username airflow --firstname Airflow --lastname Admin --role Admin --email airflow@example.com --password airflow 
+      user: "0:0"
+      volumes:
+        - ..:/sources
+
+volumes:
+  postgres-airflow-data:
+  postgres-vacances-data:
+  pgadmin-data:
+
+networks:
+  vacances-network:
+    driver: bridge
+
+# --- MONITORING ---
+# Pour activer le monitoring, lancer:
+# docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+#
+# Services de monitoring disponibles:
+# - Prometheus: http://localhost:9090
+# - Grafana: http://localhost:3000 (admin/admin123)
+# - AlertManager: http://localhost:9093
+# - Node Exporter: http://localhost:9100/metrics
+# - cAdvisor: http://localhost:8080

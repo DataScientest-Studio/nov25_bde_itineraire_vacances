@@ -55,8 +55,8 @@ Les distances et durées dépendent du mode de transport.
 
 ```
 ├── app/                    # API FastAPI principale
+├── streamlit/              # Front end de l'application
 ├── src/                    # Sources legacy
-│   └── streamlit/          # Front end de l'application
 ├── docker/                 # Configuration Docker
 │   ├── api/               # API Dockerisée
 │   ├── osrm/              # Service OSRM

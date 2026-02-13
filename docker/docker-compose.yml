@@ -1,6 +1,7 @@
-
 x-airflow-common: &airflow-common
-  build: ./docker/airflow 
+  build:
+    context: ..                          
+    dockerfile: docker/airflow/Dockerfile
   dns: 8.8.8.8
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -19,11 +20,11 @@ x-airflow-common: &airflow-common
     POSTGRES_VACANCES_PASSWORD: ${POSTGRES_VACANCES_PASSWORD}
     SLACK_WEBHOOK_URL: "${SLACK_WEBHOOK_URL}"
   volumes:
-    - ./dags:/opt/airflow/dags
-    - ./logs:/opt/airflow/logs
-    - ./plugins:/opt/airflow/plugins
-    - ./src:/opt/airflow/src
-    - ./data:/opt/airflow/data
+    - ../dags:/opt/airflow/dags
+    - ../logs:/opt/airflow/logs
+    - ../plugins:/opt/airflow/plugins
+    - ../src:/opt/airflow/src
+    - ../data:/opt/airflow/data
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on: &airflow-common-depends-on
     postgres-airflow:
@@ -35,7 +36,7 @@ x-airflow-common: &airflow-common
 
 services:
   # --- INFRASTRUCTURE DATA & BDD ---
-  # 2. Base de données Métier avec PostGIS
+  # Base de données Métier avec PostGIS
   postgres-vacances:
     image: postgis/postgis:15-3.3
     container_name: postgres-vacances
@@ -48,7 +49,7 @@ services:
     volumes:
       - postgres-vacances-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vacances_user -d vacances"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_VACANCES_USER} -d ${POSTGRES_VACANCES_DB}"]
       interval: 10s
       retries: 5
       start_period: 5s
@@ -66,7 +67,7 @@ services:
     volumes:
       - postgres-airflow-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_AIRFLOW_USER}"]
       interval: 10s
       retries: 5
       start_period: 5s
@@ -74,7 +75,7 @@ services:
     networks:
       - vacances-network
 
-  # 3. Interface d'administration BDD
+  # Interface d'administration BDD
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
@@ -89,9 +90,140 @@ services:
     networks:
       - vacances-network
 
+
+  # --- SERVICES OSRM (PROFILS) ---
+  
+  osrm-init:
+    profiles: ["osrm_compilation"]
+    build:
+      context: ..
+      dockerfile: docker/osrm/Dockerfile.init
+    container_name: osrm-init
+    volumes:
+      - ../osrm-setup:/osrm-setup
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    networks:
+      - vacances-network
+    command: /osrm-setup.sh
+    restart: "no"
+
+  osrm-compiler-car:
+    profiles: ["osrm_compilation"]
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-compiler-car
+    depends_on:
+      osrm-init:
+        condition: service_completed_successfully
+    volumes:
+      - ../osrm-setup/data:/data
+    networks:
+      - vacances-network
+    command: sh -c "
+      osrm-extract -p /opt/car.lua /data/france-3regions-car.osm.pbf &&
+      osrm-partition /data/france-3regions-car.osrm &&
+      osrm-customize /data/france-3regions-car.osrm"
+    restart: "no"
+
+  osrm-compiler-bike:
+    profiles: ["osrm_compilation"]
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-compiler-bike
+    depends_on:
+      osrm-compiler-car:
+        condition: service_completed_successfully
+    volumes:
+      - ../osrm-setup/data:/data
+    networks:
+      - vacances-network
+    command: sh -c "
+      osrm-extract -p /opt/bicycle.lua /data/france-3regions-bike.osm.pbf &&
+      osrm-partition /data/france-3regions-bike.osrm &&
+      osrm-customize /data/france-3regions-bike.osrm"
+    restart: "no"
+
+  osrm-compiler-foot:
+    profiles: ["osrm_compilation"]
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-compiler-foot
+    depends_on:
+      osrm-compiler-bike:
+        condition: service_completed_successfully
+    volumes:
+      - ../osrm-setup/data:/data
+    networks:
+      - vacances-network
+    command: sh -c "
+      osrm-extract -p /opt/foot.lua /data/france-3regions-foot.osm.pbf &&
+      osrm-partition /data/france-3regions-foot.osrm &&
+      osrm-customize /data/france-3regions-foot.osrm"
+    restart: "no"
+
+  osrm-car:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-car
+    volumes:
+      - ../osrm-setup/data:/data
+    environment:
+      - MAX_LOCATIONS_DISTANCE_TABLE=1500
+      - MAX_LOCATIONS_MAP_MATCHING=100
+      - MAX_LOCATIONS_NEAREST=100
+      - MAX_LOCATIONS_TRIP=100
+    command: osrm-routed --algorithm mld /data/france-3regions-car.osrm
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  osrm-bike:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-bike
+    volumes:
+      - ../osrm-setup/data:/data 
+    environment:
+      - MAX_LOCATIONS_DISTANCE_TABLE=1500
+      - MAX_LOCATIONS_MAP_MATCHING=100
+      - MAX_LOCATIONS_NEAREST=100
+      - MAX_LOCATIONS_TRIP=100
+    command: osrm-routed --algorithm mld /data/france-3regions-bike.osrm
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  osrm-foot:
+    image: ghcr.io/project-osrm/osrm-backend
+    container_name: osrm-foot
+    volumes:
+      - ../osrm-setup/data:/data
+    environment:
+      - MAX_LOCATIONS_DISTANCE_TABLE=1500
+      - MAX_LOCATIONS_MAP_MATCHING=100
+      - MAX_LOCATIONS_NEAREST=100
+      - MAX_LOCATIONS_TRIP=100
+    command: osrm-routed --algorithm mld /data/france-3regions-foot.osrm
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
+  # --- NGINX REVERSE PROXY ---
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-osrm
+    ports:
+      - "5000:80"
+    volumes:
+      - ../osrm-setup/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - osrm-car
+      - osrm-bike
+      - osrm-foot
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
   # --- SERVICE API ---
 
   api:
+    profiles: ["app"]
     build:
       context: ..
       dockerfile: docker/api/Dockerfile
@@ -102,11 +234,11 @@ services:
       - OSRM_URL_CAR=http://osrm-car:5000
       - OSRM_URL_BIKE=http://osrm-bike:5000
       - OSRM_URL_FOOT=http://osrm-foot:5000
-      - POSTGRES_HOST=${POSTGRES_VACANCES_HOST}
-      - POSTGRES_PORT=${POSTGRES_VACANCES_PORT}
-      - POSTGRES_DB=${POSTGRES_VACANCES_DB}
-      - POSTGRES_USER=${POSTGRES_VACANCES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_VACANCES_PASSWORD}
+      - POSTGRES_VACANCES_HOST=postgres-vacances
+      - POSTGRES_VACANCES_PORT=5432
+      - POSTGRES_VACANCES_DB=${POSTGRES_VACANCES_DB}
+      - POSTGRES_VACANCES_USER=${POSTGRES_VACANCES_USER}
+      - POSTGRES_VACANCES_PASSWORD=${POSTGRES_VACANCES_PASSWORD}
     volumes:
       - ../app:/app/app
       - ../logs:/app/logs
@@ -119,45 +251,35 @@ services:
         condition: service_started
       osrm-foot:
         condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
     networks:
       - vacances-network
 
-  # --- SERVICES OSRM (PROFILS) ---
-  osrm-foot:
-    image: ghcr.io/project-osrm/osrm-backend
-    container_name: osrm-foot
+  # --- SERVICES STREAMLIT ---
+
+  streamlit:
+    profiles: ["app"]
+    build:
+      context: ..
+      dockerfile: docker/streamlit/Dockerfile
+    container_name: streamlit_app
     ports:
-      - "5001:5000"
-    volumes:
-      - ./osrm-data/profiles/foot:/data
-    command: osrm-routed --algorithm mld /data/france-merged.osrm
-    restart: unless-stopped
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - API_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
     networks:
-      - vacances-network
-
-  osrm-bike:
-      image: ghcr.io/project-osrm/osrm-backend
-      container_name: osrm-bike
-      ports:
-        - "5002:5000"
-      volumes:
-        - ./osrm-data/profiles/bike:/data
-      command: osrm-routed --algorithm mld /data/france-merged.osrm
-      restart: unless-stopped
-      networks:
         - vacances-network
-
-  osrm-car:
-      image: ghcr.io/project-osrm/osrm-backend
-      container_name: osrm-car
-      ports:
-        - "5000:5000"
-      volumes:
-        - ./osrm-data/profiles/car:/data
-      command: osrm-routed --algorithm mld /data/france-merged.osrm
-      restart: unless-stopped
-      networks:
-        - vacances-network
+    
+  
   # --- SERVICES AIRFLOW ---
 
   airflow-webserver:
@@ -187,13 +309,26 @@ services:
       command:
         - -c
         - |
-          mkdir -p /sources/logs /sources/dags /sources/plugins [cite: 18]
-          chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins} [cite: 18]
-          exec /entrypoint airflow db migrate && \
-          airflow users create --username airflow --firstname Airflow --lastname Admin --role Admin --email airflow@example.com --password airflow [cite: 18, 19]
+          mkdir -p /sources/logs /sources/dags /sources/plugins /sources/data /sources/data/processed /sources/data/raw /sources/src
+          chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins,data,src}
+          chmod -R 755 /sources/{logs,dags,plugins,data,src}
+          exec /entrypoint airflow db migrate
+          airflow users create \
+          --username airflow \
+          --firstname Airflow \
+          --lastname Admin \
+          --role Admin \
+          --email airflow@example.com \
+          --password airflow 
+      environment:
+        <<: *airflow-common-env
+        _AIRFLOW_DB_MIGRATE: 'true'
+        _AIRFLOW_WWW_USER_CREATE: 'true'
+        _AIRFLOW_WWW_USER_USERNAME: airflow
+        _AIRFLOW_WWW_USER_PASSWORD: airflow
       user: "0:0"
       volumes:
-        - .:/sources
+        - ..:/sources
 
 volumes:
   postgres-airflow-data:
