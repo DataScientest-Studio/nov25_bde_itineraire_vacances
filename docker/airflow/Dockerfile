@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 USER airflow
 
 # On copie le fichier requirements.txt dans l'image
-COPY requirements.txt /requirements.txt
+COPY dags/requirements.txt /requirements.txt
 
 # On installe les librairies
 RUN pip install --no-cache-dir -r /requirements.txt

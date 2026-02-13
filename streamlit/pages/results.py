@@ -1,11 +1,10 @@
-import json
-
+import streamlit as st
 import folium as flm
-import folium
-import numpy as np
-import pandas as pd
 from streamlit_folium import st_folium
-from utils import (
+import numpy as np
+
+
+from utils.utils import (
     distance_print,
     fetch_main_categories,
     fetch_sub_categories,
@@ -14,7 +13,7 @@ from utils import (
     get_selected_pois
 )
 
-import streamlit as st
+
 
 #------------------------------------
 # Données pour la visualisation 
@@ -349,12 +348,12 @@ if "itinerary_result" not in st.session_state:
         st.session_state.itinerary_result = send_payload(st.session_state.itinerary_payload)
 
 
-itinerary = st.session_state.itinerary_result
-itinerary_list = itinerary["itinerary"]
+itinerary_result = st.session_state.itinerary_result
+itinerary_list = itinerary_result["itinerary"]
 
 ## DEBUG
 # Affichage de la liste brute
-st.write("Itinerary list :", itinerary_list)
+#st.write("Itinerary list :", itinerary_list)
 
 
 for day in range(0, len(itinerary_list)):
@@ -368,7 +367,7 @@ for day in range(0, len(itinerary_list)):
 #    Partie centrale avec les résultats
 # ------------------------------------
 
-#st.header("🗺️ Nos propositions d'itinéraires")
+st.header("🗺️ Nos propositions d'itinéraires")
 
 if "show_details" not in st.session_state:
     st.session_state.show_details = {}
@@ -443,7 +442,6 @@ for day in range(0, len(itinerary_list)):
         ]
     }
 
-    layer = flm.FeatureGroup(name=f"Day {day}")
     ## Ajouter la route OSRM
     flm.GeoJson(
         geojson_route,
@@ -452,9 +450,9 @@ for day in range(0, len(itinerary_list)):
             "weight": 4,
             "opacity": 0.9
         }
-    ).add_to(layer)
+    ).add_to(m)
 
-    layer.add_to(m)
+    
 
 
     # Récupération des catégories principales de l'itinéraire, de la durée et distance globales et du nombre de poi :
@@ -577,52 +575,4 @@ for day in range(0, len(itinerary_list)):
             st_folium(m, width=1050, height=400)
             
 
-
-# ## Ajouter un layer par jour
-# for idx, day in enumerate(itinerary_list):
-#     day_num = day["day"]
-#     geometry = day["geometry"]  # GeoJSON LineString
-#     coords = geometry["coordinates"]
-
-#     # Construire un FeatureCollection valide
-#     geojson_route = {
-#         "type": "FeatureCollection",
-#         "features": [
-#             {
-#                 "type": "Feature",
-#                 "geometry": geometry,
-#                 "properties": {"day": day_num}
-#             }
-#         ]
-#     }
-
-#    # Créer un FeatureGroup pour ce jour
-#     layer = folium.FeatureGroup(name=f"Day {day_num}")
-
-#     # Créer la carte
-#     m = folium.Map(location=[day["pois"][0]["latitude"], day["pois"][0]["longitude"]], zoom_start=13)
-
-#     # Ajouter la route OSRM
-#     folium.GeoJson(
-#         geojson_route,
-#         style_function=lambda x, color=COLORS[idx % len(COLORS)]: {
-#             "color": color,
-#             "weight": 4,
-#             "opacity": 0.9
-#         }
-#     ).add_to(layer)
-
-#     # Ajouter les POIs du jour
-#     for poi in day["pois"]:
-#         folium.Marker(
-#             location=[poi["latitude"], poi["longitude"]],
-#             popup=poi["nom_du_poi"],
-#             icon=folium.Icon(color="blue", icon="info-sign")
-#         ).add_to(layer)
-    
-#     # Ajouter le layer à la carte
-#     layer.add_to(m)
-
-#     # Afficher la carte
-#     st_folium(m, width=800, height=600)
 

@@ -1,12 +1,14 @@
-from datetime import timedelta
-
-import folium as flm
-import numpy as np
-import pandas as pd
-from streamlit_folium import st_folium
-from utils import fetch_main_categories, fetch_sub_categories, get_selected_pois, send_payload
 
 import streamlit as st
+import folium as flm
+from streamlit_folium import st_folium
+
+from datetime import timedelta
+import pandas as pd
+
+from utils.utils import fetch_main_categories, fetch_sub_categories, get_selected_pois
+
+
 
 # ------------------------------------
 # import de données locales pour test

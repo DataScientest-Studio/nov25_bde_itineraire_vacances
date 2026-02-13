@@ -1,0 +1,14 @@
+FROM debian:bookworm-slim
+
+WORKDIR /osrm-setup
+
+# Installation des dépendances
+RUN apt-get update && \
+    apt-get install -y wget osmium-tool bash curl docker.io && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copier le script de compilation
+COPY osrm-setup/osrm-setup.sh /osrm-setup.sh
+RUN chmod +x /osrm-setup.sh
+
+ENTRYPOINT ["/osrm-setup.sh"]

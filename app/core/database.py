@@ -4,15 +4,15 @@ import os
 
 class DBManager:
     def __init__(self):
-        load_dotenv()
+        #load_dotenv()
         self.pool = pool.SimpleConnectionPool(
             minconn=5,
             maxconn=10,
-            database=os.getenv("POSTGRES_DB", "vacances"),
-            host=os.getenv("DB_HOST", "postgres-vacances"),
-            user=os.getenv("POSTGRES_USER", "vacances_user"),
-            password=os.getenv("POSTGRES_PASSWORD", "vacances_password"),
-            port=int(os.getenv("DB_PORT", "5432")),
+            host=os.getenv("POSTGRES_VACANCES_HOST", "postgres-vacances"),
+            port=int(os.getenv("POSTGRES_VACANCES_PORT", 5432)),
+            database=os.getenv("POSTGRES_VACANCES_DB"),
+            user=os.getenv("POSTGRES_VACANCES_USER"),
+            password=os.getenv("POSTGRES_VACANCES_PASSWORD")
         )
 
     def get_conn(self):
