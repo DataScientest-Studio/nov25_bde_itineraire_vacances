@@ -31,7 +31,7 @@ x-airflow-common: &airflow-common
     postgres-vacances:
       condition: service_healthy
   networks:
-    - vacances-network
+    - docker_vacances-network
 
 services:
   # --- INFRASTRUCTURE DATA & BDD ---
@@ -54,7 +54,7 @@ services:
       start_period: 5s
     restart: always
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   postgres-airflow:
     image: postgres:15
@@ -72,7 +72,7 @@ services:
       start_period: 5s
     restart: always
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   # 3. Interface d'administration BDD
   pgadmin:
@@ -87,7 +87,7 @@ services:
     depends_on:
       - postgres-vacances
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   # --- SERVICE API ---
 
@@ -122,7 +122,7 @@ services:
       osrm-foot:
         condition: service_started
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   # --- SERVICES OSRM (PROFILS) ---
   osrm-foot:
@@ -135,7 +135,7 @@ services:
     command: osrm-routed --algorithm mld /data/france-merged.osrm
     restart: unless-stopped
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   osrm-bike:
       image: ghcr.io/project-osrm/osrm-backend
@@ -147,7 +147,7 @@ services:
       command: osrm-routed --algorithm mld /data/france-merged.osrm
       restart: unless-stopped
       networks:
-        - vacances-network
+        - docker_vacances-network
 
   osrm-car:
       image: ghcr.io/project-osrm/osrm-backend
@@ -159,7 +159,22 @@ services:
       command: osrm-routed --algorithm mld /data/france-merged.osrm
       restart: unless-stopped
       networks:
-        - vacances-network
+        - docker_vacances-network
+
+  nginx:
+      image: nginx:alpine
+      container_name: osrm-proxy
+      ports:
+        - "5000:80" 
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      depends_on:
+        - osrm-car
+        - osrm-bike
+        - osrm-foot
+      restart: unless-stopped
+      networks:
+        - docker_vacances-network
   # --- SERVICES AIRFLOW ---
 
   airflow-webserver:
@@ -203,5 +218,5 @@ volumes:
   pgadmin-data:
 
 networks:
-  vacances-network:
+  docker_vacances-network:
     driver: bridge

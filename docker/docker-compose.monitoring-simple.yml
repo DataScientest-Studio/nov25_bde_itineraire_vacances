@@ -70,5 +70,5 @@ volumes:
 
 networks:
   vacances-network:
-    name: docker_vacances-network
+    name: vacances-network
     external: true

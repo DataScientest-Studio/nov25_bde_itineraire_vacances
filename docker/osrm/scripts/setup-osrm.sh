@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # Script d'installation et configuration OSRM avec merge de régions
-# Régions: Auvergne-Rhône-Alpes, Bretagne, Île-de-France
+# Régions: Auvergne, Rhône-Alpes, Bretagne, Île-de-France
 # Profils: foot, bike, car
 
-set -e
+set -euo pipefail
 
 echo "=== Configuration OSRM Multi-Régions ==="
 
-# Créer le dossier principal d'abord
-mkdir -p osrm-data
-cd osrm-data
+# Détection du répertoire d'exécution (idempotence)
+BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+OSRM_DIR="$BASE_DIR/osrm-data"
 
-# Créer la structure de sous-dossiers
-mkdir -p raw merged profiles
+mkdir -p "$OSRM_DIR"/{raw,merged,profiles}
+cd "$OSRM_DIR"
 
 # URLs des données OSM (Geofabrik)
 REGIONS=(
@@ -25,62 +25,54 @@ REGIONS=(
 
 PROFILES=("foot" "bike" "car")
 
-
 echo ""
 echo "Étape 1: Téléchargement des régions..."
 for region_data in "${REGIONS[@]}"; do
     IFS=':' read -r name url <<< "$region_data"
-    echo "  - Téléchargement de $name..."
-    
+
+    echo "  - Région: $name"
     OUTPUT_FILE="raw/$name-latest.osm.pbf"
-    CHECKSUM_FILE="raw/$name-latest.osm.pbf.md5"
-    
-    # Télécharger le fichier avec reprise si interrompu
+
     if [ ! -f "$OUTPUT_FILE" ]; then
-        echo "    Téléchargement en cours (avec reprise automatique)..."
+        echo "    Téléchargement..."
         wget -c --show-progress --progress=bar:force \
              --timeout=30 --tries=5 --retry-connrefused \
              -O "$OUTPUT_FILE" "$url"
-        
-        # Vérifier que le fichier n'est pas vide ou corrompu
+
         if [ ! -s "$OUTPUT_FILE" ]; then
-            echo "    ERREUR: Fichier vide, suppression..."
+            echo "    ERREUR: Fichier vide, suppression."
             rm -f "$OUTPUT_FILE"
             exit 1
         fi
-        
-        # Validation basique du fichier PBF
-        echo "    Validation du fichier PBF..."
-        if ! osmium fileinfo "$OUTPUT_FILE" > /dev/null 2>&1; then
-            echo "    ERREUR: Fichier PBF corrompu, suppression..."
+
+        echo "    Validation..."
+        if ! osmium fileinfo "$OUTPUT_FILE" >/dev/null 2>&1; then
+            echo "    ERREUR: Fichier corrompu."
             rm -f "$OUTPUT_FILE"
-            echo "    Veuillez relancer le script pour télécharger à nouveau."
             exit 1
         fi
-        
-        echo "    ✓ Fichier valide!"
+
+        echo "    ✓ OK"
     else
-        echo "    Vérification du fichier existant..."
-        if ! osmium fileinfo "$OUTPUT_FILE" > /dev/null 2>&1; then
-            echo "    ERREUR: Fichier existant corrompu, suppression..."
+        echo "    Fichier déjà présent, validation..."
+        if ! osmium fileinfo "$OUTPUT_FILE" >/dev/null 2>&1; then
+            echo "    ERREUR: Fichier existant corrompu."
             rm -f "$OUTPUT_FILE"
-            echo "    Relancez le script pour télécharger à nouveau."
             exit 1
         fi
-        echo "    ✓ Fichier existant valide, skip téléchargement."
+        echo "    ✓ OK"
     fi
 done
 
 echo ""
-echo "Étape 2: Installation d'osmium-tool pour le merge..."
-# Vérifier si osmium est installé
-if ! command -v osmium &> /dev/null; then
+echo "Étape 2: Vérification osmium-tool..."
+if ! command -v osmium >/dev/null 2>&1; then
     echo "  Installation d'osmium-tool..."
-    if command -v apt-get &> /dev/null; then
+    if command -v apt-get >/dev/null 2>&1; then
         sudo apt-get update -qq
         sudo apt-get install -y osmium-tool
     else
-        echo "  ERREUR: apt-get non trouvé. Installez osmium-tool manuellement."
+        echo "  ERREUR: apt-get non disponible."
         exit 1
     fi
 else
@@ -88,44 +80,38 @@ else
 fi
 
 echo ""
-echo "Étape 3: Fusion des 3 régions..."
+echo "Étape 3: Fusion des régions..."
 MERGED_OUTPUT="merged/france-regions-merged.osm.pbf"
 
 if [ ! -f "$MERGED_OUTPUT" ]; then
-    echo "  Fusion en cours (cela peut prendre 5-10 minutes)..."
+    echo "  Fusion..."
     osmium merge \
         raw/auvergne-latest.osm.pbf \
         raw/rhone-alpes-latest.osm.pbf \
         raw/bretagne-latest.osm.pbf \
         raw/ile-de-france-latest.osm.pbf \
-        -o "$MERGED_OUTPUT" \
-        --overwrite
-    
-    # Vérifier le fichier mergé
-    echo "  Validation du fichier mergé..."
-    if ! osmium fileinfo "$MERGED_OUTPUT" > /dev/null 2>&1; then
-        echo "  ERREUR: Le fichier mergé est corrompu!"
+        -o "$MERGED_OUTPUT" --overwrite
+
+    echo "  Validation..."
+    if ! osmium fileinfo "$MERGED_OUTPUT" >/dev/null 2>&1; then
+        echo "  ERREUR: Merge corrompu."
         rm -f "$MERGED_OUTPUT"
         exit 1
     fi
-    
-    echo "  ✓ Merge terminé avec succès: france-regions-merged.osm.pbf"
-    osmium fileinfo "$MERGED_OUTPUT" | grep -E "(File size|Number of)"
+
+    echo "  ✓ Merge OK"
 else
-    echo "  Vérification du fichier mergé existant..."
-    if ! osmium fileinfo "$MERGED_OUTPUT" > /dev/null 2>&1; then
-        echo "  ERREUR: Fichier mergé existant corrompu, suppression..."
+    echo "  Fichier mergé déjà présent, validation..."
+    if ! osmium fileinfo "$MERGED_OUTPUT" >/dev/null 2>&1; then
+        echo "  ERREUR: Fichier mergé corrompu."
         rm -f "$MERGED_OUTPUT"
-        echo "  Relancez le script pour merger à nouveau."
         exit 1
     fi
-    echo "  ✓ Fichier mergé existant valide, skip."
+    echo "  ✓ OK"
 fi
 
 echo ""
-echo "Étape 4: Extraction et préparation pour chaque profil OSRM..."
-MERGED_FILE="../merged/france-regions-merged.osm.pbf"
-
+echo "Étape 4: Préparation des profils OSRM..."
 
 declare -A PROFILE_FILES=(
   ["car"]="car.lua"
@@ -135,83 +121,76 @@ declare -A PROFILE_FILES=(
 
 for profile in "${PROFILES[@]}"; do
     echo ""
-    echo "  === Traitement du profil: $profile ==="
-    
-    PROFILE_DIR="profiles/$profile"
+    echo "  === Profil: $profile ==="
+
+    PROFILE_DIR="$OSRM_DIR/profiles/$profile"
     mkdir -p "$PROFILE_DIR"
+
     cd "$PROFILE_DIR"
 
     LUA_FILE="${PROFILE_FILES[$profile]}"
-    
-    # Copier le fichier mergé dans le dossier du profil
+
+    # Correction du chemin vers le fichier mergé
     if [ ! -f "france-merged.osm.pbf" ]; then
         echo "    Copie du fichier mergé..."
-        cp "$MERGED_FILE" france-merged.osm.pbf
-    else
-        echo "    Fichier OSM déjà présent."
+        cp "$OSRM_DIR/merged/france-regions-merged.osm.pbf" france-merged.osm.pbf
     fi
-    
-    echo "    1. Extraction des données (osrm-extract)..."
+
+    echo "    1. osrm-extract..."
     if [ ! -f "france-merged.osrm" ]; then
         docker run --rm \
             -v "$(pwd):/data" \
             ghcr.io/project-osrm/osrm-backend \
-            osrm-extract -p /opt/${LUA_FILE} /data/france-merged.osm.pbf
-    else
-        echo "       Extraction déjà effectuée."
+            osrm-extract -p "/opt/$LUA_FILE" /data/france-merged.osm.pbf
     fi
-    
-    echo "    2. Partitionnement (osrm-partition)..."
+
+    echo "    2. osrm-partition..."
     if [ ! -f "france-merged.osrm.cells" ]; then
         docker run --rm \
             -v "$(pwd):/data" \
             ghcr.io/project-osrm/osrm-backend \
             osrm-partition /data/france-merged.osrm
-    else
-        echo "       Partitionnement déjà effectué."
     fi
-    
-    echo "    3. Personnalisation (osrm-customize)..."
+
+    echo "    3. osrm-customize..."
     if [ ! -f "france-merged.osrm.hsgr" ]; then
         docker run --rm \
             -v "$(pwd):/data" \
             ghcr.io/project-osrm/osrm-backend \
             osrm-customize /data/france-merged.osrm
-    else
-        echo "       Personnalisation déjà effectuée."
     fi
-    
-    echo "    ✓ Profil $profile prêt!"
-    
-    cd ../..
+
+    echo "    ✓ Profil $profile prêt."
+
+    cd "$OSRM_DIR"
 done
 
 echo ""
-echo "=== Configuration terminée! ==="
+echo "=== Configuration terminée ==="
 echo ""
-echo "Pour démarrer un serveur OSRM pour un profil:"
+echo "Commandes pour lancer les serveurs OSRM :"
 echo ""
+
 for profile in "${PROFILES[@]}"; do
-    port=$((5000 + $(echo "$profile" | wc -c)))
     case $profile in
+        car)  port=5000 ;;
         foot) port=5001 ;;
         bike) port=5002 ;;
-        car)  port=5000 ;;
     esac
-    
-    echo "# Profil $profile (port $port):"
+
+    echo "# Profil $profile (port $port)"
     echo "docker run -d --name osrm-$profile -p $port:5000 \\"
-    echo "  -v \"\$(pwd)/profiles/$profile:/data\" \\"
+    echo "  -v \"$OSRM_DIR/profiles/$profile:/data\" \\"
     echo "  ghcr.io/project-osrm/osrm-backend \\"
     echo "  osrm-routed --algorithm mld /data/france-merged.osrm"
     echo ""
 done
 
-echo "Exemple de requête (remplacer le port selon le profil):"
+echo "Exemple de requête:"
 echo "curl 'http://localhost:5000/route/v1/driving/4.845020,45.763723;4.890185,45.769835?overview=false'"
 echo ""
 echo "Taille des fichiers générés:"
-du -sh merged/france-regions-merged.osm.pbf 2>/dev/null || echo "  (en cours de génération)"
+du -sh merged/france-regions-merged.osm.pbf 2>/dev/null || true
 for profile in "${PROFILES[@]}"; do
     du -sh profiles/$profile/*.osrm* 2>/dev/null | head -3 || true
 done

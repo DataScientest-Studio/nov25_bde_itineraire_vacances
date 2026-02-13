@@ -118,8 +118,6 @@ git clone https://github.com/ton-pseudo/nov25_bde_itineraire_vacances.git
 # Entrer dans le dossier
 cd nov25_bde_itineraire_vacances
 
-# Lancer avec Docker
-docker-compose up --build
 ```
 
 ### Services Individuels
@@ -131,6 +129,10 @@ cd docker/api/
 # OSRM seul  
 cd docker/osrm/scripts
 ./setup-osrm.sh
+
+# lancer l'application TripMaNGo sans le monitoring
+cd docker/
+docker-compose up -d
 ```
 
 ## Configuration
