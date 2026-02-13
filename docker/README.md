@@ -1,4 +1,4 @@
-# Monitoring - Infrastructure TripMaNGo
+# Infrastructure Docker TripMaNGo - Déploiement et monitoring simplifiés
 
 Infrastructure complète pour le déploiement de l'API TripMaNGo avec monitoring intégré.
 
@@ -51,7 +51,7 @@ docker-compose up -d
 
 ---
 
-## 📊 Accès aux Services
+## Accès aux Services
 
 ### Services Principaux
 | Service | URL | Identifiants |
@@ -66,7 +66,7 @@ docker-compose up -d
 | OSRM Bike | http://localhost:5002 | - |
 | OSRM Foot | http://localhost:5001 | - |
 
-### Services de Monitoring
+### Services de Monitoring [Lire la Doc Monitoring](./monitoring/README.md)
 | Service | URL | Identifiants |
 |---------|-----|-------------|
 | Prometheus | http://localhost:9090 | - |
@@ -77,7 +77,7 @@ docker-compose up -d
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Variables d'Environnement
 Créer un fichier `.env` à la racine du projet :
@@ -106,7 +106,7 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 
 ---
 
-## 📈 Monitoring
+## Monitoring
 
 ### Prometheus
 - **Configuration** : `monitoring/prometheus/prometheus.yml`
@@ -132,7 +132,7 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 
 ---
 
-## 🛠️ Gestion des Services
+## Gestion des Services
 
 ### Commandes Utiles
 ```bash
@@ -176,7 +176,7 @@ docker system prune -f
 
 ---
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Problèmes Courants
 
@@ -219,9 +219,6 @@ curl http://localhost:9187/metrics
 
 **Optimisation Docker**
 ```bash
-# Limiter l'utilisation mémoire
-docker-compose up -d --memory=4g
-
 # Optimiser les volumes
 docker-compose down
 docker volume prune
@@ -239,7 +236,7 @@ docker stats
 
 ---
 
-## 📁 Structure des Fichiers
+## Structure des Fichiers
 
 ```
 docker/
@@ -270,7 +267,7 @@ docker/
 
 ---
 
-## 🔒 Sécurité
+## Sécurité
 
 ### Bonnes Pratiques
 - **Changer les mots de passe par défaut**
@@ -291,7 +288,7 @@ echo "your_password" | docker secret create postgres_password -
 
 ---
 
-## 📚 Documentation Complémentaire
+## Documentation Complémentaire
 
 - **API** : [../app/README.md](../app/README.md)
 - **Services** : [../app/services/README.md](../app/services/README.md)
@@ -300,4 +297,4 @@ echo "your_password" | docker secret create postgres_password -
 
 ---
 
-*Infrastructure Docker TripMaNGo - Déploiement et monitoring simplifiés*
+

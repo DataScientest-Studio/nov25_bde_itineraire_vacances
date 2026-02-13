@@ -6,7 +6,7 @@ x-airflow-common: &airflow-common
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     # Utilisation des variables du .env
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_AIRFLOW_USER}:${POSTGRES_AIRFLOW_PASSWORD}@postgres-airflow:5432/${POSTGRES_AIRFLOW_DB}
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
@@ -32,7 +32,7 @@ x-airflow-common: &airflow-common
     postgres-vacances:
       condition: service_healthy
   networks:
-    - vacances-network
+    - docker_vacances-network
 
 services:
   # --- INFRASTRUCTURE DATA & BDD ---
@@ -55,7 +55,7 @@ services:
       start_period: 5s
     restart: always
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   postgres-airflow:
     image: postgres:15
@@ -73,7 +73,7 @@ services:
       start_period: 5s
     restart: always
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   # Interface d'administration BDD
   pgadmin:
@@ -88,7 +88,7 @@ services:
     depends_on:
       - postgres-vacances
     networks:
-      - vacances-network
+      - docker_vacances-network
 
 
   # --- SERVICES OSRM (PROFILS) ---
@@ -258,7 +258,7 @@ services:
       retries: 3
       start_period: 45s
     networks:
-      - vacances-network
+      - docker_vacances-network
 
   # --- SERVICES STREAMLIT ---
 
@@ -336,16 +336,5 @@ volumes:
   pgadmin-data:
 
 networks:
-  vacances-network:
+  docker_vacances-network:
     driver: bridge
-
-# --- MONITORING ---
-# Pour activer le monitoring, lancer:
-# docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
-#
-# Services de monitoring disponibles:
-# - Prometheus: http://localhost:9090
-# - Grafana: http://localhost:3000 (admin/admin123)
-# - AlertManager: http://localhost:9093
-# - Node Exporter: http://localhost:9100/metrics
-# - cAdvisor: http://localhost:8080

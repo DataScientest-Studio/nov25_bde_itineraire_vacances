@@ -36,4 +36,4 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=10s \
     CMD curl --fail http://localhost:8000/health || exit 1
 
 # Commande de démarrage avec rechargement pour le développement
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
