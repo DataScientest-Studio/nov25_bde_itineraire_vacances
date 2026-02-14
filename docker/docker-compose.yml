@@ -32,7 +32,7 @@ x-airflow-common: &airflow-common
     postgres-vacances:
       condition: service_healthy
   networks:
-    - docker_vacances-network
+    - vacances-network
 
 services:
   # --- INFRASTRUCTURE DATA & BDD ---
@@ -55,7 +55,7 @@ services:
       start_period: 5s
     restart: always
     networks:
-      - docker_vacances-network
+      - vacances-network
 
   postgres-airflow:
     image: postgres:15
@@ -73,7 +73,7 @@ services:
       start_period: 5s
     restart: always
     networks:
-      - docker_vacances-network
+      - vacances-network
 
   # Interface d'administration BDD
   pgadmin:
@@ -88,7 +88,7 @@ services:
     depends_on:
       - postgres-vacances
     networks:
-      - docker_vacances-network
+      - vacances-network
 
 
   # --- SERVICES OSRM (PROFILS) ---
@@ -258,7 +258,7 @@ services:
       retries: 3
       start_period: 45s
     networks:
-      - docker_vacances-network
+      - vacances-network
 
   # --- SERVICES STREAMLIT ---
 
@@ -336,5 +336,5 @@ volumes:
   pgadmin-data:
 
 networks:
-  docker_vacances-network:
+  vacances-network:
     driver: bridge
