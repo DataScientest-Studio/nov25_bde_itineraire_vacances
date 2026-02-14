@@ -111,3 +111,5 @@ tests/
 # airflow scheduler logs
 logs/
 
+# fichiers osrm
+osrm-setup/data/

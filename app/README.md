@@ -1,106 +1,180 @@
-# 🗺️ API Itinéraires de Vacances
+# API TripMaNGo - Itinéraires de Vacances Intelligents
 
-Application FastAPI pour le calcul d'itinéraires de vacances optimisés avec clustering spatial et algorithmes de résolution.
+API FastAPI pour le calcul d'itinéraires de vacances optimisés avec clustering spatial et algorithmes de résolution.
+
+---
 
 ## Architecture
 
+L'API est organisée en couches claires avec séparation des responsabilités :
+
 ```
 app/
-├── api/                    # Routes FastAPI
+├── api/                    # Routes HTTP (Couche Présentation)
 │   ├── categories.py       # Gestion des catégories POI
 │   ├── poi.py             # Points d'intérêt
-│   ├── itinerary.py        # Calcul d'itinéraires
-│   └── _api_itinerary_compute.py  # Logique de calcul détaillée
-├── core/                   # Configuration système
-│   └── database.py        # Gestionnaire de base de données
-├── models/                 # Modèles Pydantic
-│   ├── categories.py       # Catégories et sous-catégories
-│   ├── poi.py             # Structure des POI
-│   └── itinerary.py        # Modèles de requêtes/réponses
-├── services/              # Logique métier
+│   └── itinerary.py        # Calcul d'itinéraires
+├── services/              # Logique Métier (Couche Service)
 │   ├── category_service.py # Service des catégories
 │   ├── poi_service.py     # Service des POI
 │   ├── itinerary_service.py # Orchestrateur principal
 │   └── osrm_service.py    # Service OSRM
-├── pipeline/              # Pipeline de calcul
+├── pipeline/              # Pipeline Algorithmique (Couche Calcul)
 │   ├── itinerary_pipeline.py  # Pipeline complet
 │   └── features/          # Composants du pipeline
 │       ├── osrm.py       # Client OSRM asynchrone
 │       ├── spatial_clustering.py  # Clustering géographique
 │       ├── post_clustering.py     # Post-traitement
 │       └── optimizer_*.py        # Algorithmes d'optimisation
-├── repositories/          # Accès aux données
-├── dependencies.py        # Injection de dépendances FastAPI
+├── models/                # Modèles de Données (Couche Contrat)
+│   ├── categories.py       # Catégories et sous-catégories
+│   ├── poi.py             # Structure des POI
+│   └── itinerary.py        # Modèles de requêtes/réponses
+├── core/                  # Configuration Infrastructure
+│   └── database.py        # Gestionnaire de base de données
+├── dependencies.py        # Injection de Dépendances
 └── main.py               # Point d'entrée FastAPI
 ```
 
+---
+
 ## Fonctionnalités Principales
 
-### Gestion des Catégories
-- **GET /main_categories** : Récupère toutes les catégories principales
-- **POST /sub_categories** : Récupère les sous-catégories par catégories sélectionnées
-
 ### Points d'Intérêt (POI)
-- **POST /poi/query** : Recherche avancée avec filtres multiples
-- Filtrage par catégories, localisation, rayon
-- Support des coordonnées géographiques et index H3
+- **Recherche avancée** : Filtrage par catégories, localisation, score
+- **Indexation géospatiale** : Support des coordonnées GPS et index H3
+- **Métadonnées riches** : Descriptions, contacts, informations pratiques
 
-### Calcul d'Itinéraires Optimisés
-- **POST /itinerary/compute** : Calcul d'itinéraires multi-jours
-- **Clustering spatial** automatique par jour
-- **Modes de transport** : walk, bike, car
-- **Algorithmes** : NN2O, Génétique, Auto-sélection
-- **Intégration OSRM** pour distances/temps réels
+### Gestion des Catégories
+- **Catégories principales** : Hiérarchie complète des thématiques
+- **Sous-catégories** : Classification fine des points d'intérêt
+- **Filtrage multi-niveaux** : Sélection flexible par besoins
 
-## Technologies Utilisées
+### alcul d'Itinéraires Optimisés
+- **Clustering spatial automatique** : Répartition intelligente par jour
+- **Modes de transport** : Marche, vélo, voiture avec profils OSRM
+- **Algorithmes d'optimisation** : NN2O (rapide), Génétique (qualité), Auto (adaptatif)
+- **Enrichissement complet** : Distances, durées, métriques détaillées
 
-### Backend
-- **FastAPI** : Framework API moderne avec documentation auto-générée
-- **Pydantic** : Validation et sérialisation des données
-- **AsyncIO** : Programmation asynchrone
+---
 
-### Géospatial
-- **OSRM** : Calcul d'itinéraires et distances
-- **H3** : Indexation géospatiale hexagonale
-- **PostGIS** : Extensions géographiques PostgreSQL
+## Services - Couche Métier
 
-### Algorithmes
-- **NN2O** : Nearest Neighbor 2-Opt (rapide)
-- **Génétique** : Algorithme génétique (qualité)
-- **Auto-sélection** : Choix automatique selon taille problème
+### ItineraryService - Orchestrateur Principal
 
-## Pipeline de Calcul
+**Rôle** : Transformation des requêtes API en itinéraires optimisés
 
-Le pipeline suit 5 étapes principales :
+**Flux d'exécution** :
+```
+POIs API → DataFrame Polars → Pipeline Algorithmique → Enrichissement → Réponse JSON
+```
 
-1. **Clustering Spatial** : Regroupement géographique des POI par jour
-2. **Préparation OSRM** : Formatage des coordonnées pour l'API OSRM
-3. **Matrices OSRM** : Calcul asynchrone des distances/temps
-4. **Optimisation** : Application du solveur sélectionné
-5. **Enrichissement** : Ajout des métriques détaillées
+**Méthode clé** :
+```python
+async def compute_itinerary(
+    pois: List[POI],
+    days: int,
+    transport_mode: str,
+    solver: str,
+    start_lat: float,
+    start_lon: float
+) -> Dict[str, Any]
+```
+
+**Retour** : Itinéraire structuré par jour avec POIs enrichis, métriques et géométries OSRM
+
+*Documentation complète : [services/README.md](./services/README.md)*
+
+---
+
+## Pipeline Algorithmique
+
+### ItineraryPipeline - Cœur de Calcul
+
+**Architecture en 6 étapes** :
+
+1. **Clustering Spatial** : Regroupement géographique des POIs par jour avec index H3
+2. **Post-Clustering** : Rééquilibrage intelligent (restaurants, diversité, densité)
+3. **Préparation OSRM** : Formatage des coordonnées et filtrage par mode de transport
+4. **Matrices OSRM** : Calcul asynchrone des distances et durées
+5. **Solveurs d'Optimisation** : NN2O, Génétique ou sélection automatique
+6. **Enrichissement** : Ajout des métriques détaillées (cumuls, totaux, etc.)
+
+*Documentation complète : [pipeline/README.md](./pipeline/README.md)*
+
+---
+
+## Algorithmes d'Optimisation
+
+| Solveur | Performance | Qualité | Recommandation | Seuil AUTO |
+|---------|-------------|---------|----------------|------------|
+| **NN2O** | Très rapide (< 100ms) | 🟊🟊🟊 | Petits clusters | ≤ 6 POIs |
+| **Génétique** | Lent (1-3s) | 🟊🟊🟊🟊🟊 | Grands clusters | > 6 POIs |
+| **Auto** | Adaptatif | 🟊🟊🟊🟊 | Sélection automatique | Intelligent |
+
+*Analyse complète : [benchmark/README.md](../src/benchmark/README.md)*
+
+---
 
 ## Modes de Transport
 
-| Mode | Description | Cas d'usage |
-|------|-------------|-------------|
-| **walk** | Marche à pied | Centres villes, tourisme pédestre |
-| **bike** | Vélo | Zones urbaines, pistes cyclables |
-| **car** | Véhicule | Longues distances, zones rurales |
+| Mode | Profil OSRM | Rayon Max | Cas d'usage |
+|------|-------------|-----------|-------------|
+| **walk** | foot | 14 km | Centres villes, tourisme pédestre |
+| **bike** | bike | 27 km | Zones urbaines, pistes cyclables |
+| **car** | driving | 40 km | Longues distances, zones rurales |
 
-## Solveurs d'Optimisation
+---
 
-| Solveur | Performance | Qualité | Recommandation |
-|---------|-------------|---------|----------------|
-| **nn2o** | Très rapide | 🟊🟊🟊 | < 200 POI |
-| **ga** | Lent | 🟊🟊🟊🟊🟊 | > 200 POI, qualité maximale |
-| **auto** | Adaptatif | 🟊🟊🟊🟊 | Sélection automatique |
+## Endpoints API
+
+### Catégories
+```http
+GET  /main_categories          # Toutes les catégories principales
+POST /sub_categories          # Sous-catégories par sélection
+```
+
+### Points d'Intérêt
+```http
+POST /poi/query               # Recherche avancée avec filtres
+```
+
+### Itinéraires
+```http
+POST /itinerary/compute       # Calcul d'itinéraire optimisé
+```
+
+### Documentation Interactive
+- **Swagger UI** : http://localhost:8000/docs
+- **ReDoc** : http://localhost:8000/redoc
+
+---
+
+## Technologies
+
+### Backend
+- **FastAPI** : Framework API moderne avec validation automatique
+- **Pydantic** : Contrats de données et validation
+- **AsyncIO** : Programmation asynchrone haute performance
+
+### Géospatial
+- **OSRM** : Calcul d'itinéraires et distances en temps réel
+- **H3** : Indexation géospatiale hexagonale (Uber)
+- **PostGIS** : Extensions géographiques PostgreSQL
+
+### Algorithmique
+- **Polars** : DataFrames optimisés vs Pandas
+- **NumPy** : Calculs matriciels performants
+- **DEAP** : Algorithmes génétiques
+
+---
 
 ## Démarrage Rapide
 
 ### Installation
 ```bash
 # Installation des dépendances
-pip install fastapi uvicorn polars asyncpg psycopg2-binary
+pip install fastapi uvicorn polars psycopg2-binary
 
 # Variables d'environnement
 export OSRM_URL=http://localhost:5000
@@ -110,75 +184,40 @@ export POSTGRES_DB=vacances
 
 ### Lancement
 ```bash
-
+# Développement avec rechargement
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
+# Production
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
-### Documentation
-- **Swagger UI** : http://localhost:8000/docs
-- **ReDoc** : http://localhost:8000/redoc
-
-## 📡 Endpoints API
-
-### Categories
-```http
-GET /main_categories
-POST /sub_categories
+### Docker
+```bash
+# Construction et lancement
+docker build -f docker/api/Dockerfile -t tripmango-api .
+docker run -p 8000:8000 tripmango-api
 ```
 
-### POI
-```http
-POST /poi/query
-```
+---
 
-### Itinerary
-```http
-POST /itinerary/compute
-```
+## Performance
 
-## Exemple d'Utilisation
+### Métriques
+- **< 50 POIs** : Traitement instantané (< 1s)
+- **50-200 POIs** : Optimisation rapide (1-5s)
+- **> 200 POIs** : Calcul intensif (5-30s)
 
-### Requête d'itinéraire
-```json
-{
-  "pois": [
-    {
-      "poi_id": 123,
-      "nom_du_poi": "Tour Eiffel",
-      "latitude": 48.8584,
-      "longitude": 2.2945,
-      "main_category": "Monuments"
-    }
-  ],
-  "days": 3,
-  "transport_mode": "walk",
-  "solver": "auto",
-  "latitude": 48.85,
-  "longitude": 2.35
-}
-```
+### Optimisations
+- **Async OSRM** : Requêtes parallèles
+- **Clustering** : Réduction complexité algorithmique
+- **Cache H3** : Indexation géospatiale
+- **Polars** : DataFrames haute performance
 
-### Réponse
-```json
-{
-  "itinerary": [
-    {
-      "day": 1,
-      "pois": [...],
-      "total_distance_km": 2.3,
-      "total_duration_min": 28
-    }
-  ],
-  "trip_total_distance_km": 15.2,
-  "trip_total_duration_min": 185,
-  "optimizer": "nn2o"
-}
-```
+---
 
 ## Configuration
 
-### Variables d'environnement
+### Variables d'Environnement
 ```bash
 # Base de données
 POSTGRES_HOST=localhost
@@ -195,82 +234,21 @@ LOG_LEVEL=INFO
 DEBUG=false
 ```
 
-## Développement
+### Dépendances
+Voir [requirements.txt](./requirements.txt) pour la liste complète des packages.
 
-### Structure des services
-- **Services** : Logique métier pure
-- **Repositories** : Accès aux données
-- **Pipeline** : Traitement complexe
-- **API** : Routes FastAPI légères
+---
 
-### Tests
-```bash
-# Tests unitaires
-pytest tests/unit/ # TODO
+## Dépannage
 
-# Tests d'intégration
-pytest tests/integration/ # TODO
-
-# Tests API
-pytest tests/api/ # TODO
-```
-
-### Debug
-```bash
-# Mode debug
-uvicorn app.main:app --reload --log-level debug
-
-# Logs du pipeline
-export LOG_LEVEL=DEBUG
-```
-
-## Performance
-
-### Optimisations
-- **Polars** : DataFrames optimisées vs Pandas
-- **AsyncIO** : Requêtes OSRM parallèles
-- **Clustering** : Réduction complexité algorithmique
-- **Cache** : Matrices de distances réutilisées
-
-### Recommandations
-- **< 50 POI** : Mode auto, traitement instantané
-- **50-200 POI** : NN2O recommandé
-- **> 200 POI** : GA pour meilleure qualité
-
-## Docker
-
-### Dockerfile
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY app/ ./app/
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### Docker Compose
-```yaml
-services:
-  api:
-    build: .
-    ports:
-      - "8000:8000"
-    environment:
-      - OSRM_URL=http://osrm:5000
-      - POSTGRES_HOST=postgres
-```
-
-##  Dépannage
-
-### Problèmes courants
+### Problèmes Courants
 - **OSRM timeout** : Vérifier `OSRM_URL` et connectivité
-- **Memory error** : Réduire nombre POI ou utiliser NN2O
-- **Database connection** : Vérifier variables POSTGRES_*
+- **Memory error** : Réduire nombre POIs ou utiliser NN2O
+- **Database connection** : Vérifier variables `POSTGRES_*`
 
-### Logs utiles
+### Logs Utiles
 ```bash
-# Logs FastAPI
+# Logs application
 tail -f logs/app.log
 
 # Logs pipeline
@@ -280,19 +258,13 @@ grep "Pipeline" logs/app.log
 docker logs osrm-container
 ```
 
-
-## Notes Techniques
-
-### Pipeline service
-- **Dependency Injection** : FastAPI `Depends()`
-- **Service Layer** : Séparation logique métier
-- **Repository Pattern** : Abstraction données
-- **Pipeline Pattern** : Traitement par étapes
-
-### Async/Await
-- OSRM client asynchrone pour performances
-- Support des requêtes concurrentes
-- Non-blocking I/O operations
-
 ---
 
+## Documentation Complète
+
+- **Services** : [services/README.md](./services/README.md) - Couche métier
+- **Pipeline** : [pipeline/README.md](./pipeline/README.md) - Algorithmique
+- **Benchmark** : [../src/benchmark/README.md](../src/benchmark/README.md) - Performance
+
+---
+[Retour sur la documentation principale](../README.md)
