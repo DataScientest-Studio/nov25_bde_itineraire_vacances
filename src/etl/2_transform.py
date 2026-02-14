@@ -9,10 +9,10 @@ import polars as pl
 # import tous les modules pour le scoring
 from scoring.density import add_density
 from scoring.diversity import add_diversity
-from scoring.proximity import add_proximity
+#from scoring.proximity import add_proximity
 from scoring.category_weight import add_category_weight
 from scoring.final_score import add_final_score
-from scoring.utils.bounding_box import BoundingBoxResolver
+#from scoring.utils.bounding_box import BoundingBoxResolver
 
 
 INPUT_FILE = "/opt/airflow/data/raw_datatourisme.csv"
@@ -210,7 +210,7 @@ def calculate_h3(lat, lon, res):
 
 
 def transform():
-    resolver = BoundingBoxResolver()
+    #resolver = BoundingBoxResolver()
     if not os.path.exists(INPUT_FILE):
         print("❌ Pas de fichier source (raw_datatourisme.csv)")
         sys.exit(1)
@@ -256,8 +256,8 @@ def transform():
     print("   📊 Calcul du score de diversité...")
     lf = add_diversity(lf)
     
-    print("   📊 Calcul du score de proximité...")
-    lf = add_proximity(lf, resolver)
+    #print("   📊 Calcul du score de proximité...")
+    #lf = add_proximity(lf, resolver)
     
     print("   📊 Calcul du score de catégorie...")
     lf = add_category_weight(lf)
@@ -266,6 +266,7 @@ def transform():
     lf = lf.with_columns([
     pl.lit(0).alias("popularity_norm"),
     pl.lit(0).alias("opening_score_norm"),
+    pl.lit(0).alias("proximity_commune_norm"),
     ])
 
     print("   📊 Calcul du score final...")
