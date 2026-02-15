@@ -39,13 +39,13 @@ Infrastructure complète pour le déploiement de l'API TripMaNGo avec monitoring
    
 3. Lancer les services "infrastructure" : airflow, base de données postgresql, 3 serveurs OSRM et le reverse proxy nginx  :
    ```bash
-   COMPOSE_PROFILES=infrastructure docker compose up --build
+   COMPOSE_PROFILES=infrastructure docker compose up --build -d
    ````
    Suivre les étapes d'itinialisation de la base de données décrites [ici](../dags/README.md) à partir de l'étape : "Accès à l'Interface Airflow".
    
-5. Lancer les services "app" : api et streamlit
+5. Lancer les services "app" : api et streamlit 
    ```bash
-   COMPOSE_PROFILES=app docker compose up --build
+   COMPOSE_PROFILES=app docker compose up --build -d
    ````
 
 #### Vérification des services
