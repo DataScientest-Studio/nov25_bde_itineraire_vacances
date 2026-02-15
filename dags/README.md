@@ -73,9 +73,10 @@ Pour visualiser les tables et les données :
 
         Cliquez sur Save.
 
-Lancer le script sql pour itiniliser la base de données POSTGRES:
+Lancer le script sql pour itiniliser la base de données POSTGRES de puis le dossier src :
 
 ```bash
+cd nov25_bde_itineraire_vacances/src
 docker exec -i postgres-vacances psql -U vacances_user -d vacances < ./sql/init_db.sql
 ```
 
