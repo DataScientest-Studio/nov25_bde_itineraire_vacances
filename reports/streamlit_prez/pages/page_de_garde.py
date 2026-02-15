@@ -6,7 +6,7 @@ today = datetime.today()
 today = today.strftime("%d/%m/%Y")
 
 
-with st.container(height=100, border=False) :
+with st.container(height=90, border=False) :
     col1, col2 = st.columns(2)
 
     with col1 :
@@ -22,8 +22,8 @@ with st.container(vertical_alignment="center", horizontal_alignment="center", ga
 
 st.divider()
 
-with st.container(key='body', height=100, border=False) :
-    col1, col2, col3 = st.columns(3, vertical_alignment="center")
+with st.container(key='body', height=90, border=False) :
+    col1, col2, col3 = st.columns([3,1,1], vertical_alignment="center")
 
     with col1 :
         st.markdown(f'''
