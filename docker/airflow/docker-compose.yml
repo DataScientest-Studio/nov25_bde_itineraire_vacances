@@ -1,4 +1,3 @@
-version: '3.8'
 
 x-airflow-common: &airflow-common
   build: .
@@ -109,6 +108,11 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      - ../../:/opt/airflow
+      - ../../dags:/opt/airflow/dags
+      - ../../logs:/opt/airflow/logs
+      - ../../plugins:/opt/airflow/plugins
     networks:
       - vacances-network
 
@@ -128,6 +132,11 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      - ../../:/opt/airflow
+      - ../../dags:/opt/airflow/dags
+      - ../../logs:/opt/airflow/logs
+      - ../../plugins:/opt/airflow/plugins
     networks:
       - vacances-network
 
@@ -157,7 +166,10 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: airflow
     user: "0:0"
     volumes:
-      - .:/sources
+      - ../../:/opt/airflow
+      - ../../dags:/opt/airflow/dags
+      - ../../logs:/opt/airflow/logs
+      - ../../plugins:/opt/airflow/plugins
     networks:
       - vacances-network
 
@@ -168,4 +180,4 @@ volumes:
 
 networks:
   vacances-network:
-    driver: bridge
+    external: true

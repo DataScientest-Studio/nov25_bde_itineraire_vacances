@@ -1,16 +1,41 @@
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: vacances
+      POSTGRES_PASSWORD: vacances
+      POSTGRES_DB: vacances
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - vacances-network
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: unless-stopped
+    networks:
+      - vacances-network
+
   # Prometheus - Collecteur de métriques
   prometheus:
     build:
-      context: ./monitoring/prometheus
+      context: ./prometheus
       dockerfile: Dockerfile
-    container_name: prometheus
+    container_name: promethes
     ports:
       - "9090:9090"
     volumes:
       - prometheus-data:/prometheus
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./monitoring/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -33,21 +58,21 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/tripmango-overview.json
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/tripmango-overview.json
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     restart: unless-stopped
     networks:
       - vacances-network
     depends_on:
       - prometheus
 
-  # OSRM Exporter - Métriques OSRM
+  # OSRM Exporter
   osrm-exporter:
     build:
-      context: ./monitoring/osrm-exporter
+      context: ./osrm-exporter/
       dockerfile: Dockerfile
     container_name: osrm-exporter
     ports:
@@ -60,15 +85,24 @@ services:
     networks:
       - vacances-network
     depends_on:
-      - osrm-car
-      - osrm-bike
-      - osrm-foot
+      - prometheus
+  
+  # postgres exporter
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://vacances:vacances@postgres:5432/vacances?sslmode=disable"
+    networks:
+      - vacances-network
+    depends_on:
+      - postgres
 
 volumes:
   prometheus-data:
   grafana-data:
+  postgres-data:
 
 networks:
   vacances-network:
-    name: vacances-network
     external: true
