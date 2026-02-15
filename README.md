@@ -64,7 +64,7 @@ Les distances et durées dépendent du mode de transport.
 │   ├── streamlit/         # Service Streamlit
 │   ├── monitoring/        # Service Monitoring
 │   ├── docker-compose.yml # Compose principal
-│   └── docker-compose.monitoring-simple.yml # Compose monitoring
+│   └── docker-compose.monitoring.yml # Compose monitoring
 ├── data/                   # Données
 ├── dags/                   # Airflow DAGs
 ├── reports/               # Streamlit
@@ -102,7 +102,7 @@ Les distances et durées dépendent du mode de transport.
 - **Prometheus** + **Grafana** : Monitoring
 
 
-## Démarrage Rapide (A METTRE A JOUR)
+## Démarrage Rapide
 
 ### Pré-requis
 * Docker & Docker Compose
@@ -121,19 +121,13 @@ cd nov25_bde_itineraire_vacances
 ```
 
 ### Services Individuels
-```bash
-# API seule
-cd docker/api/
-./deploy.sh
+Il faut lancer dans l'ordre les services suivants:
 
-# OSRM seul  
-cd docker/osrm/scripts
-./setup-osrm.sh
+1. Initialisation d’Airflow [Lire la Doc Airflow](./dags/README.md)
+2. Initialisation du serveur OSRM [Lire la Doc OSRM](./docker/osrm/README.md)
+3. Initialisation de l'API [Lire la Doc API](./app/README.md)
+4. Initialisation de Streamlit [Lire la Doc Streamlit](./docker/streamlit/README.md)
 
-# lancer l'application TripMaNGo sans le monitoring
-cd docker/
-docker-compose up -d
-```
 
 ## Configuration
 
@@ -144,9 +138,6 @@ Le projet utilise des variables d'environnement pour fonctionner. Un fichier mod
    ```bash
    cp .env.example .env
 
-## API Configuration
-
-## Database
 
 ## Contributing
 

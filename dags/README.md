@@ -22,10 +22,15 @@ Voici la procédure pour lancer le pipeline sur votre machine locale.
 🚀 Démarrage de l'Infrastructure
 
 Ouvrez un terminal à la racine du projet et lancez la commande suivante :
-Bash
+Créer un réseau network externe:
+```bash
+docker network create vacances_network
+```
+
+```bash
 
 docker-compose up -d
-
+```
     ⏳ Note : Attendez environ 30 à 60 secondes que les services s'initialisent complètement.
 
 🖥️ Accès à l'Interface Airflow
@@ -67,6 +72,14 @@ Pour visualiser les tables et les données :
             Password : vacances_password
 
         Cliquez sur Save.
+
+Lancer le script sql pour itiniliser la base de données POSTGRES:
+
+```bash
+docker exec -i postgres-vacances psql -U vacances_user -d vacances < ./sql/init_db.sql
+```
+
+
 
 ▶️ Lancer le Pipeline ETL
 
@@ -116,11 +129,15 @@ final_score	FLOAT	Score normalisé (0-1) pour le classement.
 5. Commandes Utiles (Debug)
 
 Vérifier le nombre de lieux en base (via Terminal) :
-Bash
+```bash
 
 docker exec -it postgres-vacances psql -U vacances_user -d vacances -c "SELECT count(*) FROM poi;"
+```
 
 Redémarrer proprement l'infrastructure :
-Bash
+```bash
 
 docker-compose down && docker-compose up -d
+```
+
+[Retour sur la documentation principale](../README.md)

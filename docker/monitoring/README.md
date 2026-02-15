@@ -32,12 +32,8 @@ cd docker/
 docker-compose up -d
 ```
 
-### 2. Démarrer le Monitoring
-```bash
-docker-compose -f docker-compose.monitoring-simple.yml up -d
-```
 
-### 3. Vérifier les Services
+### 2. Vérifier les Services
 ```bash
 # Vérifier tous les conteneurs
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
@@ -129,11 +125,11 @@ GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
 ### Redémarrer les Services
 ```bash
 # Redémarrer tout le monitoring
-docker-compose -f docker-compose.monitoring-simple.yml restart
+docker-compose -f docker-compose.monitoring.yml restart
 
 # Redémarrer un service spécifique
-docker-compose -f docker-compose.monitoring-simple.yml restart prometheus
-docker-compose -f docker-compose.monitoring-simple.yml restart grafana
+docker-compose -f docker-compose.monitoring.yml restart prometheus
+docker-compose -f docker-compose.monitoring.yml restart grafana
 ```
 
 ### Logs
@@ -151,10 +147,10 @@ docker logs osrm-exporter -f
 ### Nettoyage
 ```bash
 # Arrêter le monitoring
-docker-compose -f docker-compose.monitoring-simple.yml down
+docker-compose -f docker-compose.monitoring.yml down
 
 # Nettoyer les volumes (attention!)
-docker-compose -f docker-compose.monitoring-simple.yml down -v
+docker-compose -f docker-compose.monitoring.yml down -v
 ```
 
 ---
@@ -214,4 +210,3 @@ curl -X POST http://localhost:9090/-/reload
 
 ---
 
-*Monitoring TripMaNGo - Surveillance complète de votre infrastructure*

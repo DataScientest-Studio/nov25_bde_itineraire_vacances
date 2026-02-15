@@ -110,6 +110,12 @@ tests/
 
 # airflow scheduler logs
 logs/
+<<<<<<< Updated upstream
 
 # fichiers osrm
 osrm-setup/data/
+=======
+airflow-webserver.id
+webserver_config.py
+airflow.cfg
+>>>>>>> Stashed changes

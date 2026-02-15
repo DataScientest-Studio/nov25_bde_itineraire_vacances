@@ -44,7 +44,6 @@ ITINERARY_POIS_PROCESSED = Histogram(
 )
 
 def track_itinerary_request(transport_mode: str, solver: str, days: int, pois_count: int, duration: float):
-    """Enregistrer les métriques de calcul d'itinéraire"""
     ITINERARY_REQUESTS.labels(
         transport_mode=transport_mode, 
         solver=solver, 
@@ -59,17 +58,7 @@ def track_itinerary_request(transport_mode: str, solver: str, days: int, pois_co
     ITINERARY_POIS_PROCESSED.labels(days=str(days)).observe(pois_count)
 
 async def metrics_endpoint(request: Request = None):
-    """Endpoint pour exposer les métriques Prometheus"""
     return PlainTextResponse(
         generate_latest(),
         media_type=CONTENT_TYPE_LATEST
     )
-
-def get_metrics_summary() -> Dict[str, Any]:
-    """Obtenir un résumé des métriques pour le debugging"""
-    return {
-        "total_requests": REQUEST_COUNT._value._value.sum(),
-        "active_connections": ACTIVE_CONNECTIONS._value.get(),
-        "avg_request_duration": REQUEST_DURATION.observe.sum() / REQUEST_DURATION.observe.count() if REQUEST_DURATION.observe.count() > 0 else 0,
-        "total_itinerary_requests": ITINERARY_REQUESTS._value._value.sum()
-    }
