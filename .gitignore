@@ -78,10 +78,18 @@ target/
 .ipynb_checkpoints/
 
 # exclude data from source control by default
-/data/
+/data/graphs
+/data/raw
+/data/clean_pois.csv
+/data/raw_datatourisme.csv
+/data/processed/clean_pois.csv
+/data/processed/raw_datatourisme.csv
+
 /docker/osrm/scripts/osrm-data/
 benchmark_solvers/data/
 benchmark_solvers/results/
+
+osrm-setup/data
 
 # exclude archive
 archive/ 
@@ -110,12 +118,6 @@ tests/
 
 # airflow scheduler logs
 logs/
-<<<<<<< Updated upstream
-
-# fichiers osrm
-osrm-setup/data/
-=======
-airflow-webserver.id
-webserver_config.py
 airflow.cfg
->>>>>>> Stashed changes
+
+

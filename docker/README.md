@@ -25,21 +25,38 @@ Infrastructure complète pour le déploiement de l'API TripMaNGo avec monitoring
 
 ## Démarrage Rapide
 
-### 1. Infrastructure Complète
-```bash
-# Démarrage de tous les services (monitoring inclus)
-docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+### 1. Infrastructure sans monitoring
 
-# Vérification des services
+1. Créer le fichier de config. avec les variables d'environnement :
+   ```bash
+   cp .env.example .env
+   ````
+2. Lancer la compilation des fichiers OSRM :
+   ```bash
+   COMPOSE_PROFILES=osrm_compilation docker compose up --build
+   ````
+   Cette étape dure 60 minutes à peu prés et permet de préparer les fichiers nécessaires aux 3 serveurs OSRM(car, foot, bike).
+   
+3. Lancer les services "infrastructure" : airflow, base de données postgresql, 3 serveurs OSRM et le reverse proxy nginx  :
+   ```bash
+   COMPOSE_PROFILES=infrastructure docker compose up --build -d
+   ````
+   Suivre les étapes d'itinialisation de la base de données décrites [ici](../dags/README.md) à partir de l'étape : "Accès à l'Interface Airflow".
+   
+5. Lancer les services "app" : api et streamlit 
+   ```bash
+   COMPOSE_PROFILES=app docker compose up --build -d
+   ````
+
+#### Vérification des services
+```bash
 docker-compose ps
 ```
 
-### 2. Infrastructure Sans Monitoring
+### 2. Infrastructure avec Monitoring
+- Déployer l'infrastructure (1).
+- Ajouter le  service de monitoring :
 ```bash
-# Démarrage des services principaux uniquement
-docker-compose up -d
-
-# Ajout du monitoring plus tard
 docker-compose -f docker-compose.monitoring.yml up -d
 ```
 
