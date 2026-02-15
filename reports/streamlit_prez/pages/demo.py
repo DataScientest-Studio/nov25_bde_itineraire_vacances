@@ -22,10 +22,10 @@ with st.container(key='bottom') :
     with col1 :
         with st.container(horizontal_alignment="right"):
             if st.button(label = "", shortcut="Left", width=30) :
-                st.switch_page("pages/solver.py")
+                st.switch_page("pages/api.py")
 
     with col3:
-        st.markdown('**7**', text_alignment='center')
+        st.markdown('**6**', text_alignment='center')
     
     with col5 :
         with st.container(horizontal_alignment="left"):

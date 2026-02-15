@@ -14,7 +14,13 @@ with st.container(height=40, border=False) :
             st.image("pages/media/tripmango_2_picto.png", output_format="PNG")
 
 with st.container(key='body', height=520, border= False, horizontal_alignment='center', vertical_alignment='center') :
-    st.image("pages/media/architecture.png", output_format='PNG')
+    col1, col2=st.columns([6,1], gap="small")
+    with col1 : 
+        st.image("pages/media/architecture.png", output_format='PNG', width="stretch")
+    with col2:
+        with st.popover("DAG", type="secondary", icon="➕") :
+            st.image("pages/media/airflow_capture.png", output_format="PNG")
+    
 
 with st.container(key='bottom') :
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -25,7 +31,7 @@ with st.container(key='bottom') :
                 st.switch_page("pages/demo.py")
 
     with col3:
-        st.markdown('**8**', text_alignment='center')
+        st.markdown('**7**', text_alignment='center')
     
     with col5 :
         with st.container(horizontal_alignment="left"):

@@ -21,15 +21,15 @@ with st.container(key='body', height=520, border=False) :
             with st.expander("🔧**Perspectives techniques**", expanded=True):
                 with st.container(height=390, border=False): 
                     st.markdown('''
-                        - Intégration de **nouvelles sources de donnnées**: <br>
+                        - Intégrer de **nouvelles sources de donnnées**: <br>
                             -> transport public <br>
                             -> avis tripadvisor <br>
-                            -> les horaires d'ouvertures <br>
-                            -> Les prix <br> <br>
-                        - **Optimisation du solveur GA** <br>
-                            -> Enrichir la fonction de sélection<br>
-                            -> optimiser des hyperparamètres du modèle<br><br>
-                        - Renforcement de la **pipeline CI/CD**<br>
+                            -> horaires d'ouvertures <br>
+                            -> prix <br><br>
+                        - **Optimiser le solveur GA** <br>
+                            -> enrichir la fonction de sélection<br>
+                            -> optimiser les hyperparamètres du modèle<br><br>
+                        - Renforcer la **pipeline CI/CD**<br>
                         - Bêta **testing**<br>
                         ''', unsafe_allow_html=True)
     
@@ -38,6 +38,8 @@ with st.container(key='body', height=520, border=False) :
             with st.expander("💡**Perspectives Business**", expanded=True) :
                 with st.container(height=390, border=False): 
                     st.markdown('''
+                        - **UI/UX :** partage et suggestion d'itinéraire<br>
+                                
                         - **Créer de l'engagement :** <br>
                             -> Mise en avant sponsorisée<br>
                             -> Intégration de billets<br>
@@ -46,10 +48,9 @@ with st.container(key='body', height=520, border=False) :
                             -> avis sur les itinéraires<br>
                             -> badges créés pour fidéliser les utilisateurs <br>
                         - **Version premium** avec abonnement / **Version mobile** <br>  
+                        - **Recherche sémantique** des POIs via des  thèmes de visite en utilisant un LLM<br>
                         
-                        - **Recherche sémantique** des POIs :<br>
-                            -> proposer des thèmes de visite en utilisant un LLM
-                            <br>''',
+                        ''',
                         unsafe_allow_html=True)
 
     
@@ -62,7 +63,7 @@ with st.container(key='bottom') :
                 st.switch_page("pages/architecture.py")
 
     with col3:
-        st.markdown('**9**', text_alignment='center')
+        st.markdown('**8**', text_alignment='center')
     
     with col5 :
         with st.container(horizontal_alignment="left"):
