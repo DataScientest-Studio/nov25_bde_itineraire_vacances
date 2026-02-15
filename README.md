@@ -121,6 +121,8 @@ cd nov25_bde_itineraire_vacances
 ```
 
 ### Services Individuels
+#### Option 1: 
+
 Il faut lancer dans l'ordre les services suivants:
 
 1. Initialisation d’Airflow [Lire la Doc Airflow](./dags/README.md)
@@ -128,6 +130,8 @@ Il faut lancer dans l'ordre les services suivants:
 3. Initialisation de l'API [Lire la Doc API](./app/README.md)
 4. Initialisation de Streamlit [Lire la Doc Streamlit](./docker/streamlit/README.md)
 
+#### Option 2: 
+- Utiliser le docker-compose.yml de tous les services [Lire la Doc de dockerisation globale](https://github.com/DataScientest-Studio/nov25_bde_itineraire_vacances/blob/master/docker/README.md#d%C3%A9marrage-rapide)
 
 ## Configuration
 
