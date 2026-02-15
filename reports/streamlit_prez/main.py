@@ -9,11 +9,11 @@ pg = st.navigation([
     st.Page("pages/data.py", title="3️⃣ Exploration des données"),
     st.Page("pages/etl.py", title="4️⃣ Collecte de données"),
     st.Page("pages/api.py", title="5️⃣ Exploitation des données"),
-    st.Page("pages/solver.py", title="6️⃣ Algorithmes NN2O & GA"),
-    st.Page("pages/demo.py", title="7️⃣ Démonstration"),
-    st.Page("pages/architecture.py", title="8️⃣ Déploiement & Architecture"),
-    st.Page("pages/perspectives.py", title="9️⃣ Perspectives"),
-    st.Page("pages/remerciement.py", title="🙏 Remerciement")
+    st.Page("pages/demo.py", title="6️⃣ Démonstration"),
+    st.Page("pages/architecture.py", title="7️⃣ Déploiement & Architecture"),
+    st.Page("pages/perspectives.py", title=" 8️⃣ Perspectives"),
+    st.Page("pages/remerciement.py", title="🙏 Remerciement"),
+    st.Page("pages/solver.py", title="ℹ️ Annexe")
 ])
 
 

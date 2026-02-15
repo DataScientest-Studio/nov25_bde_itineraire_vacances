@@ -31,7 +31,10 @@ with st.container(key='bottom') :
                 st.switch_page("pages/perspectives.py")
 
     with col3:
-        st.markdown('**10**', text_alignment='center')
+        st.markdown('**9**', text_alignment='center')
     
-
+    with col5 :
+        with st.container(horizontal_alignment="left"):
+            if st.button(label = "", shortcut="Right", width=30 ) : 
+                st.switch_page("pages/solver.py")
     

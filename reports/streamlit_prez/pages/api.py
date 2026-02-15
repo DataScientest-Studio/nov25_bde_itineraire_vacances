@@ -30,4 +30,4 @@ with st.container(key='bottom') :
     with col5 :
         with st.container(horizontal_alignment="left"):
             if st.button(label = "", shortcut="Right", width=30 ) : 
-                st.switch_page("pages/solver.py")
+                st.switch_page("pages/demo.py")

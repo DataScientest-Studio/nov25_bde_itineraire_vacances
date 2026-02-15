@@ -98,12 +98,9 @@ with st.container(key='bottom') :
     with col1 :
         with st.container(horizontal_alignment="right"):
             if st.button(label = "", shortcut="Left", width=30) :
-                st.switch_page("pages/api.py")
+                st.switch_page("pages/remerciement.py")
 
     with col3:
-        st.markdown('**6**', text_alignment='center')
+        st.markdown('**10**', text_alignment='center')
     
-    with col5 :
-        with st.container(horizontal_alignment="left"):
-            if st.button(label = "", shortcut="Right", width=30 ) : 
-                st.switch_page("pages/demo.py")
+    
