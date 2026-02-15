@@ -93,6 +93,10 @@ Les distances et durées dépendent du mode de transport.
 - **exporter** : node_exporter, cAdvisor, osrm_exporter, postgres_exporter
 - **dashboard** : airflow, osrm, api, postgres
 
+### Streamlit
+- **Port** : 8501
+- **Fonctions** : Visualisation des données, Interface utilisateur
+
 
 ## Technologies
 

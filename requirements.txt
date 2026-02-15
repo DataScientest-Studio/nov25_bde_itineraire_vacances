@@ -16,3 +16,4 @@ geopandas
 # -- API --
 fastapi
 uvicorn
+streamlit
