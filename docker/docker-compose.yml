@@ -38,7 +38,6 @@ services:
   # --- INFRASTRUCTURE DATA & BDD ---
   # Base de données Métier avec PostGIS
   postgres-vacances:
-    profiles: ["infrastructure"]
     image: postgis/postgis:15-3.3
     container_name: postgres-vacances
     environment:
@@ -59,7 +58,6 @@ services:
       - vacances-network
 
   postgres-airflow:
-    profiles: ["infrastructure"]
     image: postgres:15
     container_name: postgres-airflow
     environment:
@@ -79,7 +77,6 @@ services:
 
   # Interface d'administration BDD
   pgadmin:
-    profiles: ["infrastructure"]
     image: dpage/pgadmin4:latest
     container_name: pgadmin
     environment:
@@ -94,7 +91,7 @@ services:
       - vacances-network
 
 
-  # --- SERVICES OSRM ---
+  # --- SERVICES OSRM (PROFILS) ---
   
   osrm-init:
     profiles: ["osrm_compilation"]
@@ -163,7 +160,6 @@ services:
     restart: "no"
 
   osrm-car:
-    profiles: ["infrastructure"]
     image: ghcr.io/project-osrm/osrm-backend
     container_name: osrm-car
     volumes:
@@ -179,7 +175,6 @@ services:
       - vacances-network
 
   osrm-bike:
-    profiles: ["infrastructure"]
     image: ghcr.io/project-osrm/osrm-backend
     container_name: osrm-bike
     volumes:
@@ -195,7 +190,6 @@ services:
       - vacances-network
 
   osrm-foot:
-    profiles: ["infrastructure"]
     image: ghcr.io/project-osrm/osrm-backend
     container_name: osrm-foot
     volumes:
@@ -212,7 +206,6 @@ services:
 
   # --- NGINX REVERSE PROXY ---
   nginx:
-    profiles: ["infrastructure"]
     image: nginx:alpine
     container_name: nginx-osrm
     ports:
@@ -249,7 +242,15 @@ services:
     volumes:
       - ../app:/app/app
       - ../logs:/app/logs
-    
+    depends_on:
+      postgres-vacances:
+        condition: service_healthy
+      osrm-car:
+        condition: service_started
+      osrm-bike:
+        condition: service_started
+      osrm-foot:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/docs"]
       interval: 10s
@@ -259,7 +260,7 @@ services:
     networks:
       - vacances-network
 
-  # --- SERVICE STREAMLIT ---
+  # --- SERVICES STREAMLIT ---
 
   streamlit:
     profiles: ["app"]
@@ -283,7 +284,6 @@ services:
 
   airflow-webserver:
       <<: *airflow-common
-      profiles: ["infrastructure"]
       container_name: airflow-webserver
       command: webserver
       ports:
@@ -295,7 +295,6 @@ services:
 
   airflow-scheduler:
       <<: *airflow-common
-      profiles: ["infrastructure"]
       container_name: airflow-scheduler
       command: scheduler
       depends_on:
@@ -305,7 +304,6 @@ services:
 
   airflow-init:
       <<: *airflow-common
-      profiles: ["infrastructure"]
       container_name: airflow-init
       entrypoint: /bin/bash
       command:
