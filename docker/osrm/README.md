@@ -11,7 +11,35 @@ Ce projet configure automatiquement OSRM pour 3 régions françaises (Auvergne-R
 
 ## Démarrage rapide
 
+Recommandation:
+Attention si vous êtes utilisteur Windows, OSRM n'est pa conçu pour Windows natif.
+Les outils osrm-extract, osrm-partition, osrm-customize et les profils Lua ne fonctionnent correctement que sous Linux.
+<br>Utiliser WSL2 (Ubuntu) comme environnement officiel:
+
+- OSRM nécessite un environnement Linux (filesystem, symlinks, toolchain).
+- Les scripts bash ne fonctionnent pas sous PowerShell.
+- Les images Docker OSRM utilisent des chemins Linux.
+- Les profils Lua doivent être exécutés dans un environnement POSIX.
+
+1. Installer WSL2 :
+   
+   ```bash
+   wsl --install -d Ubuntu
+   ```
+
+2. Installer Docker Desktop :
+   - Activer "Use the WSL2 backend"
+   - Désactiver "Expose daemon on tcp://..." (sécurité)
+
+3. Vérifier que Docker fonctionne dans WSL :
+   ```bash
+   docker info
+   ```
+
+
 ### Option 1: Script automatique (recommandé)
+
+Se mettre dans le dossier docker/osrm/scripts/:
 
 ```bash
 # Rendre le script exécutable
@@ -66,36 +94,36 @@ osrm-data/
 
 ### Test du profil FOOT
 ```bash
-curl "http://localhost:5001/route/v1/foot/2.3522,48.8566;4.8357,45.7640?overview=false"
+curl "http://localhost:5001/route/v1/foot/4.869949,45.726411;4.8357,45.7640?overview=false"
 ```
 
 ### Test du profil BIKE
 ```bash
-curl "http://localhost:5002/route/v1/bike/2.3522,48.8566;4.8357,45.7640?overview=false"
+curl "http://localhost:5002/route/v1/bike/4.869949,45.726411;4.8357,45.7640?overview=false"
 ```
 
 ### Test du profil CAR
 ```bash
-curl "http://localhost:5000/route/v1/car/2.3522,48.8566;4.8357,45.7640?overview=false"
+curl "http://localhost:5000/route/v1/car/4.380427,45.437685;4.8357,45.7640?overview=false"
 ```
 
-Ces exemples calculent un itinéraire de Paris (48.8566, 2.3522) à Lyon (45.7640, 4.8357).
+Ces exemples calculent un itinéraire de Nord de lyon (45.437685, 4.380427) à Lyon (45.7640, 4.8357).
 
 ## Exemples d'utilisation
 
 ### Calcul d'itinéraire avec géométrie complète
 ```bash
-curl "http://localhost:5001/route/v1/foot/2.3522,48.8566;4.8357,45.7640?steps=true&geometries=geojson"
+curl "http://localhost:5000/route/v1/car/4.380427,45.437685;4.8357,45.7640?steps=true&geometries=geojson"
 ```
 
 ### Calcul de matrice de distances
 ```bash
-curl "http://localhost:5001/table/v1/foot/2.3522,48.8566;4.8357,45.7640;-1.6778,48.1173"
+curl "http://localhost:5000/table/v1/car/4.380427,45.437685;4.8357,45.7640;-1.6778,48.1173"
 ```
 
 ### Recherche du point le plus proche
 ```bash
-curl "http://localhost:5000/nearest/v1/foot/2.3522,48.8566"
+curl "http://localhost:5000/nearest/v1/car/4.380427,45.437685"
 ```
 
 ## Commandes utiles
@@ -214,3 +242,6 @@ Changez les ports dans `docker-compose.yml` ou arrêtez le service qui utilise l
 ## Licence
 
 Ce script est fourni tel quel. Les données OSM sont sous licence ODbL.
+
+---
+[Retour sur la documentation principale](../README.md)

@@ -5,13 +5,16 @@ import asyncio
 import time
 import logging
 from typing import Dict, Any
-from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-from fastapi import FastAPI, Request, Response
+from prometheus_client import Counter, Histogram, Gauge, generate_latest, CollectorRegistry
+from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 import httpx
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
 
 # Métriques OSRM
 OSRM_REQUESTS_TOTAL = Counter(
@@ -99,13 +102,6 @@ async def check_osrm_health(profile: str, base_url: str) -> Dict[str, Any]:
             'base_url': base_url
         }
 
-@app.get("/metrics")
-async def metrics():
-    """Endpoint pour exposer les métriques Prometheus"""
-    return PlainTextResponse(
-        generate_latest(),
-        media_type=CONTENT_TYPE_LATEST
-    )
 
 @app.get("/health")
 async def health():

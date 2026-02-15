@@ -192,10 +192,15 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ### Docker
+
+# Construction et lancement à partir du script
 ```bash
-# Construction et lancement
-docker build -f docker/api/Dockerfile -t tripmango-api .
-docker run -p 8000:8000 tripmango-api
+./deploy.sh
+```
+
+```bash
+# Construction et lancement à aprtir de docker-compose
+docker-compose up -d
 ```
 
 ---
