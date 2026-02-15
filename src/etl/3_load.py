@@ -5,7 +5,7 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 
 INPUT_FILE = "/opt/airflow/data/clean_pois.csv"
-DB_URI = "postgresql+psycopg2://vacances_user:vacances_password@postgres-vacances:5432/vacances"
+DB_URI = "postgresql+psycopg2://vacances_user:vacances_pass@postgres-vacances:5432/vacances"
 
 
 def truncate_text(text, length=255):
