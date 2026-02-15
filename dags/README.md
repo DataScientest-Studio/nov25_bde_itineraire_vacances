@@ -81,7 +81,6 @@ docker exec -i postgres-vacances psql -U vacances_user -d vacances < ./sql/init_
 ```
 
 
-
 ▶️ Lancer le Pipeline ETL
 
     Dans Airflow, repérez la ligne etl_vacances_final.
