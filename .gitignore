@@ -89,6 +89,8 @@ target/
 benchmark_solvers/data/
 benchmark_solvers/results/
 
+osrm-setup/data
+
 # exclude archive
 archive/ 
 
