@@ -630,7 +630,6 @@ ga.run_ga(pop_size=100, ngen=100, cxpb=0.8, mutpb=0.2)
 **Documentation externe** :
 - [OSRM Documentation](http://project-osrm.org/docs/v5.24.0/api/)
 - [H3 Indexation](https://uber.github.io/h3/)
-- [Polars DataFrame](https://pola-rs.github.io/polars/)
 
 ---
 

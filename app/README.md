@@ -2,9 +2,8 @@
 
 API FastAPI pour le calcul d'itinéraires de vacances optimisés avec clustering spatial et algorithmes de résolution.
 
----
 
-## Architecture
+## Architecture du dossier app
 
 L'API est organisée en couches claires avec séparation des responsabilités :
 
@@ -48,9 +47,8 @@ app/
 ### Gestion des Catégories
 - **Catégories principales** : Hiérarchie complète des thématiques
 - **Sous-catégories** : Classification fine des points d'intérêt
-- **Filtrage multi-niveaux** : Sélection flexible par besoins
 
-### alcul d'Itinéraires Optimisés
+### Calcul d'Itinéraires Optimisés
 - **Clustering spatial automatique** : Répartition intelligente par jour
 - **Modes de transport** : Marche, vélo, voiture avec profils OSRM
 - **Algorithmes d'optimisation** : NN2O (rapide), Génétique (qualité), Auto (adaptatif)

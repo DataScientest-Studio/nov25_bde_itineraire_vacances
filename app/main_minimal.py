@@ -9,8 +9,7 @@ from app.monitoring_simple import (
     REQUEST_COUNT,
     REQUEST_DURATION,
     ACTIVE_CONNECTIONS,
-    metrics_endpoint,
-    track_itinerary_request
+    metrics_endpoint
 )
 
 
