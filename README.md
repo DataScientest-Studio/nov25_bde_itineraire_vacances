@@ -165,4 +165,6 @@ Le projet utilise des variables d'environnement pour fonctionner. Un fichier mod
 
 ## License
 [License](./LICENSE)
+--
 
+[Documentation détaillée](reports/tripmango_report/tripmango-documentation-detaillee-DE-NOV2025-2026.pdf)
