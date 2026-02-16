@@ -44,7 +44,7 @@ Les distances et durées dépendent du mode de transport.
 | :--- | :--- | :--- | :--- |
 | `app/` | **FastAPI** | API principale et logique métier | [Lire la Doc API](./app/README.md) |
 | `dags/` | **Airflow** | Orchestration des pipelines de données | [Lire la Doc Data](./dags/README.md) |
-| `reports/streamlit_prez` | **Streamlit** | Présentation de le la soutenance | [Lire la Doc Prez](./reports/streamlit_prez/pages/media/) |
+| `reports/streamlit_prez` | **Streamlit** | Présentation de le la soutenance | [Lire la Doc Prez](./reports/streamlit_prez/README.md) |
 | `streamlit` | **Streamlit** | Front end de l'application | [Lire la Doc Streamlit](./streamlit/README.md) |
 | `docker/` | **Ops** | Configuration des services (OSRM, DB, etc.) | [Lire la Doc Docker](./docker/README.md) |
 | `src/` | **Legacy** | Anciennes sources et utilitaires | - |
@@ -138,6 +138,7 @@ Il faut lancer dans l'ordre les services suivants:
 2. Initialisation du serveur OSRM [Lire la Doc OSRM](./docker/osrm/README.md)
 3. Initialisation de l'API [Lire la Doc API](./app/README.md)
 4. Initialisation de Streamlit [Lire la Doc Streamlit](./streamlit/README.md)
+5. Initialisation de Prometheus + Grafana [Lire la Doc Monitoring](./docker/monitoring/README.md)
 
 #### => Option 2:
 

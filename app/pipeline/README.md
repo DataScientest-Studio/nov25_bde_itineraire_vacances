@@ -458,16 +458,6 @@ return df_clustered, df_osrm_dist, df_osrm_dur, df_itinerary, optimizer
 
 ## Performance et Optimisations
 
-### Complexité Algorithmique
-
-| Étape | Complexité | Optimisations |
-|-------|------------|--------------|
-| Clustering | O(n log n) | Index H3, partitionnement |
-| OSRM | O(n²) | Requêtes parallèles, cache |
-| NN2O | O(n²) | Heuristique rapide |
-| GA | O(g × p × n) | Paramètres adaptatifs |
-| Enrichissement | O(n) | Calculs vectorisés |
-
 ### Seuils de Performance
 
 **Basé sur benchmarks** ([voir benchmark README](../../src/benchmark/README.md)) :
@@ -477,7 +467,6 @@ return df_clustered, df_osrm_dist, df_osrm_dur, df_itinerary, optimizer
 | 2-6 POIs | NN2O | < 50ms | 🟊🟊🟊 |
 | 7-20 POIs | GA | 200-800ms | 🟊🟊🟊🟊 |
 | 21-50 POIs | GA | 1-3s | 🟊🟊🟊🟊🟊 |
-
 
 ---
 

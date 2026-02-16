@@ -420,26 +420,11 @@ if not all(-90 <= lat <= 90 and -180 <= lon <= 180 for lat, lon in coords_day):
 
 ---
 
-## Tests et Validation (TODO)
-
-### Tests Unitaires
-### Tests d'Intégration
-
----
-
 ## Évolutions Possibles
 
 ### Améliorations Court Terme
 
 1. **Cache intelligent** : Mémorisation des itinéraires similaires
-2. **Validation avancée** : Vérification cohérence géographique
-3. **Metrics détaillées** : Temps de traitement par étape
-
-### Évolutions Long Terme
-
-1. **Multi-services** : Découpage en services spécialisés
-2. **Event-driven** : Architecture asynchrone complète
-3. **ML integration** : Apprentissage des préférences
 
 ---
 

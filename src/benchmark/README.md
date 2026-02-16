@@ -164,7 +164,7 @@ run_ga_tuning(
 
 ---
 
-### 6. `benchmark_io.py` - Persistance
+### 6. `benchmark_io.py` - Sauvergarde / Chargement
 
 **Rôle** : Sauvegarde et chargement des résultats de benchmark
 

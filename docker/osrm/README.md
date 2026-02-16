@@ -244,4 +244,4 @@ Changez les ports dans `docker-compose.yml` ou arrêtez le service qui utilise l
 Ce script est fourni tel quel. Les données OSM sont sous licence ODbL.
 
 ---
-[Retour sur la documentation principale](../README.md)
+[Retour sur la documentation principale](../../README.md)
