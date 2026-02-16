@@ -1,3 +1,6 @@
+
+# C:\Users\DELL\Downloads\ItineraireVacances3\thuvo-docs\docker\docker-compose.yml
+
 services:
   db:
     image: postgis/postgis:16-3.4
@@ -9,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ../db/init.sql:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -16,7 +20,7 @@ services:
       retries: 20
 
   api:
-    build: ./docker/api
+    build: ./api
     environment:
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     ports:
@@ -24,20 +28,25 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
 
   ui:
-    build: ./docker/ui
+    build: ./ui
     environment:
-      API_BASE_URL: ${API_BASE_URL}
+      API_BASE_URL: http://api:8000
     ports:
       - "8501:8501"
     volumes:
-      - ./app3.py:/app/app3.py:ro
+      - ./ui/app.py:/app/app.py:ro
+      - ./ui/services:/app/services:ro
+      - ../../:/data:ro
     depends_on:
-      - api
+      db:
+        condition: service_healthy
+    restart: unless-stopped
 
   etl:
-    build: ./docker/etl
+    build: ./etl
     environment:
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       PRIME_CLASSIQUE_PATH: /data/df_prime_classique.parquet
@@ -49,7 +58,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./:/data:ro
+      - ../../:/data:ro
       - "C:/Users/DELL/Data Engineering/Flux datatourisme/snapshots:/snapshots:ro"
 
 volumes:
