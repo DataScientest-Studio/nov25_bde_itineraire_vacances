@@ -69,7 +69,7 @@ Ces notebooks documentent la compréhension des sources et les choix de modélis
 ![03_scoring](sources/images/03_scoring.jpg)
 
 La sélection des lieux repose sur un modèle déterministe appelé score PRIME.
-Son objectif n’est pas de prédire un comportement utilisateur mais de classer les lieux de manière explicable et paramétrable selon des قواعد métier.
+Son objectif n’est pas de prédire un comportement utilisateur mais de classer les lieux de manière explicable et paramétrable selon des métier.
 
 Le score combine trois dimensions complémentaires :
 
