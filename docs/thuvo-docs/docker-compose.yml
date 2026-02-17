@@ -1,68 +1,96 @@
-# ============================================================
-# docker-compose.yml
-#
-# Ce fichier décrit les services Docker à lancer.
-# Ici : un seul service "db" pour PostgreSQL + PostGIS.
-#
-# Quand tu fais :
-#   docker compose up -d
-# Docker lit ce fichier et démarre les conteneurs.
-# ============================================================
+version: "3.9"
 
-
-# ------------------------------------------------------------
-# Liste des services Docker
-# ------------------------------------------------------------
 services:
 
-  # ----------------------------------------------------------
-  # Service "db" : base de données PostgreSQL + PostGIS
-  # ----------------------------------------------------------
   db:
-
-    # Image Docker utilisée
-    # postgis/postgis = PostgreSQL avec l'extension PostGIS incluse
-    # 16-3.4 = PostgreSQL 16 + PostGIS 3.4
     image: postgis/postgis:16-3.4
-
-    # Nom explicite du conteneur
-    # Pratique pour les commandes docker exec / docker logs
     container_name: itineraire_db
-
-    # Variables d'environnement passées au conteneur
-    environment:
-      # Mot de passe du super-utilisateur PostgreSQL (postgres)
-      # Utilisé au tout premier démarrage
-      POSTGRES_USER: thuvo
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: itineraire_vacances_prime
-
-    # Mapping des ports
-    # 5432 (PC) → 5432 (conteneur)
-    # Permet à Python, psql, pgAdmin, etc. de se connecter
+    env_file: .env
     ports:
       - "5432:5432"
-
-    # Volumes = données persistantes
     volumes:
-      # Volume Docker nommé "pgdata"
-      # Contient toutes les données de la base
-      # IMPORTANT : sans ça, tout serait perdu à chaque arrêt
-      - pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
-      # Fichier init.sql monté dans le conteneur
-      # PostgreSQL exécute automatiquement tous les .sql
-      # présents dans /docker-entrypoint-initdb.d/
-      # UNIQUEMENT lors de la première création de la base
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    env_file: .env
+    environment:
+      PYTHONPATH: /app
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    volumes:
+      - .:/app
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  ui:
+    build:
+      context: .
+      dockerfile: docker/ui/Dockerfile
+    env_file: .env
+    environment:
+      API_BASE_URL: http://api:8000
+      PYTHONPATH: /app/src
+      DT_PATH: /app/sources/df_datatourisme_france_prime.parquet
+      AB_PATH: /app/sources/df_airbnb_paris.parquet
+      TA_PATH: /app/sources/df_tripadvisor_france.parquet
+    volumes:
+      - .:/app
+    depends_on:
+      api:
+        condition: service_started
+      db:
+        condition: service_healthy
+    ports:
+      - "8501:8501"
+    working_dir: /app
+    command: streamlit run /app/docker/ui/app.py --server.port=8501 --server.address=0.0.0.0
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/cron/Dockerfile
+    env_file: .env
+    environment:
+      PYTHONPATH: /app
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
 
 
-# ------------------------------------------------------------
-# Déclaration des volumes Docker
-# ------------------------------------------------------------
+  # ETL exécuté une seule fois au démarrage
+  init:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    env_file: .env
+    environment:
+      PYTHONPATH: /app
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    volumes:
+      - .:/app
+      - ./sources:/app/sources
+    working_dir: /app
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python -u /app/src/pipelines/run_etl.py 
+
 volumes:
-
-  # Volume nommé "pgdata"
-  # Géré par Docker
-  # Sert à stocker physiquement la base PostgreSQL
-  pgdata:
+  db_data:
