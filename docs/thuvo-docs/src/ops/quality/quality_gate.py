@@ -1,96 +1,202 @@
-# ops/data_checks/quality_gate.py
+# src/ops/quality/quality_gate.py
 from __future__ import annotations
 
 """
-Quality Gate : applique les checks PRIME, logge un résumé, et décide de bloquer ou non.
+QUALITY GATE (DB-first)
 
-Modes :
-- STRICT  : bloque si n_errors > 0
-- RELAXED : ne bloque jamais, mais renvoie les infos qualité
+Objectif:
+- Dans ton projet, les datasets sont chargés en Postgres (RAW/SILVER).
+- Les checks "source of truth" sont désormais les fonctions SQL dans le schéma ops:
+    - ops.quality_check_datatourisme_prime()
+    - ops.quality_check_tripadvisor_france()
+
+Donc ce quality_gate ne charge plus de parquet/csv/json.
+Il orchestre les checks DB et bloque (STRICT) si un check SQL échoue.
+
+Vars env:
+- RUN_ID (optionnel)
+- PRIME_QUALITY_MODE: STRICT | RELAXED (default STRICT)
+- TRIPADVISOR_QUALITY_MODE: STRICT | RELAXED (default STRICT)
+
+Connexion DB:
+- DB_HOST, DB_PORT, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
 """
 
 import os
-from dataclasses import asdict
-from typing import Any, Literal
+from typing import Literal
 
-from ops.data_checks.prime_checks import InputLike, Issue, run_prime_checks
-from ops.logging.logging_config import get_logger
+import psycopg2
+
+from src.ops.logging.logging_config import get_logger
 
 QualityMode = Literal["STRICT", "RELAXED"]
 
 
-def get_quality_mode() -> QualityMode:
-    mode = os.getenv("PRIME_QUALITY_MODE", "STRICT").upper().strip()
-    return "RELAXED" if mode == "RELAXED" else "STRICT"
+# --------------------------------------------------------------------------------------
+# Mode
+# --------------------------------------------------------------------------------------
+def _normalize_mode(raw: str) -> QualityMode:
+    raw = (raw or "").upper().strip()
+    return "RELAXED" if raw == "RELAXED" else "STRICT"
 
 
-def build_quality_payload(issues: list[Issue]) -> dict[str, Any]:
+def get_prime_quality_mode() -> QualityMode:
+    return _normalize_mode(os.getenv("PRIME_QUALITY_MODE", "STRICT"))
+
+
+def get_tripadvisor_quality_mode() -> QualityMode:
+    return _normalize_mode(os.getenv("TRIPADVISOR_QUALITY_MODE", "STRICT"))
+
+
+# --------------------------------------------------------------------------------------
+# DB helpers
+# --------------------------------------------------------------------------------------
+def _dsn_from_env() -> str:
+    host = os.getenv("DB_HOST", "db")
+    port = os.getenv("DB_PORT", "5432")
+    db = os.getenv("POSTGRES_DB", "prime")
+    user = os.getenv("POSTGRES_USER", "prime")
+    pwd = os.getenv("POSTGRES_PASSWORD", "prime")
+    return f"host={host} port={port} dbname={db} user={user} password={pwd}"
+
+
+def _run_sql_check(cur, fn_name: str) -> None:
     """
-    Payload léger à renvoyer au client (UI) + à logger.
+    Exécute une fonction SQL ops.*_check_*().
+    Les fonctions SQL lèvent EXCEPTION si KO -> psycopg2.Error ici.
     """
-    n_errors = sum(1 for i in issues if i.severity == "ERROR")
-    n_warns = sum(1 for i in issues if i.severity == "WARN")
-
-    by_check: dict[str, int] = {}
-    for i in issues:
-        by_check[i.check] = by_check.get(i.check, 0) + 1
-
-    # On limite le détail renvoyé (sinon payload trop gros)
-    top_issues = [asdict(i) for i in issues[:10]]
-
-    return {
-        "n_issues": len(issues),
-        "n_errors": n_errors,
-        "n_warns": n_warns,
-        "by_check": by_check,
-        "top_issues": top_issues,
-    }
+    cur.execute(f"SELECT {fn_name}();")
+    # Certaines fonctions retournent void => fetchone() peut être None selon config.
+    # On tente un fetchone sans en dépendre.
+    try:
+        _ = cur.fetchone()
+    except Exception:
+        pass
 
 
-def prime_quality_gate(
-    data_prime: InputLike,
-    *,
-    run_id: str,
-    mode: QualityMode | None = None,
-) -> tuple[InputLike, dict[str, Any]]:
-    """
-    Exécute les checks PRIME et renvoie (data, quality_payload).
+# --------------------------------------------------------------------------------------
+# Entry point called by pipelines/run_etl.py (mod.main())
+# --------------------------------------------------------------------------------------
+def main(data=None) -> None:  # data kept for compatibility with run_etl.py signature
+    print("\n[QUALITY GATE] Running DB checks...")
 
-    - data_prime peut être une list[dict] (MVP) ou un DataFrame (si pandas est présent)
-    - En mode STRICT, peut lever ValueError("PRIME_QUALITY_BLOCKED")
-    """
-    logger = get_logger("api.prime.quality", run_id=run_id)
-    mode = mode or get_quality_mode()
+    run_id = os.getenv("RUN_ID", "local")
 
-    issues = run_prime_checks(data_prime)
-    payload = build_quality_payload(issues)
-    payload["mode"] = mode
+    prime_mode = get_prime_quality_mode()
+    trip_mode = get_tripadvisor_quality_mode()
 
-    # Log résumé (monitoring)
+    logger = get_logger("pipeline.quality_gate", run_id=run_id)
     logger.info(
-        "prime_quality",
+        "quality_gate_start",
         extra={
-            "event": "prime_quality",
-            "mode": mode,
-            "n_issues": payload["n_issues"],
-            "n_errors": payload["n_errors"],
-            "n_warns": payload["n_warns"],
-            "by_check": payload["by_check"],
+            "event": "quality_gate_start",
+            "run_id": run_id,
+            "prime_mode": prime_mode,
+            "tripadvisor_mode": trip_mode,
         },
     )
 
-    # Mode STRICT : on bloque si erreurs
-    if mode == "STRICT" and payload["n_errors"] > 0:
+    dsn = _dsn_from_env()
+
+    # We will track failures but only block if mode == STRICT
+    prime_ok = True
+    trip_ok = True
+    prime_err = None
+    trip_err = None
+
+    with psycopg2.connect(dsn) as conn:
+        with conn.cursor() as cur:
+
+            # ============================
+            # PRIME (DB function)
+            # ============================
+            try:
+                print("[QUALITY GATE][PRIME] calling ops.quality_check_datatourisme_prime() ...")
+                _run_sql_check(cur, "ops.quality_check_datatourisme_prime")
+                print("[QUALITY GATE][PRIME] OK")
+                logger.info(
+                    "prime_quality_ok",
+                    extra={"event": "prime_quality_ok", "dataset": "prime"},
+                )
+            except psycopg2.Error as e:
+                prime_ok = False
+                prime_err = str(e).strip()
+                print("[QUALITY GATE][PRIME] FAILED")
+                logger.error(
+                    "prime_quality_failed",
+                    extra={
+                        "event": "prime_quality_failed",
+                        "dataset": "prime",
+                        "error": prime_err,
+                    },
+                )
+                # On rollback la transaction pour pouvoir continuer / exécuter d'autres queries
+                conn.rollback()
+
+            # ============================
+            # TRIPADVISOR (DB function)
+            # ============================
+            try:
+                print("[QUALITY GATE][TRIPADVISOR] calling ops.quality_check_tripadvisor_france() ...")
+                _run_sql_check(cur, "ops.quality_check_tripadvisor_france")
+                print("[QUALITY GATE][TRIPADVISOR] OK")
+                logger.info(
+                    "tripadvisor_quality_ok",
+                    extra={"event": "tripadvisor_quality_ok", "dataset": "tripadvisor"},
+                )
+            except psycopg2.Error as e:
+                trip_ok = False
+                trip_err = str(e).strip()
+                print("[QUALITY GATE][TRIPADVISOR] FAILED")
+                logger.error(
+                    "tripadvisor_quality_failed",
+                    extra={
+                        "event": "tripadvisor_quality_failed",
+                        "dataset": "tripadvisor",
+                        "error": trip_err,
+                    },
+                )
+                conn.rollback()
+
+    # ============================
+    # Decision
+    # ============================
+    prime_block = (prime_mode == "STRICT" and not prime_ok)
+    trip_block = (trip_mode == "STRICT" and not trip_ok)
+
+    if prime_block or trip_block:
+        msg = "[QUALITY GATE] FAILED — erreurs bloquantes détectées."
+        if prime_block:
+            msg += f"\n- PRIME: {prime_err or 'unknown error'}"
+        if trip_block:
+            msg += f"\n- TRIPADVISOR: {trip_err or 'unknown error'}"
+
         logger.error(
-            "prime_quality_block",
+            "quality_gate_blocked",
             extra={
-                "event": "prime_quality_block",
-                "mode": mode,
-                "n_errors": payload["n_errors"],
-                "top_issues": payload["top_issues"],
+                "event": "quality_gate_blocked",
+                "prime_ok": prime_ok,
+                "tripadvisor_ok": trip_ok,
+                "prime_mode": prime_mode,
+                "tripadvisor_mode": trip_mode,
+                "prime_error": prime_err,
+                "tripadvisor_error": trip_err,
             },
         )
-        raise ValueError("PRIME_QUALITY_BLOCKED")
+        raise RuntimeError(msg)
 
-    # Mode RELAXED : on laisse passer (mais on garde le payload)
-    return data_prime, payload
+    print("[QUALITY GATE] OK — pipeline autorisé.")
+    logger.info(
+        "quality_gate_passed",
+        extra={
+            "event": "quality_gate_passed",
+            "prime_ok": prime_ok,
+            "tripadvisor_ok": trip_ok,
+            "prime_mode": prime_mode,
+            "tripadvisor_mode": trip_mode,
+        },
+    )
+
+
+if __name__ == "__main__":
+    main()
