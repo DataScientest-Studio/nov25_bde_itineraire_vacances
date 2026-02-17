@@ -1,10 +1,18 @@
 from __future__ import annotations
-
 import uuid
-
-from domain.prime import compute_prime, compute_safe_ranking
 from fastapi import APIRouter, HTTPException
-from ops.quality.quality_gate import get_quality_mode, prime_quality_gate
+from src.domain.prime import compute_prime, compute_safe_ranking
+
+
+
+# --- Quality gate optionnel (ne doit pas bloquer l'API) ---
+try:
+    from ops.quality.quality_gate import prime_quality_gate, get_quality_mode
+    _QUALITY_ENABLED = True
+except Exception:
+    prime_quality_gate = None
+    get_quality_mode = lambda: "DISABLED"
+    _QUALITY_ENABLED = False
 
 router = APIRouter()
 
@@ -16,22 +24,24 @@ def prime_endpoint(zone: str, limit: int = 50):
     # 1) Calcul PRIME (MVP: list[dict])
     results = compute_prime(zone=zone, limit=limit)
 
-    # 2) Quality Gate (STRICT/RELAXED) — désormais compatible list[dict]
-    try:
-        results, quality = prime_quality_gate(results, run_id=run_id)
-        mode_used = "PRIME"
-    except ValueError as e:
-        # En STRICT, le gate peut bloquer avec un code standardisé
-        if str(e) == "PRIME_QUALITY_BLOCKED":
-            raise HTTPException(
-                status_code=422,
-                detail={
-                    "message": "PRIME results blocked by quality checks (STRICT mode).",
-                    "quality_mode": get_quality_mode(),
-                    "run_id": run_id,
-                },
-            )
-        raise
+    # 2) Quality Gate (optionnel)
+    quality = {"mode": get_quality_mode(), "status": "SKIPPED"}
+    mode_used = "PRIME"
+
+    if _QUALITY_ENABLED and prime_quality_gate is not None:
+        try:
+            results, quality = prime_quality_gate(results, run_id=run_id)
+        except ValueError as e:
+            if str(e) == "PRIME_QUALITY_BLOCKED":
+                raise HTTPException(
+                    status_code=422,
+                    detail={
+                        "message": "PRIME results blocked by quality checks (STRICT mode).",
+                        "quality_mode": get_quality_mode(),
+                        "run_id": run_id,
+                    },
+                )
+            raise
 
     # 3) Réponse API
     return {
@@ -39,8 +49,7 @@ def prime_endpoint(zone: str, limit: int = 50):
         "zone": zone,
         "mode_used": mode_used,
         "quality": quality,
-        "results": results[:limit],
-    }
+        "results": results[:limit],}
 
 
 @router.get("/prime_fallback")
@@ -67,8 +76,7 @@ def prime_endpoint_fallback(zone: str, limit: int = 50):
             "status": "BLOCKED",
             "action": "FALLBACK",
             "message": "PRIME blocked by quality gate; fallback ranking used.",
-            "run_id": run_id,
-        }
+            "run_id": run_id,}
         mode_used = "FALLBACK_SAFE"
 
     return {
@@ -76,5 +84,4 @@ def prime_endpoint_fallback(zone: str, limit: int = 50):
         "zone": zone,
         "mode_used": mode_used,
         "quality": quality,
-        "results": results[:limit],
-    }
+        "results": results[:limit],}
