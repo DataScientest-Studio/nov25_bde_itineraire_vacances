@@ -1,0 +1,1 @@
+0 3 * * * cd /app && python /app/src/pipelines/run_etl.py >> /var/log/cron.log 2>&1
