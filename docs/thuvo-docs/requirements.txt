@@ -14,7 +14,11 @@ folium
 
 # Utils
 python-dateutil
+python-dotenv
 
 fastapi
 uvicorn[standard]
 pydantic
+
+sqlalchemy
+psycopg2-binary
