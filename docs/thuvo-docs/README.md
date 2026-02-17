@@ -39,7 +39,7 @@ Son architecture modulaire permet de faire évoluer une partie du système sans 
 ---
 
 ## 2) Nettoyage & transformation des données
-![flux_datatourisme](sources/images/flux_datatourisme.jpg)
+![flux_datatourisme](sources/images/flux_datatourisme.png)
 ![02_enrich](sources/images/02_enrich.JPG)
 
 Le flux Datatourisme est composé de milliers de fichiers JSON hétérogènes produits par de multiples acteurs.
