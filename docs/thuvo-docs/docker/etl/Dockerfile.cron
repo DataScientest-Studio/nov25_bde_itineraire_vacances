@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+RUN apt-get update && apt-get install -y cron && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Cron : exécute l'ETL toutes les heures (à ajuster)
+# Format cron: minute heure jour mois jour_semaine
+RUN echo "0 2 * * * cd /app && python -m src.pipelines.run_etl >> /var/log/etl_cron.log 2>&1" > /etc/cron.d/etl-cron \
+ && chmod 0644 /etc/cron.d/etl-cron \
+ && crontab /etc/cron.d/etl-cron \
+ && touch /var/log/etl_cron.log
+
+CMD ["cron", "-f"]
