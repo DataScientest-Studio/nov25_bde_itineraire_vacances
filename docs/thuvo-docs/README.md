@@ -11,7 +11,7 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 
 ## 1) Architecture conceptuelle du moteur PRIME
 
-![Architecture conceptuelle du moteur PRIME](sources/images/01_concept.png)
+![01_concept](sources/images/01_concept.png)
 
 Cette application part d’un principe simple : un voyage n’est ni seulement un trajet, ni seulement une destination.
 Un outil de parcours seul devient un calculateur logistique, tandis qu’un outil de séjour seul devient un comparateur d’offres.
