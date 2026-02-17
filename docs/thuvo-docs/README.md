@@ -39,8 +39,8 @@ Son architecture modulaire permet de faire évoluer une partie du système sans 
 ---
 
 ## 2) Nettoyage & transformation des données
-![flux_datatourisme](sources/images/flux_datatourisme.png)
-![02_enrich](sources/images/02_enrich.png)
+![flux_datatourisme](sources/images/flux_datatourisme.jpg)
+![02_enrich](sources/images/02_enrich.JPG)
 
 Le flux Datatourisme est composé de milliers de fichiers JSON hétérogènes produits par de multiples acteurs.
 La difficulté n’est pas seulement de nettoyer la donnée, mais de la rendre fiable, déterministe et interprétable par un moteur algorithmique.
@@ -66,7 +66,7 @@ Ces notebooks documentent la compréhension des sources et les choix de modélis
 
 ## 3) Mécanisme de pondération du modèle PRIME
 
-![03_scoring](sources/images/03_scoring.png)
+![03_scoring](sources/images/03_scoring.jpg)
 
 La sélection des lieux repose sur un modèle déterministe appelé score PRIME.
 Son objectif n’est pas de prédire un comportement utilisateur mais de classer les lieux de manière explicable et paramétrable selon des قواعد métier.
@@ -88,7 +88,7 @@ Pourquoi ce modèle ? car PRIME est un modèle de décision, pas un modèle de p
 
 ## 4) Pipeline algorithmique du moteur PRIME
 
-![04_pipeline](sources/images/04_pipeline.png)
+![04_pipeline](sources/images/04_pipeline.jpg)
 
 L’utilisateur fournit un point de référence (ex : logement) ainsi que ses préférences : distance maximale, budget, rythme et types d’activités.
 L’API récupère alors uniquement les lieux pertinents depuis la base afin de travailler sur un périmètre utile plutôt que sur l’ensemble des données.
@@ -123,7 +123,7 @@ L’objectif est d’évoluer d’un outil d’aide à la décision vers un vér
 
 ## 5) Pipeline algorithmique du moteur PRIME
 
-![05_data](sources/images/05_data.png)
+![05_data](sources/images/05_data.jpg)
 
 Pour garantir la fiabilité du système, les données ne sont jamais utilisées directement après ingestion.
 Elles traversent plusieurs niveaux de transformation afin de devenir cohérentes, comparables et exploitables par le moteur d’itinéraire.
@@ -156,7 +156,7 @@ Elles traversent plusieurs niveaux de transformation afin de devenir cohérentes
 
 ## 6) Industrialisation complète & Scalabilité
 
-![06_global](sources/images/06_global.png)
+![06_global](sources/images/06_global.jpg)
 
 L’application repose sur une chaîne complète de traitement des données :
 collecter → préparer → scorer → restituer afin de générer automatiquement un itinéraire personnalisé.
@@ -210,7 +210,7 @@ L’architecture suit une logique data pipeline orientée décision : la donnée
 
 ## 6) IA comme partenaire de développement
 
-![07_ia](sources/images/07_ia.png)
+![07_ia](sources/images/07_ia.jpg)
 
 ---
 
