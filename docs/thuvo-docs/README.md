@@ -77,9 +77,10 @@ Le score combine trois dimensions complémentaires :
 2. Format de visite (visite classique (lieu), expérience immersive, besoin ponctuel) décrit la nature de l’interaction qui permet d’éviter un programme monotone.
 3. Temporalité (lent, normal, dynamique) adapte les lieux au rythme de la journée et organise la cohérence du parcours plutôt qu’une simple liste de recommandations
 
-Formule : score_prime = poids_categorie × (1 + poids_format + poids_temporalite)
+Formule : **score_prime = poids_categorie × (1 + poids_format + poids_temporalite)**
 Un lieu peut ainsi être valorisé ou pénalisé selon le contexte du séjour. (ex : musée priorisé dans une journée calme, activité dynamique dans un programme court).
-Pourquoi ce modèle ? car PRIME est un modèle de décision, pas un modèle de prédiction. Il est
+
+Pourquoi ce modèle ? car PRIME est un modèle de décision, pas un modèle de prédiction. Il est :
 - interprétable (chaque recommandation est explicable)
 - ajustable (paramètres métier modifiables)
 - stable (pas de réentraînement ML)
