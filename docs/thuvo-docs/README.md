@@ -4,7 +4,59 @@
 **Prime** est un moteur de recommandation d’itinéraires touristiques fondé sur une architecture data modulaire.  
 Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants de midi).
 
+![layout_streamlit_carte](sources/images/layout_streamlit_carte.png)
+![layout_streamlit_table](sources/images/layout_streamlit_table.png)
+
 ---
+
+## 1) Architecture conceptuelle du moteur PRIME
+
+![Architecture conceptuelle du moteur PRIME](sources/images/01_concept.png)
+
+Cette application part d’un principe simple : un voyage n’est ni seulement un trajet, ni seulement une destination.
+Un outil de parcours seul devient un calculateur logistique, tandis qu’un outil de séjour seul devient un comparateur d’offres.
+L’objectif est donc de réunir déplacement + expérience afin de construire un itinéraire de vacances complet et cohérent.
+
+**Logique métier**
+
+L’application repose sur trois logiques métiers :
+- Vacances (subjectivité) : préférences utilisateur — ambiance, rythme, type d’activités
+- POIs (diversité) : richesse et variété des lieux proposés
+- Modèle PRIME (calcul) : organise et hiérarchise les propositions pour répondre à quoi, où, quand et comment
+
+Le score combine importance du lieu, contexte et temporalité afin de produire des recommandations explicables et ajustables.
+
+**Approche**
+
+L’application suit une démarche progressive :
+- Partir du besoin utilisateur
+- Structurer les données
+- Scorer les options
+- Construire l’itinéraire
+
+Son architecture modulaire permet de faire évoluer une partie du système sans casser l’ensemble.
+
+L’objectif n’est pas seulement de recommander des lieux, mais de composer un séjour personnalisé, lisible et cohérent.
+
+---
+
+## 2) Nettoyage & transformation des données
+![flux_datatourisme](sources/images/flux_datatourisme.png)
+![Nettoyage & transformation des données](sources/images/02_enrich.png)
+
+Le flux Datatourisme est composé de milliers de fichiers JSON hétérogènes produits par de multiples acteurs.
+La difficulté n’est pas seulement de nettoyer la donnée, mais de la rendre fiable, déterministe et interprétable par un moteur algorithmique.
+La transformation convertit donc un flux semi-structuré instable en référentiel touristique normalisé exploitable par l’API et l’U. Car 
+- Sans transformation : API proxy de données, UI affichage incohérent, moteur fournie des résultats instables
+- Avec transformation : API devient couche métier, UI est une expérience cohérente, moteur a un comportement prédictible
+La valeur du projet ne vient pas de la collecte de données, mais de la création d’un référentiel touristique normalisé.
+
+- 1. Validation du flux (Data Contract runtime) pour objectif d'éviter un problème classique, c'est de produire un modèle correct sur des données incorrectes : volume réel de POI, répartition des catégories, validité de la géolocalisation, structure des objets, fraîcheur temporelle
+- 2. Normalisation structurelle : Le JSON source n’a pas de schéma strict (dict | list | absent selon les producteurs). La transformation (navigation robuste par chemin, uniformisation list/dict, extraction déterministe) est un passage d’un document fournisseur à une table relationnelle moteur
+- 3. Nettoyage métier : corriger des anomalies terrain (suppression coordonnées nulles ou (0,0), filtrage France métropolitaine, déduplication intelligente (fraîcheur + richesse). l'objectif est de ne pas garder plusieurs vérités mais une vérité métier unique.
+- 4. Enrichissement sémantique : La donnée descriptive devient une donnée comportementale (le lieu n’est plus seulement stocké, il est interprété)
+- 5. Construction du signal algorithmique : produire d’un score homogène indépendant du fournisseur : **score_prime = poids_categorie × (1 + poids_format + poids_tempo)**. La base devient un dataset décisionnel prêt pour recommandation automatique.
+
 
 ## Architecture globale
 ![Prime architecture overview](sources/images/architecture_projet.png)
