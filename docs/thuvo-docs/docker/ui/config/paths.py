@@ -1,6 +1,6 @@
-# ======================================================================================================================
+# ================================================
 # PATHS ---> docker/ui/config/paths.py
-# ======================================================================================================================
+# ================================================
 
 import os
 from dataclasses import dataclass
@@ -19,8 +19,8 @@ def get_base_dir() -> str:
     """
     Ordre de résolution:
     1) ENV ITIVAC_BASE_DIR (recommandé en Docker/prod)
-    2) /data (si tu montes un volume /data)
-    3) /app/sources (si tu montes le repo en /app via volumes: .:/app)
+    2) /data
+    3) /app/sources
     4) fallback local dynamique: <repo>/sources (pas de chemin Windows hardcodé)
     """
     # 1) variable d'env prioritaire
