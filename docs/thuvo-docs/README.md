@@ -4,6 +4,8 @@
 **Prime** est un moteur de recommandation d’itinéraires touristiques fondé sur une architecture data modulaire.  
 Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants midi, soir).
 
+Présentation en format vidéo : https://www.youtube.com/watch?v=cCFvDxpf1a8
+
 ![layout_streamlit_carte](sources/images/layout_streamlit_carte.png)
 ![layout_streamlit_table](sources/images/layout_streamlit_table.png)
 
