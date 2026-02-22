@@ -2,7 +2,7 @@
 # (user-first, data-first, orientée produit Prime, modulaire)
 
 **Prime** est un moteur de recommandation d’itinéraires touristiques fondé sur une architecture data modulaire.  
-Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants de midi).
+Il combine des données touristiques ouvertes, des signaux analytiques tiers et un modèle de scoring pour proposer des parcours personnalisés (POI principaux, satellites, restaurants midi, soir).
 
 ![layout_streamlit_carte](sources/images/layout_streamlit_carte.png)
 ![layout_streamlit_table](sources/images/layout_streamlit_table.png)
@@ -14,7 +14,9 @@ Il combine des données touristiques ouvertes, des signaux analytiques tiers et 
 ![01_concept](sources/images/01_concept.jpg)
 
 Cette application part d’un principe simple : un voyage n’est ni seulement un trajet, ni seulement une destination.
+
 Un outil de parcours seul devient un calculateur logistique, tandis qu’un outil de séjour seul devient un comparateur d’offres.
+
 L’objectif est donc de réunir déplacement + expérience afin de construire un itinéraire de vacances complet et cohérent.
 
 **Logique métier**
@@ -34,26 +36,34 @@ L’application suit une démarche progressive :
 - Scorer les options
 - Construire l’itinéraire
 
-Son architecture modulaire permet de faire évoluer une partie du système sans casser l’ensemble. L’objectif n’est pas seulement de recommander des lieux, mais de composer un séjour personnalisé, lisible et cohérent.
+Son architecture modulaire permet de faire évoluer une partie du système sans casser l’ensemble.
+
+L’objectif n’est pas seulement de recommander des lieux, mais de composer un séjour personnalisé, lisible et cohérent.
 
 ---
 
 ## 2) Nettoyage & transformation des données
+
 ![flux_datatourisme](sources/images/flux_datatourisme.png)
 ![02_enrich](sources/images/02_enrich.JPG)
 
 Le flux Datatourisme est composé de milliers de fichiers JSON hétérogènes produits par de multiples acteurs.
+
 La difficulté n’est pas seulement de nettoyer la donnée, mais de la rendre fiable, déterministe et interprétable par un moteur algorithmique.
+
 La transformation convertit donc un flux semi-structuré instable en référentiel touristique normalisé exploitable par l’API et l’U. Car 
 - Sans transformation : API proxy de données, UI affichage incohérent, moteur fournie des résultats instables
 - Avec transformation : API devient couche métier, UI est une expérience cohérente, moteur a un comportement prédictible
+
 La valeur du projet ne vient pas de la collecte de données, mais de la création d’un référentiel touristique normalisé.
 
 - 1. Validation du flux (Data Contract runtime) pour objectif d'éviter un problème classique, c'est de produire un modèle correct sur des données incorrectes : volume réel de POI, répartition des catégories, validité de la géolocalisation, structure des objets, fraîcheur temporelle
 - 2. Normalisation structurelle : Le JSON source n’a pas de schéma strict (dict | list | absent selon les producteurs). La transformation (navigation robuste par chemin, uniformisation list/dict, extraction déterministe) est un passage d’un document fournisseur à une table relationnelle moteur
 - 3. Nettoyage métier : corriger des anomalies terrain (suppression coordonnées nulles ou (0,0), filtrage France métropolitaine, déduplication intelligente (fraîcheur + richesse). l'objectif est de ne pas garder plusieurs vérités mais une vérité métier unique.
 - 4. Enrichissement sémantique : La donnée descriptive devient une donnée comportementale (le lieu n’est plus seulement stocké, il est interprété)
-- 5. Construction du signal algorithmique : produire d’un score homogène indépendant du fournisseur : **score_prime = poids_categorie × (1 + poids_format + poids_tempo)**. La base devient un dataset décisionnel prêt pour recommandation automatique.
+- 5. Construction du signal algorithmique : produire d’un score homogène indépendant du fournisseur : **score_prime = poids_categorie × (1 + poids_format + poids_tempo)**.
+
+La base devient un dataset décisionnel prêt pour recommandation automatique.
  
 **Notebooks d’exploration**
 - [DataTourisme – Source de données](sources/datatourisme.md)
@@ -69,6 +79,7 @@ Ces notebooks documentent la compréhension des sources et les choix de modélis
 ![03_scoring](sources/images/03_scoring.jpg)
 
 La sélection des lieux repose sur un modèle déterministe appelé score PRIME.
+
 Son objectif n’est pas de prédire un comportement utilisateur mais de classer les lieux de manière explicable et paramétrable.
 
 Le score combine trois dimensions complémentaires :
@@ -78,6 +89,7 @@ Le score combine trois dimensions complémentaires :
 3. Temporalité (lent, normal, dynamique) adapte les lieux au rythme de la journée et organise la cohérence du parcours plutôt qu’une simple liste de recommandations
 
 Formule : **score_prime = poids_categorie × (1 + poids_format + poids_temporalite)**
+
 Un lieu peut ainsi être valorisé ou pénalisé selon le contexte du séjour. (ex : musée priorisé dans une journée calme, activité dynamique dans un programme court).
 
 Pourquoi ce modèle ? car PRIME est un modèle de décision, pas un modèle de prédiction. Il est :
@@ -92,6 +104,7 @@ Pourquoi ce modèle ? car PRIME est un modèle de décision, pas un modèle de p
 ![04_pipeline](sources/images/04_pipeline.jpg)
 
 L’utilisateur fournit un point de référence (ex : logement) ainsi que ses préférences : distance maximale, budget, rythme et types d’activités.
+
 L’API récupère alors uniquement les lieux pertinents depuis la base afin de travailler sur un périmètre utile plutôt que sur l’ensemble des données.
 
 **Étapes de génération**
@@ -127,6 +140,7 @@ L’objectif est d’évoluer d’un outil d’aide à la décision vers un vér
 ![05_data](sources/images/05_data.jpg)
 
 Pour garantir la fiabilité du système, les données ne sont jamais utilisées directement après ingestion.
+
 Elles traversent plusieurs niveaux de transformation afin de devenir cohérentes, comparables et exploitables par le moteur d’itinéraire.
 
 **1. Bronze — données brutes** : archive technique et traçabilité
@@ -159,45 +173,57 @@ Elles traversent plusieurs niveaux de transformation afin de devenir cohérentes
 
 ![06_global](sources/images/06_global.jpg)
 
-L’application repose sur une chaîne complète de traitement des données :
-collecter → préparer → scorer → restituer afin de générer automatiquement un itinéraire personnalisé.
+L’application repose sur une chaîne complète de traitement des données : collecter → préparer → scorer → restituer afin de générer automatiquement un itinéraire personnalisé.
 
-**Sources de données** : Plusieurs services externes alimentent le système :
+**Sources de données** :
+
+Plusieurs services externes alimentent le système :
 - données touristiques (POI)
 - restaurants
 - géocodage et routage
+
 Ces sources étant hétérogènes, elles doivent être rendues comparables avant toute utilisation.
 
-**Pipeline ETL**
+**Pipeline ETL** :
+
 Les données suivent un processus ETL :
 - Extract — récupération des flux
 - Transform — nettoyage, normalisation, détection des mises à jour
 - Load — chargement incrémental (seules les modifications)
+
+
 Elles sont ensuite stockées en couches :
 - Raw (Bronze) : archive source
 - Prepared (Silver) : données nettoyées et enrichies
 - Serving (Gold) : données prêtes pour recommandation
 
-**API & moteur**
+**API & moteur**:
+
 - L’API interne interroge la couche Gold pour :
 - filtrer les lieux selon les paramètres utilisateur
 - calculer le score PRIME
 - produire un classement cohérent
 
-**Restitution** : Les résultats sont envoyés à l’interface sous deux formes :
+**Restitution** :
+
+Les résultats sont envoyés à l’interface sous deux formes :
 - carte interactive
 - planning de visite
 
-**Supervision** : Le système intègre :
+**Supervision** :
+
+Le système intègre :
 - logs & monitoring
 - contrôles qualité
 - déploiement conteneurisé
 
-**Scalabilité & exploitation**
+**Scalabilité & exploitation** :
+
 Dans un contexte de mise en production à grande échelle, l’architecture peut être orchestrée par un planificateur de workflows (ex : Airflow) afin de :
 - exécuter les traitements incrémentaux
 - gérer les dépendances entre tâches
 - rejouer automatiquement un pipeline en cas d’échec
+
 La supervision peut être assurée par une stack d’observabilité (ex : Prometheus + Grafana) pour suivre :
 - temps de réponse
 - latence des requêtes
