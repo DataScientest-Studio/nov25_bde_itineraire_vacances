@@ -137,7 +137,7 @@ L’objectif est d’évoluer d’un outil d’aide à la décision vers un vér
 
 ---
 
-## 5) Pipeline algorithmique du moteur PRIME
+## 5) Industrialisation du pipeline Data
 
 ![05_data](sources/images/05_data.jpg)
 
